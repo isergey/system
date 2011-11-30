@@ -18,13 +18,5 @@ urlpatterns = patterns('apps.zgate.views',
     url(r'^documents/save/$', 'save_document', name="zgate_save_document"),
     url(r'^documents/load/$', 'load_documents', name="zgate_load_saved_documents"),
     url(r'^documents/delete/(?P<document_id>\d+)/$', 'delete_saved_document', name="zgate_delete_saved_document"),
-
-    #url(r'^(?P<catalog_id>\d+)/zgate$', 'search', name="zgate_search"),
-    #url(r'^(?P<catalog_id>\d+)/show$', 'show', name="zgate_show"),
-    #url(r'^(?P<catalog_id>\d+)/get/$', 'get', name="zgate_get"),
-    #url(r'^(?P<news_id>\d+)/$', 'show', name="news_show"),
-    #url(r'^create/$', 'create', name="news_create"),
-    #url(r'^(?P<news_id>\d+)/edit/$','edit', name="news_edit"),
-    #url(r'^(?P<news_id>\d+)/delete/$','edit', name="news_delete"),
 )
 
