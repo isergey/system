@@ -1,0 +1,120 @@
+{% extends "polls/administration/polls.html" %}
+{% block module_action %}редактирование ( {{ form.question.data }} ){% endblock %}
+{% block module_page %}
+    <div class="module_actions column prepend-1 last">
+        <a class="button negative delete" title="Удалить голосование"
+           href="{% url administration_polls_delete poll.id%}"><img src="/media/images/icons/delete_16.png" alt=""/>Удалить
+            голосование</a>
+    </div>
+    <hr/>
+    <div class="column span-19 prepend-1 last">
+        <p><b>Дата создания голосования: </b>{{ poll.pub_date }}</p>
+        <form id="dummy" action="" method="post">
+            <fieldset>
+                <div class="last">
+                    <label for="{{ form.question.auto_id }}">{{ form.question.label }}</label><br>
+                    <input type="text" class="text span-18" name="{{ form.question.name }}"
+                           id="{{ form.question.auto_id }}"
+                           {% if form.question.data %}value="{{ form.question.data }}" {% endif %}>
+                    {% if form.question.errors %}
+                        <div class="error">
+                            {{ form.question.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            <div class="last">
+                <label for="{{ form.multi_vote.auto_id }}">{{ form.multi_vote.label }}</label><br>
+                {{ form.multi_vote }}
+                {% if form.multi_vote.errors %}
+                <div class="error">
+                    {{ form.multi_vote.errors }}
+                </div>
+                {% endif %}
+            </div>   
+                <div class="last">
+                    <label for="{{ form.published.auto_id }}">{{ form.published.label }}</label><br>
+                    {{ form.published }}
+                    {% if form.published.errors %}
+                        <div class="error">
+                            {{ form.published.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <hr class="space"/>
+
+                <div class="last">
+                    <label for="{{ form.poll_type.auto_id }}">{{ form.poll_type.label }}</label><br>
+                    {{ form.poll_type }}
+                    {% if form.poll_type.errors %}
+                        <div class="error">
+                            {{ form.poll_type.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <hr class="space"/>
+
+                <div class="last">
+                    <label for="{{ form.show_results_on_vote.auto_id }}">{{ form.show_results_on_vote.label }}</label><br>
+                    {{ form.show_results_on_vote }}
+                    {% if form.show_results_on_vote.errors %}
+                        <div class="error">
+                            {{ form.show_results_on_vote.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <hr class="space"/>
+
+                <div class="last">
+                    <label for="{{ form.show_results_after_end_poll.auto_id }}">{{ form.show_results_after_end_poll.label }}</label><br>
+                    {{ form.show_results_after_end_poll }}
+                    {% if form.show_results_after_end_poll.errors %}
+                        <div class="error">
+                            {{ form.show_results_after_end_poll.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <hr class="space"/>
+
+                <div class="last">
+                    <label for="{{ form.start_poll_date.auto_id }}">{{ form.start_poll_date.label }}</label><br>
+                    {{ form.start_poll_date }}
+                    {% if form.start_poll_date.errors %}
+                        <div class="error">
+                            {{ form.start_poll_date.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <hr class="space"/>
+
+                <div class="last">
+                    <label for="{{ form.end_poll_date.auto_id }}">{{ form.end_poll_date.label }}</label><br>
+                    {{ form.end_poll_date }}
+                    {% if form.end_poll_date.errors %}
+                        <div class="error">
+                            {{ form.end_poll_date.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <hr class="space"/>
+
+                <div class="last">
+                    <button type="submit" class="button positive" title="Применить изменения голосования">
+                        <img src="/media/css/bp/buttons/icons/tick.png" alt=""/> Применить
+                    </button>
+                    <a class="button negative" title="Отменить редактирование голосования"
+                       href="{% url administration_polls_index %}">
+                        <img src="/media/images/icons/stop_16.png" alt=""/>Отменить
+                    </a>
+
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <hr class="space"/>
+{% endblock %}

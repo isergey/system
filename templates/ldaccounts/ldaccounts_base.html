@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>Управление аккаунтами</title>
+	<meta name="title" content="" />
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<link rel="stylesheet" href="/media/css/style.css" type="text/css" media="screen, projection" />
+</head>
+
+<body>
+
+<div id="wrapper">
+
+	<div id="header">
+		<div>
+			<strong>{% block section_title %}{% endblock %}</strong>
+		</div>
+
+		<div id="navigation"> {% block section_menu %}{% endblock %}
+		</div>
+	</div><!-- #header-->
+
+	<div id="middle">
+
+		<div id="container">
+			<div id="content">
+                {% block content %}{% endblock %}
+			</div><!-- #content-->
+		</div><!-- #container-->
+
+		<div class="sidebar" id="sideLeft">
+			<strong>Left Sidebar:</strong> Integer velit. Vestibulum nisi nunc, accumsan ut, vehicula sit amet, porta a, mi. Nam nisl tellus, placerat eget, posuere eget, egestas eget, dui. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In elementum urna a eros. Integer iaculis. Maecenas vel elit.
+		</div><!-- .sidebar#sideLeft -->
+
+		<div class="sidebar" id="sideRight">
+			 side
+		</div><!-- .sidebar#sideRight -->
+
+	</div><!-- #middle-->
+
+</div><!-- #wrapper -->
+
+<div id="footer">
+	<strong>Footer:</strong> Mus elit Morbi mus enim lacus at quis Nam eget morbi. Et semper urna urna non at cursus dolor vestibulum neque enim. Tellus interdum at laoreet laoreet lacinia lacinia sed Quisque justo quis. Hendrerit scelerisque lorem elit orci tempor tincidunt enim Phasellus dignissim tincidunt. Nunc vel et Sed nisl Vestibulum odio montes Aliquam volutpat pellentesque. Ut pede sagittis et quis nunc gravida porttitor ligula.
+</div><!-- #footer -->
+</body>
+</html>

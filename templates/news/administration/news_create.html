@@ -1,0 +1,69 @@
+{% extends "news/administration/news.html" %}
+{% block module_action %}создание новости{% endblock %}
+{% block module_page %}
+    <div class="column span-19 prepend-1 last">
+        <form id="dummy" action="" method="post">
+            <fieldset>
+                <div class="last">
+                    <label for="{{ form.title.auto_id }}">{{ form.title.label }}</label><br>
+                    <input type="text" class="text span-18" name="{{ form.title.name }}" id="{{ form.title.auto_id }}"
+                           {% if form.title.data %}value="{{ form.title.data }}" {% endif %}>
+                    {% if form.title.errors %}
+                        <div class="error">
+                            {{ form.title.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="last">
+                    <label for="{{ form.teaser.auto_id }}">{{ form.teaser.label }}</label><br>
+                    <input type="text" class="text span-18" name="{{ form.teaser.name }}"
+                           id="{{ form.teaser.auto_id }}" {% if form.teaser.data %}
+                           value="{{ form.teaser.data }}"{% endif %}>
+                    {% if form.teaser.errors %}
+                        <div class="error">
+                            {{ form.teaser.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="last">
+                    <label for="{{ form.content.auto_id }}">{{ form.content.label }}</label>
+                    <textarea name="{{ form.content.name }}" id="{{ form.content.auto_id }}"
+                              class="span-18">{% if form.content.data %}{{ form.content.data }}{% endif %}</textarea>
+                    {% if form.content.errors %}
+                        <div class="error">
+                            {{ form.content.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="last">
+                    <label for="{{ form.type.auto_id }}">{{ form.type.label }}</label>
+                    {{ form.type }}
+                    {% if form.type.errors %}
+                        <div class="error">
+                            {{ form.type.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="last">
+                    <label for="{{ form.published.auto_id }}">{{ form.published.label }}</label>
+                    {{ form.published }}
+                    {% if form.published.errors %}
+                        <div class="error">
+                            {{ form.published.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="last">
+                    <button type="submit" class="button positive" title="Создать новость">
+                        <img src="/media/images/icons/tick_16.png" alt=""/> Создать
+                    </button>
+                    <a class="button negative" title="Отменить создание новости"
+                       href="{% url administration_news_index %}">
+                        <img src="/media/images/icons/stop_16.png" alt=""/>Отменить
+                    </a>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <hr class="space"/>
+{% endblock %}

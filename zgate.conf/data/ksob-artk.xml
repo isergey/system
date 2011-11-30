@@ -1,0 +1,74 @@
+<target>
+<explain>
+  <serverInfo>
+    <host>212.193.5.224</host>
+    <port>210</port>
+    <database>ARTK</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng"></title>
+    <title lang="rus"></title>
+  </databaseInfo>
+  <indexInfo>
+    <index search="true" scan="true" sort="false">
+      <map primary="true">
+        <attr type="1">1</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="false">
+      <map primary="true">
+        <attr type="1">4</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="false">
+      <map primary="true">
+        <attr type="1">21</attr>
+        <attr type="4">1</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="false">
+      <map primary="true">
+        <attr type="1">31</attr>
+        <attr type="4">4</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="false">
+      <map primary="true">
+        <attr type="1">59</attr>
+        <attr type="4">2</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="false">
+      <map primary="true">
+        <attr type="1">1003</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="false">
+      <map primary="true">
+        <attr type="1">1033</attr>
+        <attr type="4">1</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="false">
+      <map primary="true">
+        <attr type="1">1076</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="false">
+      <map primary="true">
+        <attr type="1">1080</attr>
+      </map>
+    </index>
+  </indexInfo>
+  <recordInfo>
+    <recordSyntax name="RUSMarc" oid="1.2.840.10003.5.28">
+      <elementSet name="B"></elementSet>
+      <elementSet name="F"></elementSet>
+    </recordSyntax>
+  </recordInfo>
+  <configInfo>
+    <setting type="title" lang="eng"></setting>
+    <setting type="title" lang="rus"></setting>
+  </configInfo>
+</explain>
+</target>

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}
+    КСОБ СПб
+{% endblock %}
+{% block content %}
+    <h3 align="center" class="slogan">
+        <strong>Портал КСОБ СПб - Ваш самый короткий путь в библиотеку!</strong>
+    </h3>
+    <hr/>
+    <div class="text">
+        <p>Портал предоставляет доступ к ресурсам сразу всех общедоступных библиотек города, выполняя поиск во всех
+            электронных каталогах.</p>
+
+        <p>Зарегистрированный пользователь может так же выполнить заказ документа или копии, получить их в ближайшей к
+            нему библиотеке.</p>
+
+        <p>Портал информирует о мероприятиях в библиотеках города. Личный кабинет предоставляет персональные сервисы
+            работы с библиотечным фондом. </p>
+
+        <p>Мы рады получить Ваши отзывы для совершенствования сервисов Портала.</p>
+    </div>
+    <div class="column span-14 last">
+        {% load gallery_tags %}
+        {% index_gallery %}
+    </div>
+    <hr class="space"/>
+    <hr class="space"/>
+    <script type="text/javascript">
+        jQuery('#mycarousel').jcarousel();
+    </script>
+    <div class="column span-4">
+        <div class="text">
+            {% load participiants_tags %}
+            {% districts_list %}
+        </div>
+    </div>
+    <div class="column span-10 last">
+        <img src="/media/images/theme/spbmap.png" alt="Карта районов Санкт-Петербурга" usemap="#Map"/>
+    </div>
+    <map name="Map" id="Map">
+      <area shape="poly" coords="179,163" href="#" />
+      <area shape="poly" coords="181,164,164,159,159,124,151,108,157,84,149,67,131,54,106,43,76,33,53,29,31,30,15,37,6,27,22,13,43,17,70,7,86,13,95,8,104,13,114,26,129,38,149,53,166,62,178,69,223,88,203,93,190,101,193,115,206,130,206,143,193,150" href="{% url participants_by_district 10 %}" />
+      <area shape="poly" coords="214,132,196,107,225,95,246,93,254,105,275,117,282,132,276,160,274,182,268,183,267,162,262,139,252,127,236,126" href="{% url participants_by_district 3 %}" />
+      <area shape="poly" coords="186,168,192,162,197,152,208,150,213,137,228,131,238,138,248,131,257,142,261,157,263,170,263,182,232,181" href="{% url participants_by_district 15 %}" />
+      <area shape="poly" coords="274,188,273,200,280,198,289,196,298,178,300,148,287,138" href="{% url participants_by_district 4 %}" />
+      <area shape="poly" coords="234,186,254,185,267,188,271,197,265,205,260,205,236,192" href="{% url participants_by_district 13 %}" />
+      <area shape="poly" coords="235,196,229,204,234,215,242,221,250,215,257,207" href="{% url participants_by_district 12 %}" />
+      <area shape="poly" coords="261,209,271,224,285,221,286,202,272,204" href="{% url participants_by_district 18 %}" />
+      <area shape="poly" coords="303,150,302,175,295,193,290,202,288,222,303,213,318,213,322,190,329,186,320,179,314,159" href="{% url participants_by_district 7 %}" />
+      <area shape="poly" coords="268,224,259,213,246,223,246,233,254,231,259,237" href="{% url participants_by_district 1 %}" />
+      <area shape="poly" coords="279,228,306,274,308,280,318,292,325,288,336,287,321,280,312,266,320,258,315,242,318,218,305,217,296,227" href="{% url participants_by_district 12 %}" />
+      <area shape="poly" coords="219,245,225,236,234,227,242,225,243,235,249,237,255,237,252,257,245,276,225,281,235,259,225,253" href="{% url participants_by_district 5 %}" />
+      <area shape="poly" coords="269,230,276,229,303,279,281,285" href="{% url participants_by_district 17 %}" />
+      <area shape="poly" coords="258,240,253,272,239,283,232,300,252,304,250,314,254,333,259,303,276,288,266,235" href="{% url participants_by_district 11 %}" />
+      <area shape="poly" coords="230,382,256,337,266,318,262,303,278,292,293,288,302,306,317,315,318,335,329,340,335,352,334,362,323,361,318,373,295,355,286,379,264,382,257,390,247,389,237,405" href="{% url participants_by_district 16 %}" />
+      <area shape="poly" coords="299,286,307,286,318,298,336,292,358,315,384,322,391,338,376,339,371,348,364,352,355,346,339,348,335,337,324,332,323,314,308,304" href="{% url participants_by_district 6 %}" />
+      <area shape="poly" coords="195,258,193,269,186,285,199,291,194,306,180,322,183,335,176,350,196,367,190,348,194,331,204,322,208,302,228,298,234,285,220,286,229,259,216,249" href="{% url participants_by_district 8 %}" />
+      <area shape="poly" coords="101,252,114,247,128,260,145,264,148,273,171,270,182,285,185,273,192,259,173,260,146,247,117,231,111,238,103,243" href="{% url participants_by_district 14 %}" />
+      <area shape="poly" coords="70,147,76,160,88,163,99,180,108,171,96,153,83,146" href="{% url participants_by_district 9 %}" />
+    </map>
+{% endblock %}
+

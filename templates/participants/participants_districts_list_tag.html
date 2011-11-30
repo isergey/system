@@ -1,0 +1,7 @@
+<ol>
+{% for district in  districts %}
+    <li><a href="{% url participants_by_district district.code %}" >{{ district.title }}</a></li>
+{% empty %}
+    Нет районов
+{% endfor %}
+</ol>

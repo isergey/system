@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+    <h3>Галерея</h3>
+    <div class="text">
+        <ul>
+            {% for collection in collections %}
+                <li><a class="green" href="{%  url gallery_view collection.id %}">  {{ collection.title }}</a></li>
+            {% empty %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% if not collections %}
+        В галерее нет альбомов.
+    {% endif %}
+{% endblock %}

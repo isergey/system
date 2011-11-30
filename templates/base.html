@@ -1,0 +1,327 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+{#    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">#}
+    <LINK rel="icon" href="http://favicon.ru/favicon.ico" type="image/x-icon">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="description" content="Поиск по фонду всех общедоступных библиотек Санкт-Петербурга с возможностью заказа книг и журналов в любой библиотеке. Информирование о мероприятиях в библиотеках"/>
+    <meta name="keywords" content="Санкт-Петербург Питер спб ло библиотека поиск книг журналов изданий литература справка заказ база данных электронные каталоги мероприятия в библиотеках библиотеки сайты библиотек адреса библиотек"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/media/css/bp/screen.css"/>
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/media/css/bp/plugins/fancy-type/screen.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/media/css/jquery.treeview.css">
+    <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic&subset=cyrillic,latin"
+          rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/media/css/style.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/media/css/karusel.css"/>
+    <link rel="stylesheet" type="text/css" href="/media/css/jquery.ad-gallery.css">
+    <link rel="stylesheet" type="text/css" href="/media/css/calendar.css">
+{#    <link rel="stylesheet" type="text/css" href="/media/css/jqmodal.css">#}
+    <link rel="stylesheet" href="/media/css/jquery.fancybox.css" type="text/css" media="screen"/>
+
+    <script type="text/javascript" src="/media/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/media/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/media/js/jquery.form.js"></script>
+    <script type="text/javascript" src="/media/js/tree/jquery.treeview.js"></script>
+    <script type="text/javascript" src="/media/js/jquery.jcarousel.min.js"></script>
+
+    <script type='text/javascript' src='/media/js/jquery.tmpl.min.js'></script>
+    <script type='text/javascript' src='/media/js/jquery.ad-gallery.js'></script>
+    
+{#    <script type='text/javascript' src="/media/js/jqmodal.js"></script>#}
+    <script type='text/javascript' src="/media/js/jquery.fancybox.pack.js"></script>
+{#    <script type="text/javascript" src="/media/iepngfix/iepngfix_tilebg.js"></script>#}
+    <title>{% block title %}{% endblock %}</title>
+
+    <script type="text/javascript">
+        $(function() {
+            $('#vote_form').bind('submit', function(e) {
+                e.preventDefault(); // <-- important
+                $(this).ajaxSubmit({
+                            target: '#form_results'
+                });
+            });
+            $("#main_menu").treeview({
+                        persist: "location",
+                        collapsed: false,
+                        unique: false,
+                        animated: "fast"
+                    });
+            $("#internet_resources").treeview({
+                        persist: "location",
+                        collapsed: true,
+                        unique: true,
+                        animated: "fast"
+                    });
+            $("#prof_menu").treeview({
+                        persist: "cookie",
+                        collapsed: false,
+                        unique: true,
+                        animated: "fast"
+                    });
+            $('#username').blur(function() {
+                if (this.value == '') {
+                    this.value = 'логин';
+                    this.style['color'] = '#999999';
+                }
+            });
+            $('#username').focus(function() {
+                this.value = '';
+                this.style['color'] = '#000';
+
+            });
+            $('#password').blur(function() {
+                if (this.value == '') {
+                    this.value = 'пароль';
+                    this.type = 'text';
+                    this.style['color'] = '#999999';
+                }
+            });
+            $('#password').focus(function() {
+                this.value = '';
+                this.style['color'] = '#000';
+                this.type = 'password';
+            });
+        })
+
+    </script>
+</head>
+<body>
+
+<div class="container2 clearfix">
+    <div id="header" class=" column span-24 last">
+        <div class="menu">
+            <div class="menu_links">
+                <ul>
+                    <li id="main"><a href="{% url site_index %}">Главная</a></li>
+                    <li id="news"><a href="{% url news_index %}">Новости</a></li>
+                    <li id="orgs"><a href="{% url participants_index  %}">Библиотеки</a></li>
+                    <li id="ksob"><a href="{% url pages_show_slug 'about_ksob' %}">КСОБ СПб</a></li>
+                    <li id="gallery"><a href="{% url gallery_index %}">Галерея</a></li>
+                    <li id="feedback"><a href="{% url guestbook_index %}">Отзывы</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="left_column column span-5">
+        <div class="block white">
+            <div class="headbg"></div>
+            <div class="content">
+                <div align="center" class="treeheader">Ресурсы библиотек
+                    <hr/>
+                </div>
+                {% load cache %}
+                {% cache 30 main_menu %}
+                <div id="ksob_control">
+                    {% load tree_menu_tags %}
+                    {% show_menu "main_menu" "unordered-list" %}
+                </div>
+            {% endcache %}
+            </div>
+            <div class="footerbg"></div>
+        </div>
+        <div class="block white">
+            <div class="headbg"></div>
+            <div class="content">
+                <div align="center" class="treeheader">Интернет ресурсы
+                    <hr/>
+                </div>
+                {% load cache %}
+                {% cache 30 internet_resources %}
+                <div id="internet_resources">
+                    {% show_menu "internet_resources" "unordered-list" %}
+                </div>
+            {% endcache %}
+            </div>
+            <div class="footerbg"></div>
+        </div>
+        {% load ldaccounts_tags %}
+        {% if user|in_groups:'admin, professional' %}
+
+            <div class="block white">
+                <div class="headbg"></div>
+                <div class="content">
+                    <div align="center" class="treeheader">Профессиональная страница
+                        <hr/>
+                    </div>
+                    <div id="prof_menu">
+                        {% cache 30 prof_menu %}
+                        {% load tree_menu_tags %}
+                        {% show_menu "prof_menu" "unordered-list" %}
+                        {% endcache %}
+                    </div>
+
+                </div>
+                <div class="footerbg"></div>
+            </div>
+        {% endif %}
+        {% if not user.is_authenticated %}
+            <div class="block right">
+                <div class="headbg"></div>
+                <div class="content">
+                    <div align="center"  style="width:100%;" class="awesome blue"><a href="/pages/s/for_librarians">Библиотечным специалистам</a></div>
+                </div>
+                <div class="footerbg"></div>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="center column span-14">
+        {% block content %}{% endblock %}
+    </div>
+    <div class="right_column column span-5 last">
+        <div class="block">
+            {% if not user.is_authenticated %}
+                <div id="auth">
+                    <div class="auth_form">
+                        <div class="auth_title">Авторизация</div>
+                        <form id="auth_login" action="{% url accounts_login %}" method="post">
+                            {% csrf_token %}
+                            <div class="input_field">
+                                <input type="text" id="username" name="username" value="логин"/>
+                            </div>
+                            <div class="input_field">
+                                <input type="text" id="password" name="password" value="пароль"/>
+                            </div>
+                            <input align="center" type="submit" value="Войти" class="login_button"/>
+                            {% if next %}
+                                <input type="hidden" name="next" value="{{ next|escape }}"/>
+                            {% else %}
+                                <input type="hidden" name="next" value="{% url orders_index %}"/>
+                            {% endif %}
+                        </form>
+                        <a href="{% url ldaccounts_registration %}">Регистрация</a> <br/>
+                        <a href="{% url ldaccounts_remember_password %}">Забыли пароль?</a>
+
+                    </div>
+                </div>
+            {% else %}
+                <div id="auth">
+                    <div class="auth_form">
+                        <div class="auth_title">Личный кабинет</div>
+                        <span style="color:#f2f1f1;">Вы вошли как {{ user.username }}</span><br/> <a href="{% url accounts_logout %}">(Выйти)</a>
+                    </div>
+                    <hr style="margin:0 10px 0 10px;width:170px;"/>
+                    <div class='personal_menu'>
+                        <a style="color:#fff;" href="{% url orders_index %}">Мои заказы</a><br/>
+                        <a style="color:#fff;" href="{% url events_favorits %}">Мероприятия</a><br/>
+                        <a style="color:#fff;" href="{% url zgate_saved_requests %}">Мои запросы</a><br/>
+                        <a style="color:#fff;" href="{% url zgate_saved_document_list %}">Мои документы</a>
+                    </div>
+
+                </div>
+
+            {% endif %}
+        </div>
+
+            <div class="block right">
+                <div class="headbg"></div>
+                <div class="content">
+                    <a href="http://vhd.ruslan.ru/" ><div align="center"  style="width:100%;" class="awesome blue">Виртуальная справка</div></a>
+                    {% if user|in_groups:'admin, professional' %}
+                        <a href="/professional/"><div align="center"  style="width:100%;" class="awesome blue"><b>Профессиональная</b><br/><b>страница</b></div></a>
+                        <a href="#1"><div align="center"  style="width:100%;" class="awesome blue">Регистр библиотек<br/>Санкт-Петербурга</div></a>
+                        <a href="/zgate/7/"><div align="center"  style="width:100%;" class="awesome blue">Методическая копилка</div></a>
+                        <a href="http://ill.ksob.spb.ru"><div align="center"  style="width:100%;" class="awesome blue">АРМ МБА-ЭДД</div></a>
+                        <a href="http://forum.ksob.spb.ru"><div align="center"  style="width:100%;" class="awesome blue">Форум</div></a>
+                    {% endif %}
+                </div>
+                <div class="footerbg"></div>
+            </div>
+
+
+        <div class="block">
+            {% load events_tags %}
+            {% event_calendar %}
+        </div>
+        {% cache 30 news_feed %}
+        <div class="block">
+            {% load news_tags %}
+            {% news_feed %}
+        </div>
+        {% endcache %}
+        <div class="block">
+            {% load polls_tags %}
+
+            {% poll_form %}
+
+        </div>
+
+    </div>
+    <div class="footer column span-24 last" style="height:93px;">
+        <div class="column span-13"> .</div>
+        <div class="column span-11 last" style="height:93px; margin-top: 30px;">
+            <style>
+                ul.footer_menu{
+                    list-style: none;
+                    margin-left:30px;
+                }
+                ul.footer_menu li{
+                    float: left;
+                }
+                ul.footer_menu li a{
+                    text-decoration: underline;
+                    color: #f5f6ff;
+                    padding: 0 5px 0 0;
+                }
+            </style>
+                <ul class="footer_menu">
+                    <li><a href="{% url site_index %}">Главная</a></li>
+                    <li><a href="{% url news_index %}">Новости</a></li>
+                    <li><a href="{% url participants_index  %}">Библиотеки</a></li>
+                    <li><a href="{% url pages_show_slug 'about_ksob' %}">КСОБ СПб</a></li>
+                    <li><a href="{% url gallery_index %}">Галерея</a></li>
+                    <li><a href="{% url guestbook_index %}">Отзывы</a></li>
+                </ul>
+            <div>
+                <ul class="footer_menu">
+                    <li><a href="{% url pages_show_slug 'Spravka' %}">Справка</a></li>
+                    <li><a href="{% url pages_show_slug 'kontaktnaya' %}">Контактная информация</a></li>
+                </ul>
+            </div>
+            <div style="color:white;" class="clear">© Корпоративная сеть общедоступных библиотек Санкт-Петербурга</div>
+            </div>
+
+        </div>
+        <div align="center" class="span-24" style="margin: 75px 0 0 5px; color:#fff; float:right;">© Корпоративная сеть общедоступных
+            библиотек Санкт-Петербурга
+        </div>
+    </div>
+</div>
+<!--<div class="sun"></div>-->
+<!--</div>-->
+<div class="container2 shadow"></div>
+<!-- Yandex.Metrika counter -->
+<div style="display:none;"><script type="text/javascript">
+(function(w, c) {
+    (w[c] = w[c] || []).push(function() {
+        try {
+            w.yaCounter6806275 = new Ya.Metrika({id:6806275,
+                    clickmap:true,
+                    trackLinks:true,
+                    accurateTrackBounce:true});
+        }
+        catch(e) { }
+    });
+})(window, 'yandex_metrika_callbacks');
+</script></div>
+<script src="//mc.yandex.ru/metrika/watch.js" type="text/javascript" defer="defer"></script>
+<noscript><div><img src="//mc.yandex.ru/watch/6806275" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+<script type="text/javascript"> 
+ 
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-17222325-2']);
+  _gaq.push(['_trackPageview']);
+ 
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+ 
+</script>
+</body>
+</html>
+

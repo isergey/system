@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!--
+ * $Log: materials.xml,v $
+ * Revision 1.2  2003/04/02 09:54:06  rustam
+ * Minor corrections
+ *
+ * Revision 1.1  2003/01/31 14:11:45  rustam
+ * New pre-release
+ *
+-->
+<messages>
+<localization lang="eng">
+  <msg id="m[1:1021]">Monographs</msg>
+  <msg id="s[1:1021]">Serials</msg>
+  <msg id="j[1:1034]">Text books</msg>
+  <msg id="g[1:1034]">Directories</msg>
+  <msg id="e[1:1034]">Dictionaries</msg>
+  <msg id="f[1:1034]">Encyclopaedia</msg>
+</localization>
+<localization lang="rus">
+  <msg id="m[1:1021]">Монографии</msg>
+  <msg id="s[1:1021]">Сериальные</msg>
+  <msg id="j[1:1034]">Учебники</msg>
+  <msg id="g[1:1034]">Справочники</msg>
+  <msg id="e[1:1034]">Словари</msg>
+  <msg id="f[1:1034]">Энциклопедии</msg>
+</localization>
+</messages>

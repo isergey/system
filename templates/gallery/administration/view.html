@@ -1,0 +1,39 @@
+{% extends "gallery/administration/gallery.html" %}
+{% block module_action %}просмотр альбома ({{ collection.title }}){% endblock %}
+{% block module_page %}
+    <div class="module_actions column prepend-1 last">
+    <a href="{% url administration_gallery_upload  collection.id %}" class="button positive"><img src="/media/images/icons/plus_16.png"/>Добавить изображение</a>
+    <a class="button negative delete" title="Удалить альбом" href="{% url administration_gallery_delete_collection collection.id%}"><img src="/media/images/icons/delete_16.png" alt=""/>Удалить альбом</a>
+
+    </div>
+    <div class="table_container column span-19 prepend-1 last">
+            <div class="table_title last">
+                Изображения
+            </div>
+            <table>
+                <tr>
+                    <th class="span-3">#</th>
+                    <th>Название</th>
+                    <th>Дата создания</th>
+                    <th>Действия</th>
+                </tr>
+                {% for image in images %}
+                <tr>
+                    <td>
+                        <a class="tumbs" href="{{ images_dir }}{{ image.file_name }}"><img src="{{ thumbinails_dir }}{{ image.file_name }}" alt=""></a>
+                    <td>{{ image.title }}</td>
+                    <td>{{ image.add_date_time|date:"d-M-Y H:i:s" }}</td>
+                    <td>
+                        <a title="Редактировать изображение" class="button" href="{% url administration_gallery_edit_image image.id %}">
+                            <img src="/media/images/icons/pencil_16.png" alt=""/>
+                        </a>
+                        <a class="button negative delete" title="Удалить изображение" href="{% url administration_gallery_delete_image image.id %}">
+                            <img src="/media/images/icons/delete_16.png" alt=""/>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+    </div>
+    <hr class="space"/>
+{% endblock %}

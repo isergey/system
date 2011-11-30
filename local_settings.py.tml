@@ -1,0 +1,89 @@
+# encoding: utf-8
+import os
+PROJECT_PATH = os.path.abspath(os.path.dirname(__file__)) + '/'
+
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+
+ADMINS = (
+    ('Admin', 'admin@example.com'),
+)
+MANAGERS = ADMINS
+
+
+MANAGERS = ADMINS
+DEFAULT_CHARSET = 'utf-8'
+DATABASES = {
+    'default': {
+        'ENGINE': 'mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'libcms',                             # Or path to database file if using sqlite3.
+        'USER': 'root',                         # Not used with sqlite3.
+        'PASSWORD': 'password',                       # Not used with sqlite3.
+        'HOST': '/var/run/mysqld/mysqld.sock',                        # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '3306',                             # Set to empty string for default. Not used with sqlite3.
+        'OPTIONS': {
+            'init_command': 'SET storage_engine=INNODB',
+            }
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+        'LOCATION': '127.0.0.1:11211',
+        }
+}
+
+
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash if there is a path component (optional in other cases).
+# Examples: "http://media.lawrence.com", "http://example.com/media/"
+
+MEDIA_ROOT = PROJECT_PATH + '../var/media/'
+STATIC_ROOT =  PROJECT_PATH + 'static_init/'
+
+STATICFILES_DIRS = (
+    PROJECT_PATH + 'static/',
+    MEDIA_ROOT,
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    )
+LOG_PATH =  PROJECT_PATH + '../var/log/'
+
+
+
+# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
+# trailing slash.
+# Examples: "http://foo.com/media/", "/media/".
+ADMIN_MEDIA_PREFIX = '/media/admin/'
+
+
+CACHE_BACKEND = 'file:///tmp/django_cache'
+EMAIL_HOST = 'stu.ruslan.ru'
+#EMAIL_BACKEND = "libportal.apps.mailer.backend.DbBackend"
+
+GALLERY = {
+    'images_dir': MEDIA_ROOT + 'gallery/',
+     # путь, через который будет доступна images_dir на веб сервере
+    'public_path': '/media/gallery/'
+}
+
+
+ORDERS = {
+    'db_catalog':  PROJECT_PATH + '../var/orders/',
+    'reserv_org_id': '19017901', # получатель заказа на пронирование (цбс маяковка)
+    'rdx_path': PROJECT_PATH + 'rdx',
+    'xsl_templates':{
+        'marc': PROJECT_PATH + 'xslt/marc.xsl',
+    }
+}
+
+FILEBROWSER = {
+    'upload_dir': MEDIA_ROOT+'/uploads',
+    'upload_dir_url': '/media/uploads',
+    }
+
+
+
+

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ library.name }}
+{% endblock %}
+{% block content %}
+    <style type="text/css">
+        div.infowindow {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+    </style>
+    <div class="text">
+        <h3><a href="{% url participants_districts %}">Районы</a> →
+            <a href="{% url participants_by_district library.district.id %}">{{ library.district.name }}</a> →
+            {{ library.name }}
+        </h3>
+        {% include 'participants/library_info.html' %}
+        <hr/>
+        <div id="map_canvas" style="width: 100%; height: 550px">
+
+        </div>
+    </div>
+    {% include 'participants/map_js.html' %}
+
+{% endblock %}
+
+

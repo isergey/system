@@ -1,0 +1,13 @@
+<div id="auth">
+    <div class="auth_form">
+        <div class="auth_title">Личный кабинет </div>
+
+        <a href="{% url accounts_logout %}">Выйти</a>
+        <hr style="margin:0 10px 0 10px;width:170px;"/>
+        <div class='personal_menu'>
+            <a href="{% url orders_index %}">Мои заказы</a><br/>
+            <a href="{% url events_favorits %}">Мероприятия</a>
+        </div>
+
+    </div>
+</div>

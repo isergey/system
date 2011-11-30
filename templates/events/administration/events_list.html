@@ -1,0 +1,67 @@
+{% extends "events/administration/events.html" %}
+{% block module_action %}список мероприятий{% endblock %}
+{% block module_page %}
+    <div class="module_actions column prepend-1 last">
+    <a href="{% url administration_events_create %}" class="button positive"><img src="/media/images/icons/plus_16.png"/>создать мероприятие</a>
+    </div>
+    <hr/>
+    <div class="table_container column span-19 prepend-1 last">
+        <div class="table_title last">
+            Список мероприятий
+        </div>
+        <table>
+            <tr>
+                <th>#</th>
+                <th class="span-9">Название</th>
+                <th>Дата начала</th>
+                <th>Действия</th>
+            </tr>
+            {% for event in events_list.object_list %}
+            <tr>
+                <td>{{ event.id }}</td>
+                <td>{{ event.title }}</td>
+                <td>{{ event.start_date|date:"d-M-Y H:i:s" }}</td>
+                <td>
+                    <a  title="Просмотр мероприятия"  class="button" href="{% url events_show event.id %}" target="_blank">
+                        <img src="/media/images/icons/search_16.png" alt=""/>
+                    </a>
+                    <a title="Редактировать мероприятие" class="button" href="{% url administration_events_edit event.id %}">
+                        <img src="/media/images/icons/pencil_16.png" alt=""/>
+                    </a>
+                    <a class="button negative delete" title="Удалить новость" href="{% url administration_events_delete event.id %}">
+                        <img src="/media/images/icons/delete_16.png" alt=""/>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% if events_list.paginator.num_pages > 1 %}
+    <div class="span-19 prepend-1 last">
+        <div class="block">
+            <div class="pagination">
+                <span class="step-links">
+                    {% if events_list.has_previous %}
+                        <a class="page" href="?page={{ events_list.previous_page_number }}">сюда</a>
+                    {% endif %}
+                    {% for page in events_list.paginator.page_range %}
+                        {% if page %}
+                            {% ifequal page events_list.number %}
+                                <span class="current page">{{ page }}</span>
+                            {% else %}
+                                <a href="?page={{ page }}" class="page">{{ page }}</a>
+                            {% endifequal %}
+                        {% else %}
+                            ...
+                        {% endif %}
+                    {% endfor %}
+                    {% if events_list.has_next %}
+                        <a class="page" href="?page={{ events_list.next_page_number }}">туда</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <hr class="space"/>
+{% endblock %}

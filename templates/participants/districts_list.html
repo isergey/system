@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}
+    Районы города
+{% endblock %}
+{% block content %}
+    <div class="text">
+    <h3>Районы</h3>
+    <ol>
+    {% for district in  districts %}
+        <li><a href="{% url participants_by_district district.code %}" >{{ district.title }}</a></li>
+    {% empty %}
+        Нет районов
+    {% endfor %}
+    </ol>
+    </div>
+{% endblock %}

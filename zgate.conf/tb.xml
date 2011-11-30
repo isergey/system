@@ -1,0 +1,189 @@
+<target>
+<explain>
+  <serverInfo>
+    <host>unilib.neva.ru</host>
+    <port>21022</port>
+    <database>z39.50s://ruslan.ru/books</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng">Fundamental Library of St.Petersburg State Polytechnical University</title>
+    <title lang="rus">Фундаментальная библиотека Санкт-Петербургского государственного политехнического университета</title>
+  </databaseInfo>
+  <indexInfo>
+    <index search="true" scan="true" sort="true">
+      <map primary="true">
+        <attr type="1">4</attr>
+        <attr type="4">1</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="true">
+      <map primary="true">
+        <attr type="1">12</attr>
+        <attr type="4">1</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="true">
+      <map primary="true">
+        <attr type="1">21</attr>
+        <attr type="4">1</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="true">
+      <map primary="true">
+        <attr type="1">31</attr>
+        <attr type="4">4</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="true">
+      <map primary="true">
+        <attr type="1">54</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="true">
+      <map primary="true">
+        <attr type="1">1003</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="true">
+      <map primary="true">
+        <attr type="1">1021</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="true">
+      <map primary="true">
+        <attr type="1">1034</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="true">
+      <map primary="true">
+        <attr type="1">1035</attr>
+      </map>
+    </index>
+  </indexInfo>
+  <recordInfo>
+    <recordSyntax name="RUSMARC" oid="1.2.840.10003.5.28">
+      <elementSet name="B"></elementSet>
+      <elementSet name="F"></elementSet>
+    </recordSyntax>
+    <recordSyntax name="OPAC" oid="1.2.840.10003.5.102">
+      <elementSet name="B"></elementSet>
+      <elementSet name="F"></elementSet>
+    </recordSyntax>
+  </recordInfo>
+  <configInfo>
+    <setting type="title" lang="eng">Regional University and Science Library Advanced Network for the North-West of Russia</setting>
+    <setting type="title" lang="rus">Корпоративная библиотечная система вузов Санкт-Петербурга</setting>
+    <supports type="option">duplicateDetection</supports>
+  </configInfo>
+</explain>
+<explain>
+  <serverInfo>
+    <host>localhost</host>
+    <port>2100</port>
+    <database>z39.50s://tricon.vvsu.ru/vsues</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng">Fundamental Library of St.Petersburg State Electrotechnical University</title>
+    <title lang="rus">Библиотека ВГУЭС</title>
+  </databaseInfo>
+</explain>
+<explain>
+  <serverInfo>
+    <host>olsc3.unilib.neva.ru</host>
+    <port>210</port>
+    <database>IR-Extend-1</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng">Fundamental Library of St.Petersburg State Polytechnical University - Orders</title>
+    <title lang="rus">Фундаментальная библиотека Санкт-Петербургского государственного политехнического университета - Заказы</title>
+  </databaseInfo>
+  <indexInfo>
+    <index search="true" >
+      <map primary="true">
+        <attr type="1" attributeSet="1.2.840.10003.3.3">1</attr>
+      </map>
+    </index>
+    <index search="true" >
+      <map primary="true">
+        <attr type="1" attributeSet="1.2.840.10003.3.3">2</attr>
+      </map>
+    </index>
+    <index search="true" >
+      <map primary="true">
+        <attr type="1" attributeSet="1.2.840.10003.3.3">3</attr>
+      </map>
+    </index>
+    <index search="true" >
+      <map primary="true">
+        <attr type="1" attributeSet="1.2.840.10003.3.3">4</attr>
+      </map>
+    </index>
+    <index search="true" >
+      <map primary="true">
+        <attr type="1" attributeSet="1.2.840.10003.3.3">5</attr>
+      </map>
+    </index>
+    <index search="true" >
+      <map primary="true">
+        <attr type="1" attributeSet="1.2.840.10003.3.3">6</attr>
+      </map>
+    </index>
+    <index search="true" >
+      <map primary="true">
+        <attr type="1" attributeSet="1.2.840.10003.3.3">7</attr>
+      </map>
+    </index>
+  </indexInfo>
+  <recordInfo>
+    <recordSyntax name="ESTaskPackage" oid="1.2.840.10003.5.106">
+      <elementSet name="B"></elementSet>
+      <elementSet name="F"></elementSet>
+    </recordSyntax>
+  </recordInfo>
+  <configInfo>
+    <setting type="title" lang="eng">Regional University and Science Library Advanced Network for the North-West of Russia - Orders</setting>
+    <setting type="title" lang="rus">Корпоративная библиотечная система вузов Санкт-Петербурга - Заказы</setting>
+    <setting type="query.expansion">false</setting>
+    <supports type="option">persistentResultSet</supports>
+    <supports type="option">persistentQuery</supports>
+    <supports type="option">periodicQuerySchedule</supports>
+    <supports type="option">itemOrder</supports>
+    <supports type="option">update</supports>
+  </configInfo>
+</explain>
+<!--
+<explain>
+  <serverInfo>
+    <host>ruslan.ru</host>
+    <port>210</port>
+    <database>circ</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng">Borrowed Documents</title>
+    <title lang="rus">Документы на руках</title>
+  </databaseInfo>
+  <indexInfo>
+    <index search="true" >
+      <map primary="true">
+        <attr type="1">100</attr>
+      </map>
+    </index>
+  </indexInfo>
+  <recordInfo>
+    <recordSyntax name="OPAC" oid="1.2.840.10003.5.102">
+      <elementSet name="B"></elementSet>
+      <elementSet name="F"></elementSet>
+    </recordSyntax>
+    <recordSyntax name="RUSMarc" oid="1.2.840.10003.5.28">
+      <elementSet name="B"></elementSet>
+      <elementSet name="F"></elementSet>
+    </recordSyntax>
+  </recordInfo>
+  <configInfo>
+    <setting type="title" lang="eng">Fundamental Library of St.Petersburg State Polytechnical University</setting>
+    <setting type="title" lang="rus">Фундаментальная библиотека Санкт-Петербургского государственного политехнического университета</setting>
+    <setting type="query.expansion">false</setting>
+  </configInfo>
+</explain>
+-->
+</target>

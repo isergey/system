@@ -1,0 +1,38 @@
+{% extends "polls/administration/polls.html" %}
+{% block module_action %} {{ poll.question }} {% endblock %}
+{% block module_page %}
+    <div class="module_actions column prepend-1 last">
+    <a href="{% url administration_polls_create_choice poll.id %}" class="button positive"><img src="/media/images/icons/plus_16.png"/>Добавить вариант ответа</a>
+    <a href="{% url administration_polls_edit poll.id %}" class="button positive"><img src="/media/images/icons/pencil_16.png"/>Изменить вопрос</a>
+
+    </div>
+    <div class="table_container column span-19 prepend-1 last">
+            <div class="table_title last">
+                Варианты ответов
+            </div>
+            <table>
+                <tr>
+                    <th class="span-9">Вариант ответа</th>
+                    <th>Количество голосов</th>
+                    <th>Сортировка</th>
+                    <th>Действия</th>
+                </tr>
+                {% for choice in choices %}
+                <tr>
+                    <td>{{ choice.choice }}</td>
+                    <td>{{ choice.votes }}</td>
+                    <td>{{ choice.sort }}</td>
+                    <td>
+                        <a title="Редактировать вариант" class="button" href="{% url administration_polls_edit_choice choice.id %}">
+                            <img src="/media/images/icons/pencil_16.png" alt=""/>
+                        </a>
+                        <a class="button negative delete" title="Удалить вариант" href="{% url administration_polls_delete_choice choice.id %}">
+                            <img src="/media/images/icons/delete_16.png" alt=""/>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+    </div>
+    <hr class="space"/>
+{% endblock %}

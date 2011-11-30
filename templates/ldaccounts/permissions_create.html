@@ -1,0 +1,14 @@
+{% extends "ldaccounts/ldaccounts_base.html" %}
+{% block section_title %}Создание права доступа{% endblock %}
+{% block section_menu %}Меню{% endblock %}
+
+{% block content %}
+
+
+    <p> Creating permission for {{ app_label }} </p>
+    <form action='.' method='post'>
+        {{ form.as_p }}
+        {% csrf_token %}
+        <input type="submit" value="Create"/>
+    </form>
+{% endblock %}

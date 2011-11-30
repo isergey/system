@@ -1,0 +1,81 @@
+{% extends "filebrowser/administration/filebrowser.html" %}
+{% block module_action %} {% endblock %}
+{% block module_page %}
+
+    <div class="table_container column span-19 prepend-1 last">
+        <div style="font-size:16px; text-decoration:NONE">
+            {% for breadcrumb in breadcrumbs %}
+                {% if forloop.last %}
+                    <b>{{ breadcrumb.title }}</b>
+                {% else %}
+                    <a style="text-decoration:none" href="?path={{ breadcrumb.url }}">{{ breadcrumb.title }}</a> →
+                {% endif %}
+            {% endfor %}
+        </div>
+        <hr/>
+        <div>
+            {#            <a href="{% url administration_gallery_create %}" class="button positive"><img#}
+            {#                    src="/media/images/icons/plus_16.png"/>Загрузить файл</a>#}
+
+            <form action="{% url administration_filebrowser_upload %}" method="post" enctype="multipart/form-data">
+                <div class="last">
+                    {#                <label for="{{ upload_form.file.auto_id }}">{{ upload_form.file.label }}#}
+                    {#                    {% if upload_form.file.field.required %} * {% endif %}#}
+                    {#                </label><br>#}
+                    {{ upload_form.file }}
+                    {% if upload_form.file.errors %}
+                        <div class="error">
+                            {{ upload_form.file.errors }}
+                        </div>
+                    {% endif %}
+                    {{ upload_form.path }}
+                    <input type="submit" value="Загрузить"/>
+                </div>
+
+            </form>
+        </div>
+        <hr/>
+        <div class="table_title last">
+            Список файлов
+        </div>
+        <table>
+            <tr>
+                <th>Название</th>
+                <th>Тип</th>
+                <th>Дата создания</th>
+                <th>Размер</th>
+                <th>Действия</th>
+            </tr>
+            {% for dir_item in dir_map %}
+                <tr>
+                    <td>
+                        {% if dir_item.type == 'file' %}
+                            <a href="{{ dir_item.url|urlencode }}">{{ dir_item.name }}</a>
+                        {% else %}
+                            <a href="?path={{ dir_item.url|urlencode }}"><b>{{ dir_item.name }}</b></a>
+                        {% endif %}
+                    </td>
+                    <td>{{ dir_item.mtype }}</td>
+                    <td>{{ dir_item.create_time|date:"d-M-Y H:i:s" }}</td>
+                    <td>{{ dir_item.size.bytes }} ( {{ dir_item.size.title }})</td>
+                    <td>
+                        <a title="Переименовать" class="button" href="#">
+                            <img src="/media/images/icons/pencil_16.png" alt=""/>
+                        </a>
+                        {% if dir_item.type == 'file' %}
+                            <a class="button negative delete" title="Удалить" href="{% url administration_filebrowser_delete %}?path={{ dir_item.work_url|urlencode }}">
+                                <img src="/media/images/icons/delete_16.png" alt="Удалить файл"/>
+                            </a>
+                        {% else %}
+                            <a class="button negative delete" title="Удалить" href="{% url administration_filebrowser_delete %}?path={{ dir_item.url|urlencode }}">
+                                <img src="/media/images/icons/delete_16.png" alt="Удалить каталог"/>
+                            </a>
+                        {% endif %}
+
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <hr class="space"/>
+{% endblock %}

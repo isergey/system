@@ -1,0 +1,119 @@
+<target>
+<explain>
+ <serverInfo>
+    <host>212.193.5.224</host>
+    <port>2100</port>
+    <database>z39.50s://212.193.5.224:1219/ECAT</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng">Moskovsky CLS</title>
+    <title lang="rus">ЦБС Московского района</title>
+  </databaseInfo>
+  <indexInfo>
+    <index search="true" scan="false" sort="false">
+      <map primary="true">
+        <attr type="1">1</attr>
+      </map>
+    </index>
+    <index search="true" scan="false" sort="false">
+      <map primary="true">
+        <attr type="1">2</attr>
+      </map>
+    </index>
+    <index search="true" scan="false" sort="false">
+      <map primary="true">
+        <attr type="1">4</attr>
+        <attr type="4">1</attr>
+      </map>
+    </index>
+    <index search="true" scan="false" sort="false">
+      <map primary="true">
+        <attr type="1">5</attr>
+        <attr type="4">1</attr>
+      </map>
+    </index>
+    <index search="true" scan="false" sort="false">
+      <map primary="true">
+        <attr type="1">7</attr>
+        <attr type="4">2</attr>
+      </map>
+    </index>
+    <index search="true" scan="false" sort="false">
+      <map primary="true">
+        <attr type="1">8</attr>
+        <attr type="4">2</attr>
+      </map>
+    </index>
+    <index search="true" scan="false" sort="false">
+      <map primary="true">
+        <attr type="1">31</attr>
+        <attr type="4">4</attr>
+      </map>
+    </index>
+    <index search="true" scan="false" sort="false">
+      <map primary="true">
+        <attr type="1">54</attr>
+        <attr type="4">2</attr>
+      </map>
+    </index>
+    <index search="true" scan="false" sort="false">
+      <map primary="true">
+        <attr type="1">59</attr>
+        <attr type="4">1</attr>
+      </map>
+    </index>
+    <index search="true" scan="false" sort="false">
+      <map primary="true">
+        <attr type="1">1003</attr>
+      </map>
+    </index>
+    <index search="true" scan="false" sort="false">
+      <map primary="true">
+        <attr type="1">1018</attr>
+        <attr type="4">1</attr>
+      </map>
+    </index>
+    <index search="true" scan="false" sort="false">
+      <map primary="true">
+        <attr type="1">1044</attr>
+        <attr type="4">2</attr>
+      </map>
+    </index>
+    <index search="true" scan="false" sort="false">
+      <map primary="true">
+        <attr type="1">1053</attr>
+        <attr type="4">2</attr>
+      </map>
+    </index>
+    <index search="true" scan="false" sort="false">
+      <map primary="true">
+        <attr type="1">1080</attr>
+        <attr type="4">1</attr>
+      </map>
+    </index>
+  </indexInfo>
+  <recordInfo>
+    <recordSyntax name="RUSMarc" oid="1.2.840.10003.5.28">
+      <elementSet name="B"></elementSet>
+      <elementSet name="F"></elementSet>
+    </recordSyntax>
+  </recordInfo>
+  <configInfo>
+    <setting type="title" lang="eng"></setting>
+    <setting type="title" lang="rus"></setting>
+  </configInfo>
+</explain>
+<!--
+<explain>
+  <serverInfo>
+    <host>212.193.5.224</host>
+    <port>2100</port>
+    <database>z39.50s://212.193.5.224:1211/CBSV</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng">Vasileostrovsky CLS</title>
+    <title lang="rus">ЦБС Василеостровского района</title>
+  </databaseInfo>
+</explain>
+-->
+</target>

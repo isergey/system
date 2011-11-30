@@ -1,0 +1,11 @@
+<div>
+    <h4>{{ library.name }}</h4>
+    <b>Адрес: </b> {{ library.postal_address|default_if_none:"не указан" }} </br>
+    <b>Тел.: </b> {{ library.phone }} </br>
+    {% if library.http_service %}
+        <b>Сайт: </b>  <a href="{{ library.http_service }}">перейти на сайт</a> </br>
+    {% else %}
+        <b>Сайт: </b>не указан</br>
+    {% endif %}
+    <b>Расписание работы:</b> {{ library.plans|default_if_none:"не указано" }}
+</div>

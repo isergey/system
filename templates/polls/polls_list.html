@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}
+    Опросы
+{% endblock %}
+{% block content %}
+<div class="text">
+<h3 class="">Опросы</h3>
+<div class="news">
+{% for poll in polls_list.object_list %}
+    <div class="item">
+        {% if poll.is_active %}
+            {% url polls_vote poll.id as detail_url %}
+        {% else %}
+            {% url polls_results  poll.id as detail_url %}
+        {% endif %}
+        <div class="title">
+             <h4><span class="date">{{ poll.start_poll_date|date:"d M Y"}}.</span><a href="{{ detail_url }}">{{ poll.question }}</a>
+                 {% if poll.is_active %}<sup><span style="color:green;">Активен</span></sup>{% else %}<sup><span style="color:#026DA5;">Завершен</span></sup>{% endif %}</h4>
+        </div>
+        <div class="detail">
+            {% if poll.is_active %}
+                <span class="show"><a href="{{ detail_url }}">Подробнее</a></span>
+            {% else %}
+                {% if poll.show_results_after_end_poll %}
+                    <span class="show"><a href="{{ detail_url }}">Результаты</a></span>
+                {% else %}
+                    <span class="show">Результаты не доступны</span>
+                {% endif %}
+            {% endif %}
+
+        </div>
+        {% if not forloop.last %}<hr/>{% endif %}
+    </div>
+{% empty %}
+    Нет опросов.
+{% endfor %}
+</div>
+    {% if polls_list.paginator.num_pages > 1 %}
+        <hr class="space"/>
+        <hr/>
+            <div class="block">
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if polls_list.has_previous %}
+                            <a class="page" href="?page={{ polls_list.previous_page_number }}">Предыдущая</a>
+                        {% endif %}
+                        {% for page in polls_list.paginator.page_range %}
+                            {% if page %}
+                                {% ifequal page polls_list.number %}
+                                    <span class="current page">{{ page }}</span>
+                                {% else %}
+                                    <a href="?page={{ page }}" class="page">{{ page }}</a>
+                                {% endifequal %}
+                            {% else %}
+                                ...
+                            {% endif %}
+                        {% endfor %}
+                        {% if polls_list.has_next %}
+                            <a class="page" href="?page={{ polls_list.next_page_number }}">Следующая страница</a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+    {% endif %}
+</div>
+{% endblock %}

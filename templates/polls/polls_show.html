@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ poll.question }}
+{% endblock %}
+{% block content %}
+    <style type="text/css">
+        .polls .content {
+            font-size: 14px;
+        }
+        .polls .content p{
+            padding-bottom: 10px;
+        }
+        .polls .content p + p {
+            text-indent: 0;
+        }
+        .polls .content ul {
+            list-style: none;
+            padding:0;
+        }
+        .polls .content ol a, .page .content li a, .page .content ul a{
+            font-size: 14px;
+        }
+    </style>
+    <h3><a href="{% url polls_index %}">Опросы </a>→ {{ poll.question }}</h3>
+    <div class="polls">
+        <div class="content">
+        <form action="" method="POST">
+            <ul>
+                {% if poll.poll_type == 'radio' %}
+                    {% for choice in choices %}
+                            <li><input type="radio" name="answer" value="{{ choice.id }}"/> {{ choice.choice }} </li>
+                    {% empty %}
+                        Нет вариантов ответа.
+                    {% endfor %}
+                {% endif %}
+                {% if poll.poll_type == 'checkboxes' %}
+                    {% for choice in choices %}
+
+                            <li><input type="checkbox" name="answer" value="{{ choice.id }}"/> {{ choice.choice }} </li>
+                    {% empty %}
+                        Нет вариантов ответа.
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        <button name="send" value="send" type="submit">Ответить</button>
+        </form>
+        </div>
+    </div>
+
+{% endblock %}

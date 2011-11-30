@@ -1,0 +1,15 @@
+{% extends "administration_base.html" %}
+{% block module_content %}
+    <h2 class="alt module_title prepend-1"><a href="{% url administration_zgate_index %}">Меню:</a>
+        <span class="alt module_action">{% block module_action %}{% endblock %} </span></h2>
+    <div class="module_content column last">
+        {% block module_page %}{% endblock %}
+    </div>
+    <hr class="space"/>
+
+    <script type="text/javascript">
+        $("a.delete").click(function() {
+            if (!confirm('Вы уверены что хотите удалить?')) return false;
+        });
+    </script>
+{% endblock %}

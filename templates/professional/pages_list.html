@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}
+    Страницы
+{% endblock %}
+{% block content %}
+<h3>Статические страницы</h3>
+<div class="pageslist">
+{% for page in pages_list %}
+    <div class="page">
+        <div class="title">
+            <a href="{% url page_show page.id %}">{{ page.title }}</a>
+            id страницы {{ page.id  }}
+        </div>
+    </div>
+{% empty %}
+    Нет ни одной страницы.
+{% endfor %}
+</div>
+
+{% endblock %}

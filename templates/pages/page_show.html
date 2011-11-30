@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ page.title }}
+{% endblock %}
+{% block content %}
+    <style type="text/css">
+        .page .content {
+            font-size: 14px;
+        }
+        .page .content p{
+            padding-bottom: 1em;
+        }
+        .page .content p + p {
+            text-indent: 0;
+        }
+        .page .content ul, .page .content ol {
+            font-size: 14px;
+            margin: 0 1.5em 0 0;
+            padding-left: 1.5em;
+        }
+        .page .content ol a, .page .content li a, .page .content ul a{
+            font-size: 14px;
+        }
+    </style>
+    <h3>{{ page.title }}</h3>
+    <div class="page">
+        <div class="content">
+            {{ page.content|safe }}
+        </div>
+    </div>
+    {% load ldaccounts_tags %}
+    {% if user|in_groups:'admin' %}
+    <hr/>
+        <div><a href="{% url administration_pages_edit page.id %}">Редактировать страницу</a> </div>
+    {% endif %}
+{% endblock %}

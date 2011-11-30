@@ -1,0 +1,48 @@
+{% extends "polls/administration/polls.html" %}
+{% block module_action %}<a href="{% url administration_polls_view choice.poll.id %}">{{ choice.poll.question }}</a>{% endblock %}
+{% block module_page %}
+<div class="module_actions column prepend-1 last">
+    <a class="button negative delete" title="Удалить вариант ответа" href="{% url administration_polls_delete_choice choice.id%}"><img src="/media/images/icons/delete_16.png" alt=""/>Удалить вариант ответа</a>
+</div>
+<hr/>
+<div class="column span-19 prepend-1 last">
+
+    <form id="dummy" action="" method="post">
+        <fieldset>
+            <div class="last">
+                <label for="{{ form.choice.auto_id }}">{{ form.choice.label }}</label><br>
+                <input type="text" class="text span-18" name="{{ form.choice.name }}" id="{{ form.choice.auto_id }}" {% if form.choice.data %}value="{{ form.choice.data }}" {% endif %}>
+                {% if form.choice.errors %}
+                <div class="error">
+                    {{ form.choice.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <label for="{{ form.sort.auto_id }}">{{ form.sort.label }}</label><br>
+                {{ form.sort }}
+                {% if form.sort.errors %}
+                <div class="error">
+                    {{ form.sort.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <label for="{{ form.votes.auto_id }}">{{ form.votes.label }}</label><br>
+                {{ form.votes }}
+                {% if form.votes.errors %}
+                <div class="error">
+                    {{ form.votes.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <button type="submit" class="button positive" title="Редактировать вариант ответа">
+                    <img src="/media/images/icons/tick_16.png" alt=""/> Редактировать вариант ответа
+                </button>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<hr class="space"/>
+{% endblock %}

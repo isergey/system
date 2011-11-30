@@ -1,0 +1,118 @@
+<target>
+<explain>
+  <serverInfo>
+    <host>212.193.5.224</host>
+    <port>210</port>
+    <database>JOURN</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng"></title>
+    <title lang="rus"></title>
+  </databaseInfo>
+  <indexInfo>
+    <index search="true" scan="true" sort="false">
+      <map primary="true">
+        <attr type="1">4</attr>
+        <attr type="4">1</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="false">
+      <map primary="true">
+        <attr type="1">5</attr>
+        <attr type="4">1</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="false">
+      <map primary="true">
+        <attr type="1">31</attr>
+        <attr type="4">1</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="false">
+      <map primary="true">
+        <attr type="1">59</attr>
+        <attr type="4">1</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="false">
+      <map primary="true">
+        <attr type="1">1018</attr>
+        <attr type="4">1</attr>
+      </map>
+    </index>
+    <index search="true" scan="true" sort="false">
+      <map primary="true">
+        <attr type="1">1080</attr>
+        <attr type="4">2</attr>
+      </map>
+    </index>
+  </indexInfo>
+  <recordInfo>
+    <recordSyntax name="RUSMarc" oid="1.2.840.10003.5.28">
+      <elementSet name="B"></elementSet>
+      <elementSet name="F"></elementSet>
+    </recordSyntax>
+  </recordInfo>
+  <configInfo>
+    <setting type="title" lang="eng"></setting>
+    <setting type="title" lang="rus"></setting>
+  </configInfo>
+</explain>
+<explain>
+  <serverInfo>
+    <host>ruslan.ru</host>
+    <port>210</port>
+    <database>IR-Extend-1</database>
+  </serverInfo>
+  <databaseInfo>
+    <title primary="true" lang="eng">Orders</title>
+    <title lang="rus">Заказы</title>
+  </databaseInfo>
+  <indexInfo>
+    <index search="true" >
+      <map primary="true">
+        <attr type="1" attributeSet="1.2.840.10003.3.3">1</attr>
+      </map>
+    </index>
+    <index search="true" >
+      <map primary="true">
+        <attr type="1" attributeSet="1.2.840.10003.3.3">2</attr>
+      </map>
+    </index>
+    <index search="true" >
+      <map primary="true">
+        <attr type="1" attributeSet="1.2.840.10003.3.3">3</attr>
+      </map>
+    </index>
+    <index search="true" >
+      <map primary="true">
+        <attr type="1" attributeSet="1.2.840.10003.3.3">4</attr>
+      </map>
+    </index>
+    <index search="true" >
+      <map primary="true">
+        <attr type="1" attributeSet="1.2.840.10003.3.3">5</attr>
+      </map>
+    </index>
+    <index search="true" >
+      <map primary="true">
+        <attr type="1" attributeSet="1.2.840.10003.3.3">6</attr>
+      </map>
+    </index>
+    <index search="true" >
+      <map primary="true">
+        <attr type="1" attributeSet="1.2.840.10003.3.3">7</attr>
+      </map>
+    </index>
+  </indexInfo>
+  <recordInfo>
+    <recordSyntax name="ESTaskPackage" oid="1.2.840.10003.5.106">
+      <elementSet name="B"></elementSet>
+      <elementSet name="F"></elementSet>
+    </recordSyntax>
+  </recordInfo>
+  <configInfo>
+    <supports type="option">persistentQuery</supports>
+  </configInfo>
+</explain>
+</target>

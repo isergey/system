@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}
+    Библиотеки
+{% endblock %}
+{% block content %}
+    <style type="text/css">
+        ul.participants li {
+            padding-bottom:10px;
+        }
+    </style>
+    <div class="text">
+        <h3>Библиотеки</h3>
+        <ul class="participants">
+            {% for org in  orgs %}
+                <li><a href="{% url participants_cbs_detail org.code %}">{{ org.name }}<br/></a>
+                    Сайт: {% if org.http_service  %}<a href="{{ org.http_service }}" target="_blank"> {{ org.http_service }}</a>
+                          {% else %} не указан {% endif %}
+                </li>
+            {% empty %}
+                Нет организаций
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

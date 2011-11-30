@@ -1,0 +1,44 @@
+{% extends "polls/administration/polls.html" %}
+{% block module_action %}создание варианта ответа ({{ poll.question }}){% endblock %}
+{% block module_page %}
+<div class="column span-19 prepend-1 last">
+    <form id="dummy" action="" method="post">
+        <fieldset>
+            <div class="last">
+                <label for="{{ form.choice.auto_id }}">{{ form.choice.label }}</label><br>
+                <input type="text" class="text span-18" name="{{ form.choice.name }}" id="{{ form.choice.auto_id }}" {% if form.choice.data %}value="{{ form.choice.data }}" {% endif %}>
+                {% if form.choice.errors %}
+                <div class="error">
+                    {{ form.choice.errors }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="last">
+                <label for="{{ form.sort.auto_id }}">{{ form.sort.label }}</label><br>
+                {{ form.sort }}
+                {% if form.sort.errors %}
+                <div class="error">
+                    {{ form.sort.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <label for="{{ form.votes.auto_id }}">{{ form.votes.label }}</label><br>
+                {{ form.votes }}
+                {% if form.votes.errors %}
+                <div class="error">
+                    {{ form.votes.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <button type="submit" class="button positive" title="Добавить вариант ответа">
+                    <img src="/media/images/icons/tick_16.png" alt=""/> Добавить вариант ответа
+                </button>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<hr class="space"/>
+{% endblock %}

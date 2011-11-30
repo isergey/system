@@ -1,0 +1,70 @@
+{% extends "gallery/administration/gallery.html" %}
+{% block module_action %}список альбомов{% endblock %}
+{% block module_page %}
+    <div class="module_actions column prepend-1 last">
+    <a href="{% url administration_gallery_create %}" class="button positive"><img src="/media/images/icons/plus_16.png"/>создать альбом</a>
+    </div>
+    <hr/>
+    <div class="table_container column span-19 prepend-1 last">
+        <div class="table_title last">
+            Список альбомов
+        </div>
+        <table>
+            <tr>
+                <th>#</th>
+                <th class="span-9">альбом</th>
+                <th>Дата создания</th>
+                <th>Действия</th>
+            </tr>
+            {% for collection in collections_list.object_list %}
+            <tr>
+                <td>{{ collection.id }}</td>
+                <td>{{ collection.title }}</td>
+                <td>{{ collection.add_date_time|date:"d-M-Y H:i:s" }}</td>
+                <td>
+                    <a  title="Просмотр альбома"  class="button" href="{% url administration_gallery_view collection.id %}">
+                        <img src="/media/images/icons/view.png" alt=""/>
+                    </a>
+                    <a  title="Просмотр альбома на сайте"  class="button" href="#" target="_blank">
+                        <img src="/media/images/icons/search_16.png" alt=""/>
+                    </a>
+                    <a title="Редактировать альбом" class="button" href="{% url administration_gallery_edit_collection collection.id %}">
+                        <img src="/media/images/icons/pencil_16.png" alt=""/>
+                    </a>
+                    <a class="button negative delete" title="Удалить альбом" href="{% url administration_gallery_delete_collection collection.id %}">
+                        <img src="/media/images/icons/delete_16.png" alt=""/>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% if collections_list.paginator.num_pages > 1 %}
+    <div class="span-19 prepend-1 last">
+        <div class="block">
+            <div class="pagination">
+                <span class="step-links">
+                    {% if collections_list.has_previous %}
+                        <a class="page" href="?page={{ collections_list.previous_page_number }}">сюда</a>
+                    {% endif %}
+                    {% for page in collections_list.paginator.page_range %}
+                        {% if page %}
+                            {% ifequal page collections_list.number %}
+                                <span class="current page">{{ page }}</span>
+                            {% else %}
+                                <a href="?page={{ page }}" class="page">{{ page }}</a>
+                            {% endifequal %}
+                        {% else %}
+                            ...
+                        {% endif %}
+                    {% endfor %}
+                    {% if collections_list.has_next %}
+                        <a class="page" href="?page={{ collections_list.next_page_number }}">туда</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <hr class="space"/>
+{% endblock %}

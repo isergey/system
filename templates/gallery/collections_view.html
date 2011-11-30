@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block java_script %}
+    <script type="text/javascript" src="/media/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/media/js/jquery.ad-gallery.js"></script>
+{% endblock %}
+{% block content %}
+    <style>
+        .mins img {
+            box-shadow: 0 0 5px black; /* Параметры тени */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Параметры тени */
+            -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Для Firefox */
+            -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Для Safari и Chrome */
+            padding: 3px;
+            margin:0 12px 10px 0;
+        }
+    </style>
+
+    <h3><a href="{% url gallery_index %}">Галерея </a>→ {{ collection.title }}</h3>
+    <div class="text">
+
+        <div class="teaser">
+            {{ collection.description|safe }}
+        </div>
+        <div align="right"><span >{{ news.pub_date|date:"d M Y"}}</span></div>
+    </div>
+    <hr class="space"/>
+    <div class="ad-gallery">
+        <div class="ad-image-wrapper">
+        </div>
+        <div class="ad-controls">
+        </div>
+        <div class="ad-nav">
+            <div class="ad-thumbs">
+                <ul class="ad-thumb-list">
+                    {% for image in images %}
+                        <li>
+                            <a href="{{ images_dir }}{{ image.file_name }}">
+                                <img src="{{ thumbinails_dir }}{{ image.file_name }}" title="{{ image.title }}"
+                                     alt="{{ image.comments }}">
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <hr class="space"/>
+    <hr/>
+    <hr class="space"/>
+    <hr class="space"/>
+    <div id="mins" align="justify" style="display: block; float:left; padding:0;">
+        {% for image in images %}
+                <a rel="gallery_group" class="mins" href="{{ images_dir }}{{ image.file_name }}">
+                    <img src="{{ thumbinails_dir }}{{ image.file_name }}" alt="{{ image.title }}"/>
+                </a>
+            
+        {% endfor %}
+    </div>
+
+    <script type="text/javascript">
+        $(function() {
+
+            var galleries = $('.ad-gallery').adGallery();
+            $('#switch-effect').change(
+                    function() {
+                        galleries[0].settings.effect = $(this).val();
+                        return false;
+                    }
+            );
+            $('#toggle-slideshow').click(
+                    function() {
+                        galleries[0].slideshow.toggle();
+                        return false;
+                    }
+            );
+            $('#toggle-description').click(
+                    function() {
+                        if (!galleries[0].settings.description_wrapper) {
+                            galleries[0].settings.description_wrapper = $('#descriptions');
+                        } else {
+                            galleries[0].settings.description_wrapper = false;
+                        }
+                        return false;
+                    }
+            );
+        });
+        $("a.mins").fancybox({
+                    'overlayColor'        : '#000',
+                    'overlayOpacity'    : 0.9
+                });
+    </script>
+
+{% endblock %}
+
+

@@ -1,0 +1,33 @@
+{% extends "professional/administration/professional.html" %}
+{% block module_action %}редактирование проф. страницы{% endblock %}
+{% block module_page %}
+<div class="module_actions column prepend-1 last">
+
+</div>
+<hr/>
+<div class="column span-19 prepend-1 last">
+    <form id="dummy" action="" method="post">
+        <fieldset>
+            <div class="last">
+                <label for="{{ form.content.auto_id }}">{{ form.content.label }}</label><br>
+                {{ form.content }}
+                {% if form.content.errors %}
+                <div class="error">
+                    {{ form.content.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <button type="submit" class="button positive" title="Применить изменения на странице">
+                    <img src="/media/css/bp/buttons/icons/tick.png" alt=""/> Применить
+                </button>
+                <a class="button negative" title="Отменить редактирование страницы" href="{% url administration_professional_index %}">
+                    <img src="/media/images/icons/stop_16.png" alt=""/>Отменить
+                </a>
+
+            </div>
+        </fieldset>
+    </form>
+</div>
+<hr class="space"/>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}
+    Календарь мероприятий
+{% endblock %}
+{% block content %}
+
+<div class="event_calendar">
+<table cellspacing="0">
+    <thead>
+	    <tr>
+		    <th>Пн</th><th>Вт</th><th>Ср</th>
+			<th>Чт</th><th>Пт</th><th>Сб</th>
+			<th>ВС</th>
+		</tr>
+	</thead>
+    <tbody>
+
+{% for week in calendar %}
+    <tr>
+    {% for day in week %}
+        {% if day.day != 0 %}
+            {% if day.today %}
+        <td class="today">
+            {% endif %}
+            {% if day.events %}
+        <td class="date_has_event">
+            {% endif %}
+            {% if not day.today and not day.events %}
+        <td>
+            {% endif %}
+            {{ day.day }}
+            {% if  day.events %}
+        <div class="events">
+            <ul>
+                    {% for event in day.events %}
+    	        <li>
+                    <span class="title"><a href="#" >{{ event.title }}</a></span>
+                    <span class="desc">{{ event.desc }}</span>
+                </li>
+                    {% endfor %}
+            </ul>
+        </div>
+            {% endif %}
+        {% else %}
+        <td class="padding">
+        {% endif %}
+        </td>
+        {% if day.today %}
+        {% endif %}
+    {% endfor %}
+    </tr>
+{% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

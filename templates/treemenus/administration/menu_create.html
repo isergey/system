@@ -1,0 +1,38 @@
+{% extends "treemenus/administration/menus.html" %}
+{% block module_action %}создание меню{% endblock %}
+{% block module_page %}
+<div class="column span-19 prepend-1 last">
+    <form id="dummy" action="" method="post">
+        <fieldset>
+            <div class="last">
+                <label for="{{ form.name.auto_id }}">{{ form.name.label }}</label><br>
+                {{ form.name }}
+                {% if form.name.errors %}
+                <div class="error">
+                    {{ form.name.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <label for="{{ form.root_item.auto_id }}">{{ form.root_item.label }}</label><br>
+                 {{ form.root_item }}
+                {% if form.root_item.errors %}
+                <div class="error">
+                    {{ form.root_item.errors }}
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="last">
+                <button type="submit" class="button positive" title="Создать меню">
+                    <img src="/media/images/icons/tick_16.png" alt=""/> Создать
+                </button>
+                <a class="button negative" title="Отменить создание меню" href="{% url administration_menus_index %}">
+                    <img src="/media/images/icons/stop_16.png" alt=""/>Отменить
+                </a>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<hr class="space"/>
+{% endblock %}

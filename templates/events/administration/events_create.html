@@ -1,0 +1,91 @@
+{% extends "events/administration/events.html" %}
+{% block module_action %}создание мероприятия{% endblock %}
+{% block module_page %}
+<div class="column span-19 prepend-1 last">
+    <form id="dummy" action="" method="post">
+        <fieldset>
+            <div class="last">
+                <label for="{{ form.start_date.auto_id }}">{{ form.start_date.label }}</label><br>
+                {{ form.start_date }}
+                {% if form.start_date.errors %}
+                <div class="error">
+                    {{ form.start_date.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <label for="{{ form.end_date.auto_id }}">{{ form.end_date.label }}</label><br>
+                 {{ form.end_date }}
+                {% if form.end_date.errors %}
+                <div class="error">
+                    {{ form.end_date.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <label for="{{ form.title.auto_id }}">{{ form.title.label }}</label><br>
+                <input type="text" class="text span-18" name="{{ form.title.name }}" id="{{ form.title.auto_id }}" {% if form.title.data %}value="{{ form.title.data }}" {% endif %}>
+                {% if form.title.errors %}
+                <div class="error">
+                    {{ form.title.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <label for="{{ form.teaser.auto_id }}">{{ form.teaser.label }}</label><br>
+                <input type="text" class="text span-18" name="{{ form.teaser.name }}" id="{{ form.teaser.auto_id }}" {% if form.teaser.data %}value="{{ form.teaser.data }}" {% endif %}>
+                {% if form.teaser.errors %}
+                <div class="error">
+                    {{ form.teaser.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <label for="{{ form.address.auto_id }}">{{ form.address.label }}</label><br>
+                <input type="text" class="text span-18" name="{{ form.address.name }}" id="{{ form.address.auto_id }}" {% if form.address.data %} value="{{ form.address.data }}"{% endif %}>
+                {% if form.address.errors %}
+                <div class="error">
+                    {{ form.address.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <label for="{{ form.active.auto_id }}">{{ form.active.label }}</label><br>
+                {{ form.active }}
+                {% if form.active.errors %}
+                <div class="error">
+                    {{ form.active.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <label for="{{ form.auto_delete.auto_id }}">{{ form.auto_delete.label }}</label><br>
+                {{ form.auto_delete }}
+                {% if form.auto_delete.errors %}
+                <div class="error">
+                    {{ form.auto_delete.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <label for="{{ form.description.auto_id }}">{{ form.description.label }}</label>
+                <textarea name="{{ form.description.name }}" id="{{ form.description.auto_id }}" class="span-18">{% if form.description.data %}{{ form.description.data }}{% endif %}</textarea>
+                {% if form.description.errors %}
+                <div class="error">
+                    {{ form.description.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <button type="submit" class="button positive" title="Создать мероприятие">
+                    <img src="/media/images/icons/tick_16.png" alt=""/> Создать
+                </button>
+                <a class="button negative" title="Отменить создание мероприятия" href="{% url administration_events_index %}">
+                    <img src="/media/images/icons/stop_16.png" alt=""/>Отменить
+                </a>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<hr class="space"/>
+{% endblock %}

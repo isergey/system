@@ -1,0 +1,46 @@
+<div class="right_module span-5">
+    <div class="head orange">
+        <h3 class="title">Опрос</h3>
+    </div>
+    <div class="midl orange">
+        <div id="form_results" class="content news">
+            {% if poll %}
+                <div style="text-align:center;padding:5px 0 5px 0;">{{ poll.question }}</div>
+                <form id='vote_form' action="{% url polls_vote poll.id %}" method="POST">
+{#                    <ul style="list-style:none; padding:0;">#}
+                    <table>
+                        {% if poll.poll_type == 'radio' %}
+                            {% for choice in choices %}
+                                <tr>
+                                    <td><input type="radio" name="answer" value="{{ choice.id }}"/> </td>
+                                    <td>{{ choice.choice }}</td>
+                                </tr>
+                                                            {% empty %}
+                                Нет вариантов ответа.
+                            {% endfor %}
+                        {% endif %}
+                        {% if poll.poll_type == 'checkboxes' %}
+                            {% for choice in choices %}
+                                <tr>
+                                    <td><input type="checkbox" name="answer" value="{{ choice.id }}"/></td>
+                                    <td>{{ choice.choice }}</td>
+                                </tr>
+                            {% empty %}
+                                Нет вариантов ответа.
+                            {% endfor %}
+                        {% endif %}
+                    </table>
+{#                    </ul>#}
+                    <div align="center">
+                        <input type="submit" value="Ответить" />
+                    </div>
+                </form>
+
+            {% else %}
+                Нет активных опросов.
+            {% endif %}
+            <div style="text-align:center;padding:5px 0 5px 0;"><a href="{% url polls_index %}">Архив опросов</a></div>
+        </div>
+    </div>
+    <div class="footer orange"></div>
+</div>

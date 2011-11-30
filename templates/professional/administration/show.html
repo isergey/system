@@ -1,0 +1,13 @@
+{% extends "professional/administration/professional.html" %}
+{% block module_action %}Просмотр профессиональной страницы{% endblock %}
+{% block module_page %}
+    <div class="module_actions column prepend-1 last">
+    <a href="{% url administration_professional_edit %}" class="button positive">
+        <img src="/media/images/icons/plus_16.png"/>редактировать текст профессиональной страницы</a>
+    </div>
+    <hr/>
+    <div class="table_container column span-19 prepend-1 last">
+    {{ content|safe }}
+    </div>
+    <hr class="space"/>
+{% endblock %}

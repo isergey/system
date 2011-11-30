@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<table>
+    <tr>
+        <td>#</td>
+        <td>Логин</td>
+        <td>Дата регистрации (первого появления на новом портале)</td>
+        <td>Новый?</td>
+        <td>Описание</td>
+    </tr>
+    {% for user in users %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.date_joined }}</td>
+            {% if user.new %}
+                <td style="color:green;">Да</td>
+            {% else %}
+                <td>Нет</td>
+            {% endif %}
+            <td>{{ user.description }}</td>
+        </tr>
+
+    {% endfor %}
+</table>
+</body>
+</html>

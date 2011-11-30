@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class="text">
+    <div class="login-form form">
+        <form method="post" action="."  method='post'>
+            <h3>Вход на портал</h3>
+
+            <div class="login-wrap">
+
+                <div class="entry login">
+                    <label for="login-login">{{ form.username.label }}</label>
+                    <div class="wrap">
+                        <input type="text" name="username" value="" class="text" id="login-login">
+                    </div>
+                </div>
+
+                <div class="entry password">
+                    <label for="login-password">{{ form.password.label }}</label>
+                    <div class="wrap">
+                        <input type="password" name="password" value="" class="text" id="login-password">
+                    </div>
+                </div>
+
+                <div class="entry rememberme label-indent  checkbox">
+                    <input type="checkbox" name="rememberme" value="1" id="login-remember">
+                    <div class="wrap">
+                        <label for="login-remember">Чужой компьютер</label>
+                    </div>
+                </div>
+
+                <p class="hint label-indent"><a href="#">Забыли пароль?</a></p>
+				<div class="entry label-indent">
+					<span class="button ">
+						<input type="submit" class="login-button" value="Войти" id="login_button">
+					</span>
+				</div>
+
+            </div>
+            {% if next %}
+                <input type="hidden" name="next" value="{{ next|escape }}" />
+            {% else %}
+                <input type="hidden" name="next" value="{% url orders_index %}" />
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

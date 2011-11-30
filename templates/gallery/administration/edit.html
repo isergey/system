@@ -1,0 +1,45 @@
+{% extends "gallery/administration/gallery.html" %}
+{% block module_action %}редактирование ( {{ collection.title }} ){% endblock %}
+{% block module_page %}
+<div class="column span-19 prepend-1 last">
+    <p><b>Дата создания альбома: </b>{{ collection.add_date_time }}</p>
+    <form id="dummy" action="" method="post">
+        <fieldset>
+
+            <div class="last">
+                <label for="{{ form.title.auto_id }}">{{ form.title.label }}</label><br>
+                <input type="text" class="text span-18" name="{{ form.title.name }}" id="{{ form.title.auto_id }}" {% if form.title.data %}value="{{ form.title.data }}" {% endif %}>
+                {% if form.title.errors %}
+                <div class="error">
+                    {{ form.title.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <label for="{{ form.latin_title.auto_id }}">{{ form.latin_title.label }}</label><br>
+                <input type="text" class="text span-18" name="{{ form.latin_title.name }}" id="{{ form.latin_title.auto_id }}" {% if form.latin_title.data %}value="{{ form.latin_title.data }}" {% endif %}>
+                {% if form.latin_title.errors %}
+                <div class="error">
+                    {{ form.latin_title.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <label for="{{ form.description.auto_id }}">{{ form.description.label }}</label><br>
+                {{ form.description }}
+                {% if form.description.errors %}
+                <div class="error">
+                    {{ form.description.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <button type="submit" class="button positive" title="Редактировать альбом">
+                    <img src="/media/images/icons/tick_16.png" alt=""/> Редактировать
+                </button>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<hr class="space"/>
+{% endblock %}

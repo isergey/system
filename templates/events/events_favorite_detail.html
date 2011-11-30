@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ event.title }}
+{% endblock %}
+{% block content %}
+    <div class="event">
+        <div class="title" style="padding:20px">
+            Название: {{ favorite_event.event.title }}
+        </div>
+        <div class="description" style="padding:20px">
+            Описание:{{ favorite_event.event.description }}
+        </div>
+        <div class="address" style="padding:20px">
+        Место проведения: {{ favorite_event.event.address }}
+        </div>
+        <div class="info" style="padding:20px">
+            <span class="date"> Дата начала: {{ favorite_event.event.start_date|date:"d M Y H:m:s"}}</span><br/>
+            <span class="date"> Дата окончания: {{ favorite_event.event.end_date|date:"d M Y H:m:s"}}</span><br/>
+            <span class="date"> Событие ативно: {% if favorite_event.event.active %} Да {% else %} Нет {% endif %}
+            </span><br/>
+        </div>
+    </div>
+    <div class="post_comments" >
+    <p>Вы будете оповещены о мероприятии:</p>
+        {% for remember in remembers %}
+            <div class="comment" style="margin-bottom:20px;">
+                {{ remember.remember_date }} <br/>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

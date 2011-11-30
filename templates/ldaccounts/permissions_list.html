@@ -1,0 +1,40 @@
+{% extends "ldaccounts/ldaccounts_base.html" %}
+{% block section_title %}Список прав доступа{% endblock %}
+{% block section_menu %}Меню{% endblock %}
+
+{% block content %}
+<table border="1">
+        <tr>
+            <th colspan="2"> Установленные приложения </th>
+        </tr>
+    {% for app_label in installed_apps %}
+        <tr>
+            <td>{{ app_label }}</td>
+            <td><a href="{% url ldaccounts_permissions_create app_label %}"> Create permission </a></td>
+        </tr>
+    {% endfor %}
+</table>
+
+{% for key, groups in perm_groups.items %}
+    <p>
+    <table border="1">
+        <tr>
+            <th colspan="3">{{ key }} </th>
+        </tr>
+    {% for group  in groups %}
+        <tr>
+            <td>{{ group.codename }}</td>
+            <td>{{ group.name }}</td>
+            <td>
+                <a href="{% url ldaccounts_permissions_edit group.id %}"> Edit</a>
+                <a href="{% url ldaccounts_permissions_delete group.id %}"> Delete</a>
+            </td>
+        </tr>
+    {% endfor %}
+        <tr>
+            <td colspan="3"> <a href="{% url ldaccounts_permissions_create key %}"> Create permission for {{ key }}</a> </td>
+        </tr>
+    </table>
+    </p>
+{% endfor %}
+{% endblock %}

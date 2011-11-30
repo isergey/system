@@ -1,0 +1,13 @@
+<div class="index_galley">
+    <ul id="mycarousel" class="jcarousel-skin-tango">
+        {% for image in images %}
+            <li>
+                <div style="padding:0 10px 0 10px;"><a href="{% url gallery_view_slug collection.latin_title %}">
+                    <img width="80" height="60" src="{{ thumbinails_dir }}{{ image.file_name }}" title="{{ image.title }}"
+                         alt="{{ image.comments }}">
+                </a></div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+

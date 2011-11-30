@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}
+    События
+{% endblock %}
+{% block content %}
+<div class="text">
+    <h3>События</h3>
+    <div class="news">
+    {% for event in events_list %}
+        <div class="item">
+            <div class="title">
+                 <h4><a href="{% url events_show event.id %}">{{ event.title }}</a> <span class="date"> Начало: {{ event.start_date|date:"d M Y H:i"}}.</span></h4>
+            </div>
+            <div class="teaser">
+                {{ event.teaser }}
+            </div>
+            <div class="detail">
+                <span class="show"><a href="{% url events_show event.id %}">Подробнее</a></span>
+
+            </div>
+            {% if not forloop.last %}<hr/>{% endif %}
+        </div>
+    {% empty %}
+        Нет событий.
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}

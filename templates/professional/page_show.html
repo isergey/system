@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ page.title }}
+{% endblock %}
+{% block content %}
+    <style type="text/css">
+        .page .content {
+            font-size: 14px;
+        }
+        .page .content p + p {
+            text-indent: 0;
+        }
+        .page .content ul, .page .content ol {
+            font-size: 14px;
+            margin: 0 1.5em 0 0;
+            padding-left: 1.5em;
+        }
+        .page .content ol a, .page .content li a, .page .content ul a{
+            font-size: 14px;
+        }
+    </style>
+<div class="text">
+    <h3>Профессиональная страница</h3>
+    <div class="page">
+        <div class="content">
+            {{ content|safe }}
+        </div>
+    </div>
+    <hr/>
+
+    <h3 class="">Профессиональные новости</h3>
+    <div class="news">
+    {% for news in news_list.object_list %}
+        <div class="item">
+            <div class="title">
+                 <h4><span class="date">{{ news.pub_date|date:"d M Y"}}.</span><a href="{% url professional_show_news news.id %}">{{ news.title }}</a></h4>
+            </div>
+            <div class="teaser">
+                {{ news.teaser }}
+            </div>
+            <div class="detail">
+                <span class="show"><a href="{% url professional_show_news news.id %}">Подробнее</a></span>
+
+            </div>
+            {% if not forloop.last %}<hr/>{% endif %}
+        </div>
+    {% empty %}
+        Нет новостей.
+    {% endfor %}
+    </div>
+        {% if news_list.paginator.num_pages > 1 %}
+            <hr class="space"/>
+            <hr/>
+                <div class="block">
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% if news_list.has_previous %}
+                                <a class="page" href="?page={{ news_list.previous_page_number }}">Предыдущая</a>
+                            {% endif %}
+                            {% for page in news_list.paginator.page_range %}
+                                {% if page %}
+                                    {% ifequal page news_list.number %}
+                                        <span class="current page">{{ page }}</span>
+                                    {% else %}
+                                        <a href="?page={{ page }}" class="page">{{ page }}</a>
+                                    {% endifequal %}
+                                {% else %}
+                                    ...
+                                {% endif %}
+                            {% endfor %}
+                            {% if news_list.has_next %}
+                                <a class="page" href="?page={{ news_list.next_page_number }}">Следующая страница</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+        {% endif %}
+    </div>
+{% endblock %}

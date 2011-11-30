@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ event.title }}
+{% endblock %}
+{% block content %}
+    <div class="text">
+    <h3>Добавить мероприятие в закладки</h3>
+    <div class="event" style="margin:0 0 20px 0">
+        <div class="title">
+            Название: {{ event.title }}
+        </div>
+        <div>
+            Дата начала: {{ event.start_date|date:"d M Y H:i" }}
+        </div>
+    </div>
+    <form name='add_to_favorit' action="" method="post">
+        <div style="margin:0 0 20px 0">{{ form.as_table }}</div>
+        <a class="awesome blue" href="#" onclick="document.add_to_favorit.submit();">Добавить</a>
+    </form>
+    </div>
+{% endblock %}

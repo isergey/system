@@ -1,0 +1,21 @@
+
+<div class="right_module span-5">
+    <div class="head">
+        <h3 class="title">Новости</h3>
+    </div>
+    <div class="midl">
+        <div class="content news">
+            {% for news in news_list %}
+                <div class="item">
+                    {{ news.title }}
+                    <div class="detail"><a href="{% url news_show news.id %}"><span class="date">{{ news.pub_date|date:"d M Y" }}</span>
+                        подробнее</a></div>
+                </div>
+                {% if not forloop.last %}<hr/>{% endif %}
+            {% empty %}
+                Нет новостей.
+            {% endfor %}
+        </div>
+    </div>
+    <div class="footer"></div>
+</div>

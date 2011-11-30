@@ -1,0 +1,88 @@
+{% extends "polls/administration/polls.html" %}
+{% block module_action %}список голосований{% endblock %}
+{% block module_page %}
+    <div class="module_actions column prepend-1 last">
+    <a href="{% url administration_polls_create %}" class="button positive"><img src="/media/images/icons/plus_16.png"/>создать голосование</a>
+    </div>
+    <hr/>
+    <div class="table_container column span-19 prepend-1 last">
+        <div class="table_title last">
+            Список голосований
+        </div>
+        <table>
+            <tr>
+                <th>#</th>
+                <th class="span-6">Вопрос</th>
+                <th>Дата начала</th>
+                <th>Дата окончания</th>
+                <th>Активно</th>
+                <th>Опубликовано</th>
+                <th class="span-3">Действия</th>
+            </tr>
+            {% for poll in polls_list.object_list %}
+            <tr>
+                <td>{{ poll.id }}</td>
+                <td>{{ poll.question }}</td>
+                <td>{{ poll.start_poll_date|date:"d-M-Y H:i:s" }}</td>
+                <td>{{ poll.end_poll_date|date:"d-M-Y H:i:s" }}</td>
+                <td>
+                        {% if poll.is_active  %}
+                            <span style="color:green;">Да</span>
+                        {% else %}
+                            <span style="color:red;">Нет</span>
+                        {% endif %}
+                </td>
+                <td>
+                        {% if poll.published %}
+                            <span style="color:green;">Да</span>
+                        {% else %}
+                            <span style="color:red;">Нет</span>
+                        {% endif %}
+                </td>
+                <td>
+                    <a  title="Упраление ответами"  class="button" href="{% url administration_polls_view poll.id %}" >
+                        <img src="/media/images/icons/statistics_16.png" alt=""/>
+                    </a>
+                    <a  title="Просмотр голосования на сайте"  class="button" href="#" target="_blank">
+                        <img src="/media/images/icons/search_16.png" alt=""/>
+                    </a>
+                    <a title="Редактировать голосование" class="button" href="{% url administration_polls_edit poll.id %}">
+                        <img src="/media/images/icons/pencil_16.png" alt=""/>
+                    </a>
+                    <a class="button negative delete" title="Удалить новость" href="{% url administration_polls_delete poll.id %}">
+                        <img src="/media/images/icons/delete_16.png" alt=""/>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% if polls_list.paginator.num_pages > 1 %}
+    <div class="span-19 prepend-1 last">
+        <div class="block">
+            <div class="pagination">
+                <span class="step-links">
+                    {% if polls_list.has_previous %}
+                        <a class="page" href="?page={{ polls_list.previous_page_number }}">сюда</a>
+                    {% endif %}
+                    {% for page in polls_list.paginator.page_range %}
+                        {% if page %}
+                            {% ifequal page polls_list.number %}
+                                <span class="current page">{{ page }}</span>
+                            {% else %}
+                                <a href="?page={{ page }}" class="page">{{ page }}</a>
+                            {% endifequal %}
+                        {% else %}
+                            ...
+                        {% endif %}
+                    {% endfor %}
+                    {% if polls_list.has_next %}
+                        <a class="page" href="?page={{ polls_list.next_page_number }}">туда</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <hr class="space"/>
+{% endblock %}

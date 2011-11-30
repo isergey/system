@@ -1,0 +1,43 @@
+{% extends "gallery/administration/gallery.html" %}
+{% block module_action %}Загрузка изображения ({{ collection.title }}){% endblock %}
+{% block module_page %}
+<div class="column span-19 prepend-1 last">
+    <form id="dummy" action="" method="post" enctype="multipart/form-data">
+        <fieldset>
+            <div class="last">
+                <label for="{{ form.title.auto_id }}">{{ form.title.label }}</label><br>
+                <input type="text" class="text span-18" name="{{ form.title.name }}" id="{{ form.title.auto_id }}" {% if form.title.data %}value="{{ form.title.data }}" {% endif %}>
+                {% if form.title.errors %}
+                <div class="error">
+                    {{ form.title.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <label for="{{ form.comments.auto_id }}">{{ form.comments.label }}</label><br>
+                <input type="text" class="text span-18" name="{{ form.comments.name }}" id="{{ form.comments.auto_id }}" {% if form.comments.data %}value="{{ form.comments.data }}" {% endif %}>
+                {% if form.comments.errors %}
+                <div class="error">
+                    {{ form.comments.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <label for="{{ form.file.auto_id }}">{{ form.file.label }}</label><br>
+                {{ form.file }}
+                {% if form.file.errors %}
+                <div class="error">
+                    {{ form.file.errors }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="last">
+                <button type="submit" class="button positive" title="Загрузить изображение">
+                    <img src="/media/images/icons/tick_16.png" alt=""/> Загрузить изображение
+                </button>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<hr class="space"/>
+{% endblock %}
