@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+import time
+from lxml import etree
+import xml.etree.cElementTree as ET
+import datetime
+import re
+
 from django.conf import settings
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
@@ -11,18 +17,15 @@ from django.shortcuts import redirect
 from libs.ill import ILLRequest
 from libs.order_manager.manager import OrderManager
 
-from lxml import etree
-import xml.etree.cElementTree as ET
-import datetime
 
 from libs.ldapwork.ldap_work import LdapWork, LdapWorkException, LdapConnection
 import zgate.zworker as  zworker
 from zgate.models import ZCatalog
-from participants.models import Library, LibrarySystem
+from participants.models import Library
 from templatetags.order_tags import org_by_id
 
 from models import UserOrderTimes
-import re
+
 
 def set_cookies_to_response(cookies, response):
     for key in cookies:
@@ -116,7 +119,7 @@ def check_for_can_delete(transaction):
 @login_required
 def index(request):
     def format_time(datestr='', timestr=''):
-        import time
+
 
         if datestr:
             datestr = time.strptime(datestr, "%Y%m%d")
@@ -403,24 +406,18 @@ def make_order(request):
     order_manager = OrderManager(settings.ORDERS['db_catalog'], settings.ORDERS['rdx_path'])
 
     library = None
-    library_system = None
     try:
         library = Library.objects.get(code=order_manager_id)
-        library_system = library.library_system
     except Library.DoesNotExist:
-        try:
-            library_system = LibrarySystem.objects.get(code=order_manager_id)
-        except Library.DoesNotExist:
-            return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Организация не найдена'}))
+        return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Организация не найдена'}))
 
 
-    if library:
-        manager_id = library.code
-        reciver_id = library_system.code
-
-    else:
-        reciver_id = library_system.code
+    if library.is_root_node():
         manager_id = ''
+        reciver_id = library.code
+    else:
+        manager_id = library.code
+        reciver_id = library.get_root().code
 
     sender_id = request.user.username #id отправителя
     copy_info =  request.POST.get('copy_info', '')

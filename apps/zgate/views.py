@@ -11,7 +11,7 @@ import simplejson
 from lxml import etree
 import xml.etree.cElementTree as ET
 import time
-from participants.models import Library, LibrarySystem
+from participants.models import Library
 #catalogs = settings.ZGATE['catalogs']
 
 from models import ZCatalog, SavedRequest, SavedDocument
@@ -423,12 +423,6 @@ def get_document_owners(xml_record):
 
     owners_dicts = []
     if owners:
-        library_systems = LibrarySystem.objects.filter(code__in=owners)
-        for org in library_systems:
-            owners_dicts.append({
-                'code':org.code,
-                'name': org.name
-            })
         libraries = Library.objects.filter(code__in=owners)
         for org in libraries:
             owners_dicts.append({

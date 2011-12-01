@@ -37,6 +37,9 @@
                 <p><b>Номер заказа: {{ order.order_id }} </b> Тип заказа: <b>{{ order.type_title }}</b></p>
 
                 <p><b>Статус заказа:</b> {{ order.status }}</p>
+                {% if  order.org_info.type == None %}
+                    <p><b>Получатель заказа: </b> {{ order.org_info.name }} (информация не найдена)</p>
+                {% endif %}
                 {% if  order.org_info.type == 'library_system' %}
                     <p><b>Получатель заказа: </b> <a href="{% url participants_cbs_detail order.org_info.code %}"  target="_blank">{{ order.org_info.name }}</a></p>
                 {% endif %}

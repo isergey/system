@@ -2,9 +2,8 @@
 from django.conf import settings
 from django.shortcuts import render,get_object_or_404, get_list_or_404 ,Http404
 import simplejson
-from libs.ldapwork.ldap_work import  LdapWork
 from districts import districts_list, find_district
-from models import LibrarySystem, Library, District
+from models import Library, District
 
 def make_library_dict(library):
     return {
@@ -20,14 +19,14 @@ def make_library_dict(library):
 
 
 def index(request):
-    library_systems = LibrarySystem.objects.all()
+    library_systems = Library.objects.filter(parent=None).order_by('weight')
     return render(request, 'participants/cbs_list.html',
                               {'orgs':library_systems})
 
 def cbs_list(request, code):
 
-    library_system = get_object_or_404(LibrarySystem, code=code)
-    libraries = Library.objects.filter(library_system=library_system)
+    library_system = get_object_or_404(Library, code=code)
+    libraries = Library.objects.filter(parent=library_system)
     orgs = []
 
     for org in libraries:
@@ -49,8 +48,8 @@ def detail_by_cbs(request, code):
 
     js_orgs =  simplejson.dumps(orgs, encoding='utf-8',ensure_ascii=False)
     return render(request, 'participants/participants_detail_by_cbs.html',
-                              {'cbs_name':library.library_system.name,
-                               'cbs_code': library.library_system.code,
+                              {'cbs_name':library.parent.name,
+                               'cbs_code': library.parent.code,
                                 'library':library,
                                'js_orgs':js_orgs})
 
@@ -68,10 +67,6 @@ def detail_by_district(request, code):
     })
 
 def districts(request):
-
-    #ldap_work = LdapWork(settings.LDAP)
-
-
     return render(request, 'participants/districts_list.html',
                               {'districts':districts_list})
 

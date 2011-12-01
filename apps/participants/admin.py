@@ -1,26 +1,12 @@
 # encoding: utf-8
 
 from django.contrib import admin
+from mptt.admin import MPTTModelAdmin
 
-from models import LibrarySystem, Library, UserLibrarySystem, UserLibrary, Country, City, District
-
-
-class LibrarySystemAdmin(admin.ModelAdmin):
-    list_display = ["name"]
-
-admin.site.register(LibrarySystem, LibrarySystemAdmin)
-
-class LibraryAdmin(admin.ModelAdmin):
-    list_display = ["name",'library_system']
-
-admin.site.register(Library, LibraryAdmin)
-
-class UserLibrarySystemAdmin(admin.ModelAdmin):
-    list_display = ["user" ]
-
-admin.site.register(UserLibrarySystem,UserLibrarySystemAdmin)
+from models import Library, UserLibrary, Country, City, District
 
 
+admin.site.register(Library, MPTTModelAdmin)
 
 class UserLibraryAdmin(admin.ModelAdmin):
     list_display = ["user" ]
@@ -32,7 +18,6 @@ class CountryAdmin(admin.ModelAdmin):
     list_display = ["name" ]
 
 admin.site.register(Country, CountryAdmin)
-
 
 
 class CityAdmin(admin.ModelAdmin):
