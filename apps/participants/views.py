@@ -72,7 +72,7 @@ def districts(request):
 
 def by_district(request, id):
     district = get_object_or_404(District,id=id)
-    libraries = Library.objects.filter(district=district)
+    libraries = Library.objects.filter(district=district).exclude(parent=None)
     orgs = []
     for org in libraries:
         orgs.append(make_library_dict(org))

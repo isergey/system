@@ -75,6 +75,8 @@ class Library(MPTTModel):
     weight = models.IntegerField(verbose_name=u'Порядок вывода в списке', default=100, db_index=True)
 
     def __unicode__(self):
+        if self.is_root_node():
+            return self.name + u' (ЦБС)'
         return self.name
 
 #    def clean(self):
@@ -89,8 +91,8 @@ class Library(MPTTModel):
         order_insertion_by=['weight']
 
 class UserLibrary(models.Model):
-    libraries = models.ManyToManyField(Library)
-    user = models.ForeignKey(User)
+    library = models.ForeignKey(Library)
+    user = models.ForeignKey(User, unique=True)
 
     def __unicode__(self):
         return self.user.username

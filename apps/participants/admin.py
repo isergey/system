@@ -9,7 +9,7 @@ from models import Library, UserLibrary, Country, City, District
 admin.site.register(Library, MPTTModelAdmin)
 
 class UserLibraryAdmin(admin.ModelAdmin):
-    list_display = ["user" ]
+    list_display = ["user",'library']
 
 admin.site.register(UserLibrary, UserLibraryAdmin)
 
