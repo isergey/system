@@ -21,9 +21,6 @@ def make_library_dict(library):
 
 def index(request):
     library_systems = LibrarySystem.objects.all()
-    for org in library_systems:
-        print org.code, org.name
-
     return render(request, 'participants/cbs_list.html',
                               {'orgs':library_systems})
 
