@@ -1,9 +1,10 @@
 <div class="index_galley">
     <ul id="mycarousel" class="jcarousel-skin-tango">
         {% for image in images %}
-            <li>
+            <li >
                 <div style="padding:0 10px 0 10px;"><a href="{% url gallery_view_slug collection.latin_title %}">
                     <img width="80" height="60" src="{{ thumbinails_dir }}{{ image.file_name }}" title="{{ image.title }}"
+                         style="border: 1px solid #DDD;border-radius: 4px; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075); padding: 2px"
                          alt="{{ image.comments }}">
                 </a></div>
             </li>

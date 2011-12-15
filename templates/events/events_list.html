@@ -1,28 +1,69 @@
 {% extends "base.html" %}
+{% load add_get_tag %}
 {% block title %}
     События
 {% endblock %}
 {% block content %}
-<div class="text">
-    <h3>События</h3>
-    <div class="news">
-    {% for event in events_list %}
-        <div class="item">
-            <div class="title">
-                 <h4><a href="{% url events_show event.id %}">{{ event.title }}</a> <span class="date"> Начало: {{ event.start_date|date:"d M Y H:i"}}.</span></h4>
-            </div>
-            <div class="teaser">
-                {{ event.teaser }}
-            </div>
-            <div class="detail">
-                <span class="show"><a href="{% url events_show event.id %}">Подробнее</a></span>
+    <div class="text">
+        <h3>События</h3>
 
-            </div>
-            {% if not forloop.last %}<hr/>{% endif %}
+        {% include 'events/events_search_form.html' %}
+        <div class="news">
+            {% for event in events_list %}
+                <div class="item">
+                    <div class="title">
+                        <h4><a href="{% url events_show event.id %}">{{ event.title }}</a> <span
+                                class="date"> Начало: {{ event.start_date|date:"d M Y H:i" }}.</span></h4>
+                    </div>
+                    <div class="teaser">
+                        {{ event.teaser }}
+                    </div>
+                    {% if request.GET.attr == "any_t_ru" or request.GET.attr == "address_t_ru" %}
+                        <div class="teaser">
+                            {{ event.address }}
+                        </div>
+                    {% endif %}
+                    <div class="detail">
+                        <span class="show"><a href="{% url events_show event.id %}">Подробнее</a></span>
+
+                    </div>
+                    {% if not forloop.last %}
+                        <hr/>{% endif %}
+                </div>
+            {% empty %}
+                Нет событий.
+            {% endfor %}
         </div>
-    {% empty %}
-        Нет событий.
-    {% endfor %}
     </div>
-</div>
+
+
+    {% if object_list.paginator.num_pages > 1 %}
+        <hr class="space"/>
+        <hr/>
+        <div class="block">
+            <div class="pagination">
+                    <span class="step-links">
+                        {% if object_list.has_previous %}
+                            <a class="page" href="{% add_get page=object_list.previous_page_number %}">Предыдущая</a>
+                        {% endif %}
+                        {% for page in object_list.paginator.page_range %}
+                            {% if page %}
+                                {% ifequal page object_list.number %}
+                                    <span class="current page">{{ page }}</span>
+                                {% else %}
+                                    <a href="{% add_get page=page %}" class="page">{{ page }}</a>
+                                {% endifequal %}
+                            {% else %}
+                                ...
+                            {% endif %}
+                        {% endfor %}
+                        {% if object_list.has_next %}
+                            <a class="page" href="{% add_get page=object_list.next_page_number %}">Следующая страница</a>
+                        {% endif %}
+                    </span>
+            </div>
+        </div>
+    {% endif %}
+
+
 {% endblock %}

@@ -163,6 +163,7 @@ INSTALLED_APPS = (
     #vendor apps
     'mailer',
     'mptt',
+    'taggit',
     # Uncomment the next line to enable admin documentation:
     #'django.contrib.admindocs',
     'site_index',

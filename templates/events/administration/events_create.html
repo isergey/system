@@ -5,6 +5,9 @@
     <form id="dummy" action="" method="post">
         <fieldset>
             <div class="last">
+                {{ form.category }}
+            </div>
+            <div class="last">
                 <label for="{{ form.start_date.auto_id }}">{{ form.start_date.label }}</label><br>
                 {{ form.start_date }}
                 {% if form.start_date.errors %}

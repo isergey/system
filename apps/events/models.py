@@ -1,9 +1,22 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.contrib.auth.models import User
+from taggit.managers import TaggableManager
+
+class EventCategory(models.Model):
+    name = models.CharField(verbose_name=u'Категория события', max_length=64, unique=True, db_index=True)
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = u"категория мероприятий"
+        verbose_name_plural = u"категории мероприятий"
+
+
 
 # Create your models here.
 class Event(models.Model):
+
     title = models.CharField(verbose_name=u"Название (макс. 255 символов)",
                              max_length=255, null=False, blank=False, unique=True)
     teaser = models.CharField(verbose_name=u"Краткое описание (макс. 255 символов)",
@@ -20,6 +33,7 @@ class Event(models.Model):
                                  default=True, db_index=True)
     auto_delete = models.BooleanField(verbose_name=u"Автоматически удалять после завершения",
                                       ) #автоматическое удаление
+#    tags = TaggableManager()
 
     def __unicode__(self):
         return self.title
@@ -28,13 +42,8 @@ class Event(models.Model):
         verbose_name = u"мероприятие"
         verbose_name_plural = u"мероприятия"
         
-"""
-Что делать, если пользователь, не добавляя мероприятие в избранное,
-указывает дату об его напоминании
-1) Автоматически добавить мероприятие в избранное (пока так) !!!
-2) Создать еще одну таблицу с напоминаниями
-3) Пользователь должен добавить мероприятие в избранное, чтобы получать напоминания
-"""
+
+
 class FavoriteEvent(models.Model):
     user = models.ForeignKey(User, verbose_name=u"Пользователь")
     event = models.ForeignKey(Event, verbose_name=u"Мероприятие")

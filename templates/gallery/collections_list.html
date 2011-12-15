@@ -1,10 +1,13 @@
 {% extends "base.html" %}
+{% load gallery_tags %}
 {% block content %}
     <h3>Галерея</h3>
     <div class="text">
         <ul>
             {% for collection in collections %}
-                <li><a class="green" href="{%  url gallery_view collection.id %}">  {{ collection.title }}</a></li>
+                <li><a class="green" href="{%  url gallery_view collection.id %}">  {{ collection.title }}</a>
+                {% gallery_preview collection.id %}
+                </li>
             {% empty %}
             {% endfor %}
         </ul>

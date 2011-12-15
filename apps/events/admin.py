@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
-from apps.events.models import Event, FavoriteEvent, EventComment
+from apps.events.models import Event, FavoriteEvent, EventComment, EventCategory
+
+class EventCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+admin.site.register(EventCategory, EventCategoryAdmin)
 
 class EventAdmin(admin.ModelAdmin):
     list_display = ('title', 'start_date', 'end_date', 'active')

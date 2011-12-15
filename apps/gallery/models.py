@@ -22,6 +22,10 @@ class Collection(models.Model):
             ('edit_collection', u'Редактирование альбома'),
         )
 
+    def get_images(self):
+        images = CollectionImage.objects.filter(collection=self)
+        return images
+
 class CollectionImage(models.Model):
     collection = models.ForeignKey(Collection)
     title = models.CharField(verbose_name=u"Название изображения",
