@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% load adminmedia %}
+
+{% block head %}
+    <script type="text/javascript" src="/admin/jsi18n/"></script>
+    <script type="text/javascript" src="/media/admin/js/core.js"></script>
+    <script type="text/javascript" src="/media/admin/js/calendar.js"></script>
+    <script type="text/javascript" src="/media/admin/js/admin/DateTimeShortcuts.js"></script>
+    <link rel="stylesheet" type="text/css" href="/media/admin/css/widgets.css"/>
+    <script type="text/javascript">
+        window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";
+    </script>
+{% endblock %}
+{% block title %}
+    Регистрация в библиотеке
+{% endblock %}
+
+{% block content %}
+
+    <style type="text/css">
+    ul.errorlist{
+        list-style: none;
+        color: #e06d62;
+        margin: 0;
+        padding: 0;
+    }
+    form fieldset div{
+        padding-bottom: 10px;
+    }
+    form.libreg input[type=text]{
+        width: 95%;
+        border: 1px solid #BBB;
+    }
+
+
+    form #id_visit_date {
+        width: auto;
+    }
+    </style>
+
+    <form action="" method="POST" class="libreg form-stacked">
+        <fieldset>
+            {{ form.as_div }}
+            <input type="submit" value="Отправить заявку на регистрацию" class="btn">
+        </fieldset>
+    </form>
+
+
+
+
+{% endblock %}

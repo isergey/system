@@ -1,0 +1,38 @@
+{% extends "reginlib/administration/base.html" %}
+{% block title %}
+    Детальная информация о регистрации
+{% endblock %}
+{% block menu %}
+    <h3><a href="{% url reginlib_checkout %}">Заявки</a></h3>
+{% endblock %}
+{% block module_content %}
+    <style type="text/css">
+    .status0{
+        color: red;
+        font-weight: bold;
+    }
+    .status1{
+        color: #ff7f50;
+        font-weight: bold;
+    }
+    </style>
+    <h3><a href="{% url reginlib_checkout_by_library registration.library.id %}">{{ registration.library.name }}</a> → Заявка № {{ registration.id }}</h3>
+    <ul style="list-style: none; font-size: 16px">
+        <li style="padding-bottom: 10px;">
+            <b>Номер заявки</b>: {{ registration.id }} Статус: <span class="status{{ registration.status }}"> {{ registration.get_status_display }}</span><br/>
+            <b>Библиотека</b>: <a href="#1">{{ registration.library.name }}</a><br/>
+            <b>Пользователь</b>: <a href="#">{{ registration.user.username }}</a><br/>
+            <b>Дата поступления заявки</b>: {{ registration.create_date }}<br/>
+            <b>Дата запланированного визита</b>: {{ registration.visit_date }}<br/>
+        </li>
+        <li>
+            <div class="actions">
+            {% if registration.can_take_to_process %}<a href="{% url reginlib_take_to_process registration.id %}" class="btn">Принять на обработку</a>{% endif %}
+            {% if registration.can_complete %}<a href="{% url reginlib_complete registration.id %}" class="btn">Одобрить регистрацию</a>{% endif %}
+            {% if registration.can_reject %}<a href="{% url reginlib_reject registration.id %}" class="btn danger">Отказать в регистрации</a>{% endif %}
+            {% if registration.can_delete %}<a href="#1" class="btn danger">Удалить</a>{% endif %}
+            </div>
+        </li>
+    </ul>
+
+{% endblock %}

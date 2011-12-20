@@ -120,9 +120,6 @@ def search(request):
 
 
 
-from lxml import etree
-
-
 def insert(request):
     si = sunburnt.SolrInterface(SOLR_ADDRESS)
     events_list = Event.objects.all()

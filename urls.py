@@ -32,6 +32,10 @@ urlpatterns = patterns('',
     (r'^feedbacks/', include('guestbook.urls')),
     (r'^polls/', include('polls.urls')),
     (r'^professional/', include('professional.urls')),
+    (r'^reginlib/', include('reginlib.urls')),
+
+
+
     (r'^captcha/', include('captcha.urls')),
         
     (r'^accounts/', include('ldaccounts.urls')),

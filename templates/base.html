@@ -2,6 +2,7 @@
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+    {% block head %}{% endblock %}
     {#    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">#}
     <LINK rel="icon" href="http://favicon.ru/favicon.ico" type="image/x-icon">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -308,28 +309,22 @@
 <!--<div class="sun"></div>-->
 <!--</div>-->
 <div class="container2 shadow"></div>
+
 <!-- Yandex.Metrika counter -->
-<div style="display:none;">
-    <script type="text/javascript">
-        (function (w, c) {
-            (w[c] = w[c] || []).push(function () {
-                try {
-                    w.yaCounter6806275 = new Ya.Metrika({id:6806275,
-                        clickmap:true,
-                        trackLinks:true,
-                        accurateTrackBounce:true});
-                }
-                catch (e) {
-                }
-            });
-        })(window, 'yandex_metrika_callbacks');
-    </script>
-</div>
+<div style="display:none;"><script type="text/javascript">
+    (function(w, c) {
+        (w[c] = w[c] || []).push(function() {
+            try {
+                w.yaCounter6806275 = new Ya.Metrika({id:6806275, enableAll: true, webvisor:true});
+            }
+            catch(e) { }
+        });
+    })(window, "yandex_metrika_callbacks");
+</script></div>
 <script src="//mc.yandex.ru/metrika/watch.js" type="text/javascript" defer="defer"></script>
-<noscript>
-    <div><img src="//mc.yandex.ru/watch/6806275" style="position:absolute; left:-9999px;" alt=""/></div>
-</noscript>
+<noscript><div><img src="//mc.yandex.ru/watch/6806275" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
+
 <script type="text/javascript">
 
     var _gaq = _gaq || [];

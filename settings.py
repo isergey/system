@@ -177,6 +177,7 @@ INSTALLED_APPS = (
     'ldaccounts',
     'participants',
     'guestbook',
+    'reginlib',
     'administration',
     #'libportal.apps.professional',
     'captcha',

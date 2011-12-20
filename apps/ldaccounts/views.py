@@ -58,9 +58,18 @@ def index(request):
     })
 
 
-def get_users(request):
+def get_users(request, year=None, month=None, day=None):
     dap_work = LdapWork(settings.LDAP)
-    users = User.objects.all().order_by('-date_joined')
+
+    if year and month and day:
+        users = User.objects.filter(date_joined__year=year, date_joined__month=month, date_joined__day=day ).order_by('-date_joined')
+    if year and month and  not day:
+        users = User.objects.filter(date_joined__year=year, date_joined__month=month).order_by('-date_joined')
+    if year and not month and  not day:
+        users = User.objects.filter(date_joined__year=year).order_by('-date_joined')
+    if not year and not month and  not day:
+        users = User.objects.all().order_by('-date_joined')
+
     user_maps = []
     for user in users:
         user_map = {}
@@ -240,13 +249,15 @@ def reset_password(request, hash):
     return direct_to_template(request, 'registration/reset_password_form.html', {'form': form, 'username':user.username})
 
 
+from api.common import response
+from api.decorators import api
+from api.exceptions import ApiException, WrongArguments
+
+@api
 def api_get_user(request):
     username = request.GET.get('username', None)
-    result = {'error': {
-        'code': '0',
-        'message': u"Wrong request parameters",
-        }
-    }
+    if username == None:
+        raise WrongArguments
 
     if username:
         try:
@@ -259,6 +270,6 @@ def api_get_user(request):
             }
         except User.DoesNotExist:
             result = {}
-    return HttpResponse(simplejson.dumps(result, ensure_ascii=False), mimetype='application/json; charset=utf8')
+    return result
 
 

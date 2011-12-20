@@ -4,7 +4,9 @@ from django.conf.urls.defaults import *
 urlpatterns = patterns('ldaccounts.views',
     url(r'^$', 'index', name="ldaccounts_index"),
     url(r'^users/$', 'get_users', name="ldaccounts_users"),
-
+    url(r'^users/(?P<year>\d+)/$', 'get_users', name="ldaccounts_users"),
+    url(r'^users/(?P<year>\d+)/(?P<month>\d+)/$', 'get_users', name="ldaccounts_users"),
+    url(r'^users/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/$', 'get_users', name="ldaccounts_users"),
 
     url(r'^registration/$', 'registration', name="ldaccounts_registration"),
     url(r'^mail/$', 'test_mail', name="ldaccounts_mail"),
@@ -12,8 +14,12 @@ urlpatterns = patterns('ldaccounts.views',
     url(r'^remember/$', 'remember_password', name="ldaccounts_remember_password"),
     url(r'^reset/(?P<hash>[a-h0-9]{1,32})/$', 'reset_password', name="ldaccounts_reset_password"),
     url(r'^api/users/getuser/$', 'api_get_user', name="ldaccounts_api_get_user"),
-
 )
+
+#urlpatterns += (
+#    url(r'^api/users/getuser/$', 'api_get_user', name="ldaccounts_api_get_user"),
+#)
+
 
 
 """

@@ -1,0 +1,19 @@
+{% extends "reginlib/administration/base.html" %}
+{% block title %}
+    Детальная информация о регистрации
+{% endblock %}
+{% block menu %}
+    <h3><a href="{% url reginlib_checkout %}">Заявки</a></h3>
+{% endblock %}
+{% block module_content %}
+    <form action="" method="post" class="form-stacked">
+        <fieldset>
+            {{ form }}
+
+        </fieldset>
+        <div class="actions">
+            <input type="submit" value="Принять" class="btn"/>
+            <a href="{% url reginlib_registration_detail registration.id %}" class="btn primary">Отмена</a>
+        </div>
+    </form>
+{% endblock %}

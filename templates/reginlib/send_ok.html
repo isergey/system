@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% load adminmedia %}
+
+{% block head %}
+    <script type="text/javascript" src="/admin/jsi18n/"></script>
+    <script type="text/javascript" src="/media/admin/js/core.js"></script>
+    <script type="text/javascript" src="/media/admin/js/calendar.js"></script>
+    <script type="text/javascript" src="/media/admin/js/admin/DateTimeShortcuts.js"></script>
+    <link rel="stylesheet" type="text/css" href="/media/admin/css/widgets.css"/>
+    <script type="text/javascript">
+        window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";
+    </script>
+{% endblock %}
+{% block title %}
+    Регистрация в библиотеке
+{% endblock %}
+
+{% block content %}
+<div class="text">
+    <p>
+        Ваша заявка на регистрацию принята.
+        Посмотреть состояни можно <a href="{% url reginlib_registration_user_detail registration.id %}">здесь</a>.
+    </p>
+</div>
+{% endblock %}

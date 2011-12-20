@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}
+    Детальная информация о регистрации
+{% endblock %}
+{% block menu %}
+    <h3><a href="{% url reginlib_checkout %}">Заявки</a></h3>
+{% endblock %}
+{% block content %}
+    <style type="text/css">
+        .status0{
+            color: red;
+            font-weight: bold;
+        }
+        .status1{
+            color: #ff7f50;
+            font-weight: bold;
+        }
+        .status2{
+            color: green;
+            font-weight: bold;
+        }
+        .status3{
+            color: #a52a2a;
+            font-weight: bold;
+        }
+    </style>
+    <div class="text">
+    <h3>Регистрация в библиотеку</h3>
+        <ul style="list-style: none;">
+            <li style="padding-bottom: 10px;">
+                <b>Номер заявки</b>: {{ registration.id }} Статус: <span class="status{{ registration.status }}"> {{ registration.get_status_display }}</span><br/>
+                <b>Библиотека</b>: <a href="#1">{{ registration.library.name }}</a><br/>
+                <b>Дата поступления заявки</b>: {{ registration.create_date }}<br/>
+                <b>Дата запланированного визита</b>: {{ registration.visit_date }}<br/>
+            </li>
+            {% for status in statuses %}
+                <li>{{ status.change_date }}: <span class="status{{ status.status }}">{{ status.get_status_display }} </span><br/>
+                    {{ status.comments }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+{% endblock %}
