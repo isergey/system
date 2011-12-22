@@ -178,9 +178,11 @@ INSTALLED_APPS = (
     'participants',
     'guestbook',
     'reginlib',
+    'api',
     'administration',
     #'libportal.apps.professional',
     'captcha',
+
 )
 ZGATE = {
     'xsl_templates':{

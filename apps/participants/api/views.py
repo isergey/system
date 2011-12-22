@@ -4,9 +4,8 @@ from django.forms.models import model_to_dict
 
 from django.contrib.auth.models import User
 
-from apps.api.common import response
 from apps.api.exceptions import WrongArguments, ApiException
-from apps.api.decorators import api
+from apps.api.decorators import api, login_required_or_403
 
 from participants.models import Library, District, UserLibrary
 
@@ -121,23 +120,24 @@ class ApiLibrary(object):
             api_library.parent_id = model.parent_id
 
         if model.country_id:
-            api_library.country=library.country.name
+            api_library.country=model.country.name
 
         if model.city_id:
-            api_library.city=library.city.name
+            api_library.city=model.city.name
 
         if model.district_id:
-            api_library.district=library.district.name
+            api_library.district=model.district.name
 
 
         return api_library
 
 
 @api
+#@login_required_or_403
 def auth_user(request):
     username = request.GET.get('username', None)
     password = request.GET.get('password', None)
-
+    print username, password
     if not username or not password:
         raise WrongArguments()
 
@@ -153,6 +153,7 @@ def auth_user(request):
 
 
 @api
+#@login_required_or_403
 def get_user_orgs(request):
     id = request.GET.get('id', None)
     lazy = request.GET.get('lazy', False)
@@ -189,10 +190,13 @@ def get_user_orgs(request):
 
     return libraries_list
 
+
 @api
+#@login_required_or_403
 def get_org(request):
     id = request.GET.get('id', None)
     code = request.GET.get('code', None)
+
 
     if not id and not code:
         raise WrongArguments()
@@ -214,6 +218,23 @@ def get_org(request):
     return ApiLibrary.from_model(library).to_dict()
 
 @api
+def find_orgs(request):
+    name = request.GET.get('name', None)
+    if not name:
+        raise WrongArguments()
+
+    if name:
+        libraries = Library.objects.filter(name__iexact=name)
+
+    libraries_list = []
+    for library in libraries:
+        libraries_list.append(ApiLibrary.from_model(library).to_dict())
+
+    return  libraries_list
+
+
+@api
+#@login_required_or_403
 def get_user(request):
     id = request.GET.get('id', None)
 

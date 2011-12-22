@@ -33,7 +33,7 @@ urlpatterns = patterns('',
     (r'^polls/', include('polls.urls')),
     (r'^professional/', include('professional.urls')),
     (r'^reginlib/', include('reginlib.urls')),
-
+    (r'^api/', include('api.urls')),
 
 
     (r'^captcha/', include('captcha.urls')),

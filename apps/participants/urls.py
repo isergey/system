@@ -21,5 +21,6 @@ urlpatterns += patterns('participants.api.views',
     url(r'^api/auth_user/$', 'auth_user', name="participants_api_auth_user"),
     url(r'^api/get_user_orgs/$', 'get_user_orgs', name="participants_api_get_user_orgs"),
     url(r'^api/get_org/$', 'get_org', name="participants_api_get_org"),
+    url(r'^api/find_orgs/$', 'find_orgs', name="participants_api_find_orgs"),
     url(r'^api/get_user/$', 'get_user', name="participants_api_get_user"),
 )

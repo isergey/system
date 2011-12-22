@@ -9,7 +9,7 @@ from libs.ldapwork.ldap_work import LdapWork, LdapWorkException, LdapConnection
 from libs.ldapwork.ldapuser import LdapUser
 class LoginForm(auth_forms.AuthenticationForm):
     def __init__(self, *args, **kwargs):
-        super(AuthForm, self).__init__(*args, **kwargs)
+        super(LoginForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs["size"] = 65
         self.fields['password'].widget.attrs["size"] = 65
 
