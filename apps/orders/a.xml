@@ -1,0 +1,1761 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:import href="marc.xsl"/>
+<xsl:output
+        method="html"
+        indent="yes"
+        encoding="utf-8"
+        />
+
+<xsl:param name="prog" select="'process.php'"/>
+<xsl:param name="box" select="''"/>
+<xsl:param name="current.date" select="''"/>
+<xsl:param name="org.code" select="''"/>
+<xsl:param name="external.rec" select="''"/>
+
+<xsl:param name="abstract" select="false()"/>
+<xsl:param name="subject" select="false()"/>
+<xsl:param name="class" select="true()"/>
+<xsl:param name="record.source" select="false()"/>
+<xsl:param name="holdings" select="true()"/>
+<xsl:param name="ht" select="false()"/>
+<xsl:param name="doc_dir" select="'docs'"/>
+<xsl:param name="mode" select="''"/>
+
+<xsl:template match="/results">
+    <html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+        <link href="ill.css" rel="stylesheet" type="text/css"/>
+        <script type="text/javascript" src="order.js" charset="UTF-8"></script>
+    </head>
+    <title>Транзакция</title>
+
+    <body>
+    <xsl:choose>
+        <xsl:when test="transaction">
+            <xsl:apply-templates select="transaction"/>
+        </xsl:when>
+        <xsl:otherwise>
+            <h3 class="info">Ничего не найдено</h3>
+        </xsl:otherwise>
+    </xsl:choose>
+    </body>
+    </html>
+</xsl:template>
+
+<xsl:template match="transaction">
+    <xsl:variable name="tq" select="ILLAPDU/ILLRequest/transactionId/transactionQualifier"/>
+    <xsl:variable name="tgq" select="ILLAPDU/ILLRequest/transactionId/transactionGroupQualifier"/>
+    <xsl:variable name="requester" select="ILLAPDU/ILLRequest/requesterId/personOrInstitutionSymbol/institutionSymbol"/>
+    <xsl:variable name="responder" select="ILLAPDU/ILLRequest/responderId/personOrInstitutionSymbol/institutionSymbol"/>
+    <xsl:variable name="is_responder" select="$responder = $org.code"/>
+    <h3>Заказ #
+        <xsl:value-of select="$tgq"/>
+        <xsl:text> /</xsl:text>
+        <xsl:value-of select="$tq"/>
+    </h3>
+    <table class="show">
+        <tr>
+            <th class="show">Дата / время</th>
+            <th class="show">Запрос / ответ</th>
+        </tr>
+        <!--
+          <xsl:variable name="ccnt" select="count(ILLAPDU//CancelReply[answer='0'])"/>
+        -->
+        <xsl:for-each select="ILLAPDU">
+            <xsl:apply-templates/>
+            <xsl:if test="position()=last()">
+                <xsl:call-template name="cmd">
+                    <xsl:with-param name="tq" select="$tq"/>
+                    <xsl:with-param name="tgq" select="$tgq"/>
+                    <xsl:with-param name="requester" select="$requester"/>
+                    <xsl:with-param name="responder" select="$responder"/>
+                    <xsl:with-param name="is_responder" select="$is_responder"/>
+                </xsl:call-template>
+            </xsl:if>
+        </xsl:for-each>
+    </table>
+</xsl:template>
+
+<xsl:template name="cmd">
+<xsl:param name="tq">1</xsl:param>
+<xsl:param name="tgq">1</xsl:param>
+<xsl:param name="requester"/>
+<xsl:param name="responder"/>
+<xsl:param name="is_responder" select="false()"/>
+<tr>
+<td colspan="2">
+<table>
+<xsl:choose>
+<xsl:when test="../../transaction[@status='new' or @status='pending']">
+    <tr>
+        <xsl:choose>
+            <xsl:when test="$is_responder">
+                <td class="cmd">
+                    <form action="{$prog}" method="post">
+                        <div align="center"><input type="submit" value="Ответ" class="btn primary"/></div>
+                        <xsl:if test="$mode != 'edd'">
+                            <input type="radio" name="RESULT" value="CONDITIONAL" checked="true"/>&#160;Условный<br/>
+                        </xsl:if>
+                        <input type="radio" name="RESULT" value="RETRY"/>&#160;Повтор<br/>
+                        <input type="radio" name="RESULT" value="UNFILLED"/>&#160;Отказ<br/>
+                        <!--
+                                  <input type="radio" name="RESULT" value="ESTIMATE"/>&#160;Стоимость
+                                  <input type="radio" name="RESULT" value="LOCATIONS"/>&#160;Местонахождение<br/>
+                        -->
+                        <input type="radio" name="RESULT" value="WILL_SUPPLY"/>&#160;Позже<br/>
+                        <input type="radio" name="RESULT" value="HOLD_PLACED"/>&#160;Очередь<br/>
+                        <input type="hidden" name="ACTION" value="ILL_ANSWER"/>
+                        <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                        <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                        <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                        <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                    </form>
+                </td>
+                <td class="cmd">
+                    <form action="{$prog}" method="post">
+                        <div align="center"><input type="submit" value="Отправка" class="btn primary"/></div>
+                        <input type="hidden" name="ACTION" value="SHIPPED"/>
+                        <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                        <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                        <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                        <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                        <input type="hidden" name="TR_TYPE" value="1"/>
+                    </form>
+                </td>
+                <!--
+                          <td class="cmd">
+                          <form action="{$prog}" method="post">
+                          <div align="center"><input type="submit" value="Пересылка"/></div>
+                          <input type="hidden" name="ACTION" value="FORWARD"/>
+                          <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                          <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                          <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                          <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                          <input type="hidden" name="TR_TYPE" value="1"/>
+                          </form>
+                          </td>
+                -->
+            </xsl:when>
+            <xsl:otherwise>
+                <td class="cmd">
+                    <form action="{$prog}" method="post">
+                        <div align="center"><input type="submit" value="Получен" class="btn primary"/></div>
+                        <input type="hidden" name="ACTION" value="RECEIVED"/>
+                        <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                        <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                        <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                        <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                        <xsl:choose>
+                            <xsl:when test="$mode='edd'">
+                                <input type="hidden" name="SS_TYPE" value="2"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                Услуга <select name="SS_TYPE">
+                                <option selected="" value="1">Документ</option>
+                                <option value="2">Копия</option>
+                            </select><br/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        Дата получения <input name="DATE_RECEIVED" size="8" maxlength="8" value="{$current.date}"/><br/>
+                        Примечание <input name="REQUESTER_NOTE" size="25" maxlength="120"/>
+                    </form>
+                </td>
+                <td class="cmd">
+                    <form action="{$prog}" method="post">
+                        <div align="center"><input type="submit" value="Отмена" class="btn primary"/></div>
+                        <input type="hidden" name="ACTION" value="CANCEL"/>
+                        <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                        <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                        <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                        <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                        Примечание <input name="REQUESTER_NOTE" size="25" maxlength="120"/>
+                    </form>
+                </td>
+                <xsl:if test="$mode != 'edd'">
+                    <td class="cmd">
+                        <form action="{$prog}" method="post">
+                            <div align="center"><input type="submit" value="Утерян" class="btn primary"/></div>
+                            <input type="hidden" name="ACTION" value="LOST"/>
+                            <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                            <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                            <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                            <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                            Примечание <input name="NOTE" size="25" maxlength="120"/>
+                        </form>
+                    </td>
+                </xsl:if>
+            </xsl:otherwise>
+        </xsl:choose>
+    </tr>
+</xsl:when>
+<xsl:when test="../../transaction[@status='cancel']">
+    <tr>
+        <xsl:choose>
+            <xsl:when test="$is_responder">
+                <td class="cmd">
+                    <form action="{$prog}" method="post">
+                        <div align="center"><input type="submit" value="Ответ" class="btn primary"/></div>
+                        <input type="hidden" name="ACTION" value="CANCEL_REPLY"/>
+                        <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                        <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                        <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                        <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                        <input type="radio" name="ANSWER" value="1" checked="true"/>&#160;Отменить<br/>
+                        <input type="radio" name="ANSWER" value="0"/>&#160;Не отменять<br/>
+                        Примечание <input name="RESPONDER_NOTE" size="40" maxlength="120"/>
+                    </form>
+                </td>
+            </xsl:when>
+            <xsl:otherwise>
+                <td class="cmd">
+                    <form action="{$prog}" method="post">
+                        <div align="center"><input type="submit" value="Получен" class="btn primary"/></div>
+                        <input type="hidden" name="ACTION" value="RECEIVED"/>
+                        <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                        <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                        <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                        <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                        <xsl:choose>
+                            <xsl:when test="$mode='edd'">
+                                <input type="hidden" name="SS_TYPE" value="2"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                Услуга <select name="SS_TYPE">
+                                <option selected="" value="1">Документ</option>
+                                <option value="2">Копия</option>
+                            </select><br/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        Дата получения <input name="DATE_RECEIVED" size="8" maxlength="8" value="{$current.date}"/><br/>
+                        Примечание <input name="REQUESTER_NOTE" size="25" maxlength="120"/>
+                    </form>
+                </td>
+                <xsl:if test="$mode != 'edd'">
+                    <td class="cmd">
+                        <form action="{$prog}" method="post">
+                            <div align="center"><input type="submit" value="Утерян" class="btn primary"/></div>
+                            <input type="hidden" name="ACTION" value="LOST"/>
+                            <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                            <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                            <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                            <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                            Примечание <input name="NOTE" size="25" maxlength="120"/>
+                        </form>
+                    </td>
+                </xsl:if>
+            </xsl:otherwise>
+        </xsl:choose>
+    </tr>
+</xsl:when>
+<xsl:when test="../../transaction[@status='shipped']">
+    <tr>
+        <xsl:choose>
+            <xsl:when test="$is_responder">
+                <xsl:choose>
+                    <xsl:when test="Shipped/shippedServiceType=1">
+                        <td class="cmd">
+                            <form action="{$prog}" method="post">
+                                <fieldset>
+                                    <div align="center"><input type="submit" value="Отзыв" class="btn primary"/></div>
+                                    <input type="hidden" name="ACTION" value="RECALL"/>
+                                    <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                                    <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                                    <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                                    <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                                    Примечание <input name="RESPONDER_NOTE" size="25" maxlength="120"/>
+                                </fieldset>
+                            </form>
+                        </td>
+                        <!--
+                                      <td class="cmd">
+                                      <form action="{$prog}" method="post">
+                                      <div align="center"><input type="submit" value="Просрочен"/></div>
+                                      <input type="hidden" name="ACTION" value="OVERDUE"/>
+                                      <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                                      <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                                      <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                                      <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                                      Дата возврата <input name="DATE_DUE" size="8" maxlength="8" value="{supplyDetails/dateDue}"/><br/>
+                                      Примечание <input name="RESPONDER_NOTE" size="25" maxlength="120"/>
+                                      </form>
+                                      </td>
+                        -->
+                        <td class="cmd">
+                            <form action="{$prog}" method="post">
+                                <div align="center"><input type="submit" value="Сдан" class="btn primary"/></div>
+                                <input type="hidden" name="ACTION" value="CHECKED_IN"/>
+                                <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                                <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                                <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                                <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                                Дата сдачи <input name="DATE_CHECKED_IN" size="8" maxlength="8"
+                                                  value="{$current.date}"/><br/>
+                                Примечание <input name="RESPONDER_NOTE" size="25" maxlength="120"/>
+                            </form>
+                        </td>
+                    </xsl:when>
+                    <xsl:otherwise> <!-- Terminal state -->
+                        <xsl:if test="not(contains($box, '.arc'))">
+                            <td class="cmd">
+                                <form action="movetr.php" method="post">
+                                    <input type="submit" value="В архив" class="btn primary"/>
+                                    <input type="hidden" name="BOX" value="{$box}"/>
+                                    <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                                    <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                                </form>
+                            </td>
+                        </xsl:if>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+                <td class="cmd">
+                    <form action="{$prog}" method="post">
+                        <div align="center"><input type="submit" value="Получен" class="btn primary"/></div>
+                        <input type="hidden" name="ACTION" value="RECEIVED"/>
+                        <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                        <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                        <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                        <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                        <input type="hidden" name="SS_TYPE" value="{Shipped/shippedServiceType}"/>
+                        Дата получения <input name="DATE_RECEIVED" size="8" maxlength="8" value="{$current.date}"/><br/>
+                        Примечание <input name="REQUESTER_NOTE" size="25" maxlength="120"/>
+                    </form>
+                </td>
+            </xsl:otherwise>
+        </xsl:choose>
+        <xsl:if test="Shipped/shippedServiceType &lt; 5">
+            <td class="cmd">
+                <form action="{$prog}" method="post">
+                    <div align="center"><input type="submit" value="Утерян" class="btn primary"/></div>
+                    <input type="hidden" name="ACTION" value="LOST"/>
+                    <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                    <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                    <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                    <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                    Примечание <input name="NOTE" size="25" maxlength="120"/>
+                </form>
+            </td>
+        </xsl:if>
+    </tr>
+</xsl:when>
+<xsl:when test="../../transaction[@status='received']">
+    <tr>
+        <xsl:choose>
+            <xsl:when test="$is_responder">
+                <xsl:choose>
+                    <xsl:when test="Received/shippedServiceType=1">
+                        <td class="cmd">
+                            <form action="{$prog}" method="post" class="form-stacked">
+                                <div class="actions">
+                                    <input type="submit" value="Отзыв" class="btn primary"/>
+                                </div>
+                                <fieldset>
+                                    <input type="hidden" name="ACTION" value="RECALL"/>
+                                    <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                                    <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                                    <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                                    <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                                    <div class="clearfix">
+                                        <label for="RESPONDER_NOTE">Примечание:</label>
+                                        <textarea id="RESPONDER_NOTE" name="RESPONDER_NOTE" size="25" maxlength="120" type="text"></textarea>
+                                    </div>
+                                </fieldset>
+
+                            </form>
+
+                        </td>
+                        <!--
+                                      <td class="cmd">
+                                      <form action="{$prog}" method="post">
+                                      <div align="center"><input type="submit" value="Просрочен"/></div>
+                                      <input type="hidden" name="ACTION" value="OVERDUE"/>
+                                      <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                                      <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                                      <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                                      <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                                      Дата возврата <input name="DATE_DUE" size="8" maxlength="8" value="{supplyDetails/dateDue}"/><br/>
+                                      Примечание <input name="RESPONDER_NOTE" size="25" maxlength="120"/>
+                                      </form>
+                                      </td>
+                        -->
+                        <td class="cmd">
+                            <form action="{$prog}" method="post" class="form-stacked">
+                                <div class="actions"><input type="submit" value="Сдан" class="btn primary"/></div>
+                                <fieldset>
+
+                                    <input type="hidden" name="ACTION" value="CHECKED_IN"/>
+                                    <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                                    <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                                    <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                                    <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                                    <div class="clearfix"><label for="DATE_CHECKED_IN">Дата сдачи:</label> <input name="DATE_CHECKED_IN" id="DATE_CHECKED_IN" size="8" maxlength="8"
+                                                                                                                  value="{$current.date}"/></div>
+                                    <div class="clearfix"><label for="DATE_CHECKED_IN2">Примечание:</label><input name="RESPONDER_NOTE"  id="RESPONDER_NOTE2" size="25" maxlength="120"/></div>
+                                </fieldset>
+                            </form>
+                        </td>
+                    </xsl:when>
+                    <xsl:otherwise> <!-- Terminal state -->
+                        <xsl:if test="not(contains($box, '.arc'))">
+                            <td class="cmd">
+                                <form action="movetr.php" method="post">
+                                    <input type="submit" value="В архив" class="btn primary"/>
+                                </form>
+                            </td>
+                        </xsl:if>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:if test="Received/shippedServiceType!=1"> <!-- Terminal state -->
+                    <xsl:if test="not(contains($box, '.arc'))">
+                        <td class="cmd">
+                            <form action="movetr.php" method="post">
+                                <input type="submit" value="В архив" class="btn primary"/>
+                            </form>
+                        </td>
+                    </xsl:if>
+                </xsl:if>
+            </xsl:otherwise>
+        </xsl:choose>
+        <xsl:if test="Received/shippedServiceType=1">
+            <td class="cmd">
+                <form action="{$prog}" method="post"  class="form-stacked">
+                    <div class="actions"><input type="submit" value="Утерян" class="btn primary"/></div>
+                    <input type="hidden" name="ACTION" value="LOST"/>
+                    <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                    <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                    <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                    <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                    <div class="clearfix"><label for="NOTE">Примечание:</label> <input name="NOTE" id="NOTE" size="25" maxlength="120"/></div>
+                </form>
+            </td>
+        </xsl:if>
+    </tr>
+</xsl:when>
+<xsl:when test="../../transaction[@status='recall']">
+    <tr>
+        <xsl:choose>
+            <xsl:when test="$is_responder">
+                <td class="cmd">
+                    <form action="{$prog}" method="post" class="form-stacked">
+                        <div class="actions"><input type="submit" value="Сдан" class="btn primary"/></div>
+                        <input type="hidden" name="ACTION" value="CHECKED_IN"/>
+                        <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                        <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                        <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                        <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                        <div class="clearfix">
+                            <label for="DATE_CHECKED_IN">Дата сдачи:</label>  <input name="DATE_CHECKED_IN"  id="DATE_CHECKED_IN" size="8" maxlength="8" value="{$current.date}"/>
+                        </div>
+                        <div class="clearfix">
+                            <label for="RESPONDER_NOTE">Примечание:</label> <input name="RESPONDER_NOTE" id="RESPONDER_NOTE" size="25" maxlength="120"/>
+                        </div>
+                    </form>
+                </td>
+            </xsl:when>
+            <xsl:otherwise>
+            </xsl:otherwise>
+        </xsl:choose>
+        <td class="cmd">
+            <form action="{$prog}" method="post" class="form-stacked">
+                <div class="actions"><input type="submit" value="Утерян" class="btn primary"/></div>
+                <input type="hidden" name="ACTION" value="LOST"/>
+                <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                <div class="clearfix"><label for="NOTE">Примечание:</label> <input name="NOTE" id="NOTE" size="25" maxlength="120"/></div>
+            </form>
+        </td>
+    </tr>
+</xsl:when>
+<xsl:when test="../../transaction[@status='conditional']">
+    <xsl:if test="not($is_responder)">
+        <tr>
+            <td class="cmd">
+                <form class="{$prog}" method="post" class="form-stacked">
+                    <div align="actions"><input type="submit" value="Отмена" class="btn primary"/></div>
+                    <input type="hidden" name="ACTION" value="CANCEL"/>
+                    <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                    <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                    <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                    <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                </form>
+            </td>
+            <td class="cmd">
+                <form action="{$prog}" method="post" class="form-stacked">
+                    <div align="center"><input type="submit" value="Ответ" class="btn primary"/></div>
+                    <input type="hidden" name="ACTION" value="CONDITIONAL_REPLY"/>
+                    <input type="hidden" name="TR_QUALIFIER" value="{$tq}"/>
+                    <input type="hidden" name="TR_GROUP_QUALIFIER" value="{$tgq}"/>
+                    <input type="hidden" name="REQUESTER" value="{$requester}"/>
+                    <input type="hidden" name="RESPONDER" value="{$responder}"/>
+                    <input type="radio" name="ANSWER" value="1" checked="true"/>&#160;Принять условия<br/>
+                    <input type="radio" name="ANSWER" value="0"/>&#160;Отказаться<br/>
+                    <div class="clearfix"><label for="REQUESTER_NOTE">Примечание:</label> <input name="REQUESTER_NOTE" id="REQUESTER_NOTE" size="40" maxlength="120"/></div>
+                </form>
+            </td>
+        </tr>
+    </xsl:if>
+</xsl:when>
+<xsl:otherwise>
+    <xsl:if test="../../transaction[@status='notsupplied'] and ILLAnswer/transactionResults='2' and not($is_responder)">
+        <xsl:variable name="req" select="../ILLAPDU/ILLRequest"/>
+        <tr>
+            <td class="cmd">
+                <form action="order.php" method="post">
+                    <div align="center"><input type="submit" value="Повторный запрос" class="btn primary"/></div>
+                    <input type="hidden" name="RETRY_FLAG" value="1"/>
+                    <xsl:if test="$req/placeOnHold">
+                        <input type="hidden" name="PLACE_ON_HOLD" value="{$req/placeOnHold}"/>
+                    </xsl:if>
+                    <input type="hidden" name="SERVICE_TYPE" value="{$req/iLLServiceType}"/>
+                    <input type="hidden" name="ITEM_TYPE" value="{$req/itemId/itemType}"/>
+                    <xsl:if test="$req/itemId/author">
+                        <input type="hidden" name="AUTHOR" value="{$req/itemId/author}"/>
+                    </xsl:if>
+                    <xsl:if test="$req/itemId/title">
+                        <input type="hidden" name="TITLE" value="{$req/itemId/title}"/>
+                    </xsl:if>
+                    <xsl:if test="$req/itemId/iSBN">
+                        <input type="hidden" name="ISBN" value="{$req/itemId/iSBN}"/>
+                    </xsl:if>
+                    <xsl:if test="$req/itemId/iSSN">
+                        <input type="hidden" name="ISSN" value="{$req/itemId/iSSN}"/>
+                    </xsl:if>
+                    <xsl:if test="$req/itemId/volumeIssue">
+                        <input type="hidden" name="VOLUME_ISSUE" value="{$req/itemId/volumeIssue}"/>
+                    </xsl:if>
+                    <xsl:if test="$req/itemId/pagination">
+                        <input type="hidden" name="PAGINATION" value="{$req/itemId/pagination}"/>
+                    </xsl:if>
+                    <xsl:if test="$req/itemId/systemNo/external/octetString">
+                        <xsl:variable name="sn" select="$req/itemId/systemNo/external/octetString"/>
+                        <input type="hidden" name="SYSTEM_NO_ID" value="{substring-before($sn, ':')}"/>
+                        <input type="hidden" name="SYSTEM_NO" value="{substring-after($sn, ':')}"/>
+                    </xsl:if>
+                    <xsl:if test="$req/supplementalItemDescription/external">
+                        <input type="hidden" name="record" value="{$external.rec}"/>
+                    </xsl:if>
+                    <xsl:if test="$req/copyrightCompliance">
+                        <input type="hidden" name="COPYRIGHT" value="{$req/copyrightCompliance}"/>
+                    </xsl:if>
+                    <xsl:if test="$req/costInfoType/accountNumber">
+                        <input type="hidden" name="ACOUNT_NUMBER" value="{$req/costInfoType/accountNumber}"/>
+                    </xsl:if>
+                    <xsl:if test="$req/costInfoType/maximumCost/monetaryValue">
+                        <input type="hidden" name="MAX_COST_V" value="{$req/costInfoType/maximumCost/monetaryValue}"/>
+                    </xsl:if>
+                    <xsl:if test="$req/costInfoType/maximumCost/currencyCost">
+                        <input type="hidden" name="MAX_COST_C" value="{$req/costInfoType/maximumCost/currencyCost}"/>
+                    </xsl:if>
+                    <xsl:if test="$req/costInfoType/reciprocalAgreement='1'">
+                        <input type="hidden" name="AGREEMENT" value="1"/>
+                    </xsl:if>
+                    <xsl:if test="$req/costInfoType/willPayFee='1'">
+                        <input type="hidden" name="WILL_PAY" value="1"/>
+                    </xsl:if>
+                    <xsl:if test="$req/costInfoType/paymentProvided='1'">
+                        <input type="hidden" name="PAYMENT_PROVIDED" value="1"/>
+                    </xsl:if>
+                    <xsl:if test="$req/forwardFlag='1'">
+                        <input type="hidden" name="FORWARD_FLAG" value="{$req/forwardFlag}"/>
+                    </xsl:if>
+                    <xsl:if test="$req/requesterNote">
+                        <input type="hidden" name="REQUESTER_NOTE" value="{$req/requesterNote}"/>
+                    </xsl:if>
+                    <xsl:if test="$req/forwardNote">
+                        <input type="hidden" name="FORWARD_NOTE" value="{$req/forwardNote}"/>
+                    </xsl:if>
+                    <input type="hidden" name="RESPONDER_ID"
+                           value="{$req/responderId/personOrInstitutionSymbol/institutionSymbol}"/>
+                </form>
+            </td>
+        </tr>
+    </xsl:if>
+    <xsl:if test="not(contains($box, '.arc'))">
+        <td class="cmd">
+            <form action="movetr.php" method="post">
+                <input type="submit" value="В архив" class="btn primary"/>
+            </form>
+        </td>
+    </xsl:if>
+</xsl:otherwise>
+</xsl:choose>
+<xsl:if test="../ILLAPDU/ILLRequest/iLLServiceType &lt; 5">
+    <xsl:variable name="req" select="../ILLAPDU/ILLRequest"/>
+    <tr>
+        <td class="cmd">
+            <form action="order.php" method="post">
+                <div align="center"><input type="submit" value="Переслать" class="btn primary"/></div>
+                <xsl:if test="$req/placeOnHold">
+                    <input type="hidden" name="PLACE_ON_HOLD" value="{$req/placeOnHold}"/>
+                </xsl:if>
+                <input type="hidden" name="SERVICE_TYPE" value="{$req/iLLServiceType}"/>
+                <input type="hidden" name="ITEM_TYPE" value="{$req/itemId/itemType}"/>
+                <xsl:if test="$req/itemId/author">
+                    <input type="hidden" name="AUTHOR" value="{$req/itemId/author}"/>
+                </xsl:if>
+                <xsl:if test="$req/itemId/title">
+                    <input type="hidden" name="TITLE" value="{$req/itemId/title}"/>
+                </xsl:if>
+                <xsl:if test="$req/itemId/iSBN">
+                    <input type="hidden" name="ISBN" value="{$req/itemId/iSBN}"/>
+                </xsl:if>
+                <xsl:if test="$req/itemId/iSSN">
+                    <input type="hidden" name="ISSN" value="{$req/itemId/iSSN}"/>
+                </xsl:if>
+                <xsl:if test="$req/itemId/volumeIssue">
+                    <input type="hidden" name="VOLUME_ISSUE" value="{$req/itemId/volumeIssue}"/>
+                </xsl:if>
+                <xsl:if test="$req/itemId/pagination">
+                    <input type="hidden" name="PAGINATION" value="{$req/itemId/pagination}"/>
+                </xsl:if>
+                <xsl:if test="$req/itemId/systemNo/external/octetString">
+                    <xsl:variable name="sn" select="$req/itemId/systemNo/external/octetString"/>
+                    <input type="hidden" name="SYSTEM_NO_ID" value="{substring-before($sn, ':')}"/>
+                    <input type="hidden" name="SYSTEM_NO" value="{substring-after($sn, ':')}"/>
+                </xsl:if>
+                <xsl:if test="$req/supplementalItemDescription/external">
+                    <input type="hidden" name="record" value="{$external.rec}"/>
+                </xsl:if>
+                <xsl:if test="$req/copyrightCompliance">
+                    <input type="hidden" name="COPYRIGHT" value="{$req/copyrightCompliance}"/>
+                </xsl:if>
+                <xsl:if test="$req/costInfoType/accountNumber">
+                    <input type="hidden" name="ACOUNT_NUMBER" value="{$req/costInfoType/accountNumber}"/>
+                </xsl:if>
+                <xsl:if test="$req/costInfoType/maximumCost/monetaryValue">
+                    <input type="hidden" name="MAX_COST_V" value="{$req/costInfoType/maximumCost/monetaryValue}"/>
+                </xsl:if>
+                <xsl:if test="$req/costInfoType/maximumCost/currencyCost">
+                    <input type="hidden" name="MAX_COST_C" value="{$req/costInfoType/maximumCost/currencyCost}"/>
+                </xsl:if>
+                <xsl:if test="$req/costInfoType/reciprocalAgreement='1'">
+                    <input type="hidden" name="AGREEMENT" value="1"/>
+                </xsl:if>
+                <xsl:if test="$req/costInfoType/willPayFee='1'">
+                    <input type="hidden" name="WILL_PAY" value="1"/>
+                </xsl:if>
+                <xsl:if test="$req/costInfoType/paymentProvided='1'">
+                    <input type="hidden" name="PAYMENT_PROVIDED" value="1"/>
+                </xsl:if>
+                <xsl:if test="$req/forwardFlag='1'">
+                    <input type="hidden" name="FORWARD_FLAG" value="{$req/forwardFlag}"/>
+                </xsl:if>
+                <xsl:if test="$req/requesterNote">
+                    <input type="hidden" name="REQUESTER_NOTE" value="{$req/requesterNote}"/>
+                </xsl:if>
+                <fieldset>
+                    <xsl:text>Держатель</xsl:text>
+                    <input id="holder" name="RESPONDER_ID" size="10" maxlength="10" value=""/>
+                    <input type="button" value="..." onclick="listOrg();" class="btn"/><br/>
+                    <xsl:text>Примечание</xsl:text>
+                    <input id="holder" name="FORWARD_NOTE" size="25" maxlength="120"/>
+                </fieldset>
+            </form>
+        </td>
+    </tr>
+</xsl:if>
+</table>
+</td>
+</tr>
+</xsl:template>
+
+<xsl:template match="ILLRequest">
+    <tr>
+        <td class="date" id="req">
+            <xsl:apply-templates select="serviceDateTime/dateTimeOfThisService"/>
+        </td>
+        <td class="data" id="req">
+            <table>
+                <caption>
+                    <xsl:text>Запрос</xsl:text>
+                    <xsl:if test="retryFlag = 1">
+                        <xsl:text> [ повторный ]</xsl:text>
+                    </xsl:if>
+                    <xsl:if test="forwardFlag = 1">
+                        <xsl:text> [ от посредника ]</xsl:text>
+                    </xsl:if>
+                </caption>
+                <tr>
+                    <td valign="top"><b>Тип услуги: </b></td>
+                    <td>
+                        <xsl:for-each select="iLLServiceType">
+                            <xsl:call-template name="stype"/>
+                            <br/>
+                        </xsl:for-each>
+                    </td>
+                </tr>
+                <xsl:if test="supplyMediumInfoType">
+                    <tr>
+                        <td valign="top"><b>Носитель:</b></td>
+                        <td>
+                            <xsl:apply-templates select="supplyMediumInfoType"/>
+                        </td>
+                    </tr>
+                </xsl:if>
+                <xsl:if test="deliveryService/electronicDelivery/electronicDeliveryService">
+                    <tr>
+                        <td valign="top"><b>Электронная доставка:</b></td>
+                        <td>
+                            <xsl:apply-templates
+                                    select="deliveryService/electronicDelivery/electronicDeliveryService/eDeliveryDescription"/>
+                            <br/>
+                            <xsl:apply-templates
+                                    select="deliveryService/electronicDelivery/electronicDeliveryService/eDeliveryDetails"/>
+                        </td>
+                    </tr>
+                </xsl:if>
+                <tr>
+                    <td valign="top"><b>Очередь: </b></td>
+                    <td>
+                        <xsl:call-template name="phold"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top"><b>Документ: </b></td>
+                    <td>
+                        <xsl:call-template name="item"/>
+                    </td>
+                </tr>
+
+                <xsl:for-each select="supplementalItemDescription">
+                    <tr>
+                        <td valign="top"><b>Доп. описание: </b></td>
+                        <td>
+                            <xsl:apply-templates select="external"/>
+                        </td>
+                    </tr>
+                </xsl:for-each>
+                <xsl:apply-templates select="costInfoType"/>
+                <xsl:apply-templates select="copyrightCompliance"/>
+                <xsl:apply-templates select="thirdPartyInfoType"/>
+                <xsl:apply-templates select="requesterNote"/>
+                <xsl:apply-templates select="forwardNote"/>
+            </table>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="ILLAnswer">
+    <tr>
+        <td class="date" id="res">
+            <xsl:apply-templates select="serviceDateTime/dateTimeOfThisService"/>
+        </td>
+        <td class="data" id="res">
+            <table>
+                <caption>Ответ</caption>
+                <tr>
+                    <td valign="top"><b>Результат: </b></td>
+                    <td>
+                        <xsl:call-template name="tr_res"/>
+                    </td>
+                </tr>
+                <xsl:apply-templates select="child::resultsExplanation"/>
+                <xsl:apply-templates select="responderNote"/>
+            </table>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="Shipped">
+    <tr>
+        <td class="date" id="res">
+            <xsl:apply-templates select="serviceDateTime/dateTimeOfThisService"/>
+        </td>
+        <td class="data" id="res">
+            <table>
+                <caption>Отправлен</caption>
+                <tr>
+                    <td valign="top"><b>Тип услуги: </b></td>
+                    <td>
+                        <xsl:for-each select="shippedServiceType">
+                            <xsl:call-template name="stype"/>
+                        </xsl:for-each>
+                    </td>
+                </tr>
+                <xsl:if test="supplyDetails/dateShipped">
+                    <tr>
+                        <td valign="top"><b>Дата отправки: </b></td>
+                        <td>
+                            <xsl:value-of select="supplyDetails/dateShipped"/>
+                        </td>
+                    </tr>
+                </xsl:if>
+                <xsl:if test="supplyDetails/dateDue">
+                    <tr>
+                        <td valign="top"><b>Дата возврата: </b></td>
+                        <td>
+                            <xsl:value-of select="supplyDetails/dateDue/dateDueField"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top"><b>Срок пользования: </b></td>
+                        <td>
+                            <xsl:variable name="renew" select="supplyDetails/dateDue/renewable"/>
+                            <xsl:choose>
+                                <xsl:when test='$renew=0'>
+                                    Не продлевается
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    Продлевается
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </td>
+                    </tr>
+                </xsl:if>
+                <xsl:if test="supplyDetails/chargeableUnits">
+                    <tr>
+                        <td valign="top"><b>Количество оплачиваемых единиц: </b></td>
+                        <td>
+                            <xsl:value-of select="supplyDetails/chargeableUnits"/>
+                        </td>
+                    </tr>
+                </xsl:if>
+                <xsl:apply-templates select="supplyDetails/shippedConditions"/>
+                <xsl:if test="supplyDetails/shippedVia">
+                    <tr>
+                        <td valign="top"><b>Служба доставки: </b></td>
+                        <td>
+                            <xsl:apply-templates select="supplyDetails/shippedVia"/>
+                        </td>
+                    </tr>
+                </xsl:if>
+                <xsl:if test="supplyDetails/cost">
+                    <tr>
+                        <td valign="top"><b>Стоимость: </b></td>
+                        <td>
+                            <xsl:value-of select="supplyDetails/cost/monetaryValue"/>
+                            <xsl:apply-templates select="supplyDetails/cost/currencyCode"/>
+                        </td>
+                    </tr>
+                </xsl:if>
+                <xsl:if test="supplyDetails/insuredFor">
+                    <tr>
+                        <td valign="top"><b>Застраховано на: </b></td>
+                        <td>
+                            <xsl:value-of select="supplyDetails/insuredFor/monetaryValue"/>
+                            <xsl:apply-templates select="supplyDetails/insuredFor/currencyCode"/>
+                        </td>
+                    </tr>
+                </xsl:if>
+                <xsl:if test="supplyDetails/returnInsuranceRequired">
+                    <tr>
+                        <td valign="top"><b>Требуется возврат страховки: </b></td>
+                        <td>
+                            <xsl:value-of select="supplyDetails/returnInsuranceRequired/monetaryValue"/>
+                            <xsl:apply-templates select="supplyDetails/returnInsuranceRequired/currencyCode"/>
+                        </td>
+                    </tr>
+                </xsl:if>
+                <xsl:apply-templates select="responderNote"/>
+            </table>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="ConditionalReply">
+    <tr>
+        <td class="date" id="res">
+            <xsl:apply-templates select="serviceDateTime/dateTimeOfThisService"/>
+        </td>
+        <td class="data" id="res">
+            <table width="100%">
+                <caption>Принятие условий</caption>
+                <tr>
+                    <td valign="top"><b>Условия: </b></td>
+                    <td>
+                        <xsl:variable name="answer" select="answer"/>
+                        <xsl:choose>
+                            <xsl:when test='$answer=1'>
+                                Приняты
+                            </xsl:when>
+                            <xsl:otherwise>
+                                Не приняты
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </td>
+                </tr>
+                <xsl:apply-templates select="requesterNote"/>
+            </table>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="Cancel">
+    <tr>
+        <td class="date" id="req">
+            <xsl:apply-templates select="serviceDateTime/dateTimeOfThisService"/>
+        </td>
+        <td class="data" id="req">
+            <table>
+                <caption>Отмена</caption>
+                <xsl:apply-templates select="requesterNote"/>
+            </table>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="CancelReply">
+    <tr>
+        <td class="date" id="res">
+            <xsl:apply-templates select="serviceDateTime/dateTimeOfThisService"/>
+        </td>
+        <td class="data" id="res">
+            <table>
+                <caption>Подтверждение отмены</caption>
+                <tr>
+                    <td valign="top"><b>Заказ отменен: </b></td>
+                    <td>
+                        <xsl:variable name="answer" select="answer"/>
+                        <xsl:choose>
+                            <xsl:when test='$answer=1'>
+                                Да
+                            </xsl:when>
+                            <xsl:otherwise>
+                                Нет
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </td>
+                </tr>
+                <xsl:apply-templates select="responderNote"/>
+            </table>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="Received">
+    <tr>
+        <td class="date" id="req">
+            <xsl:apply-templates select="serviceDateTime/dateTimeOfThisService"/>
+        </td>
+        <td class="data" id="req">
+            <table>
+                <caption>Получен</caption>
+                <tr>
+                    <td valign="top"><b>Тип услуги: </b></td>
+                    <td>
+                        <xsl:for-each select="shippedServiceType">
+                            <xsl:call-template name="stype"/>
+                        </xsl:for-each>
+                    </td>
+                </tr>
+                <xsl:for-each select="supplementalItemDescription">
+                    <tr>
+                        <td valign="top"><b>Доп. описание: </b></td>
+                        <td>
+                            <xsl:apply-templates select="external"/>
+                        </td>
+                    </tr>
+                </xsl:for-each>
+                <tr>
+                    <td valign="top"><b>Дата получения: </b></td>
+                    <td>
+                        <xsl:value-of select="dateReceived"/>
+                    </td>
+                </tr>
+                <xsl:apply-templates select="requesterNote"/>
+            </table>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="Recall">
+    <tr>
+        <td class="date" id="res">
+            <xsl:apply-templates select="serviceDateTime/dateTimeOfThisService"/>
+        </td>
+        <td class="data" id="res">
+            <table>
+                <caption>Отозван</caption>
+                <xsl:apply-templates select="responderNote"/>
+            </table>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="CheckedIn">
+    <tr>
+        <td class="date" id="res">
+            <xsl:apply-templates select="serviceDateTime/dateTimeOfThisService"/>
+        </td>
+        <td class="data" id="res">
+            <table>
+                <caption>Сдан</caption>
+                <tr>
+                    <td valign="top"><b>Дата сдачи: </b></td>
+                    <td>
+                        <xsl:value-of select="dateCheckedIn"/>
+                    </td>
+                </tr>
+                <xsl:apply-templates select="responderNote"/>
+            </table>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="Lost">
+    <tr>
+        <td class="date" id="res">
+            <xsl:apply-templates select="serviceDateTime/dateTimeOfThisService"/>
+        </td>
+        <td class="data" id="res">
+            <table>
+                <caption>Утерян</caption>
+                <xsl:apply-templates select="note"/>
+            </table>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="Damaged">
+    <tr>
+        <td class="date" id="res">
+            <xsl:apply-templates select="serviceDateTime/dateTimeOfThisService"/>
+        </td>
+        <td class="data" id="res">
+            <table>
+                <caption>Поврежден</caption>
+                <xsl:apply-templates select="note"/>
+            </table>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="Message">
+    <tr>
+        <td class="date" id="res">
+            <xsl:apply-templates select="serviceDateTime/dateTimeOfThisService"/>
+        </td>
+        <td class="data" id="res">
+            <table>
+                <caption>Сообщение</caption>
+                <xsl:apply-templates select="note"/>
+            </table>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="Expired">
+    <tr>
+        <td class="date" id="res">
+            <xsl:apply-templates select="serviceDateTime/dateTimeOfThisService"/>
+        </td>
+        <td class="data" id="res">
+            <table>
+                <caption>Просрочен</caption>
+            </table>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="dateTimeOfThisService">
+    <xsl:value-of select="substring(date, 1, 4)"/>
+    <xsl:text>-</xsl:text>
+    <xsl:value-of select="substring(date, 5, 2)"/>
+    <xsl:text>-</xsl:text>
+    <xsl:value-of select="substring(date, 7, 2)"/>
+    <br/>
+    <xsl:value-of select="substring(time, 1, 2)"/>
+    <xsl:text>:</xsl:text>
+    <xsl:value-of select="substring(time, 3, 2)"/>
+    <xsl:text>:</xsl:text>
+    <xsl:value-of select="substring(time, 5, 2)"/>
+</xsl:template>
+
+<xsl:template match="costInfoType">
+    <xsl:if test="./reciprocalAgreement = '1'">
+        <tr>
+            <td valign="top" class="urg"><b>Взаимопомощь МАРС</b></td>
+            <td></td>
+        </tr>
+    </xsl:if>
+    <xsl:if test="./willPayFee = '1'">
+        <tr>
+            <td valign="top" class="urg"><b>Срочный заказ</b></td>
+            <td></td>
+        </tr>
+    </xsl:if>
+</xsl:template>
+
+<xsl:template match="copyrightCompliance">
+    <tr>
+        <td valign="top"><b>Соотв. законам об авторском праве: </b></td>
+        <td>
+            <xsl:value-of select="."/>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="thirdPartyInfoType">
+    <xsl:if test="sendToList">
+        <tr>
+            <td valign="top" rowspan="{count(sendToList/sendToListType)}"><b>Потенциальные держатели: </b></td>
+            <xsl:for-each select="sendToList/sendToListType">
+                <td>
+                    <xsl:call-template name="org.by.code">
+                        <xsl:with-param name="oname" select="systemId"/>
+                    </xsl:call-template>
+                </td>
+            </xsl:for-each>
+        </tr>
+    </xsl:if>
+</xsl:template>
+
+<xsl:template match="forwardNote">
+    <tr>
+        <td valign="top"><b>Примечание посредника: </b></td>
+        <td>
+            <xsl:value-of select="."/>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="requesterNote">
+    <tr>
+        <td valign="top"><b>Примечание абонента: </b></td>
+        <td>
+            <xsl:value-of select="."/>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="responderNote">
+    <tr>
+        <td><b>Примечание держателя: </b></td>
+        <td>
+            <xsl:value-of select="."/>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="note">
+    <tr>
+        <td><b>Примечание: </b></td>
+        <td>
+            <xsl:value-of select="."/>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template name="stype">
+    <xsl:variable name="type" select="."/>
+    <xsl:choose>
+        <xsl:when test='$type=1'>
+            Документ во временное пользование
+        </xsl:when>
+        <xsl:when test='$type=2'>
+            Копия документа
+        </xsl:when>
+        <xsl:when test='$type=3'>
+            Справка о местонахождении документа
+        </xsl:when>
+        <xsl:when test='$type=4'>
+            Стоимость доставки документа
+        </xsl:when>
+        <xsl:when test='$type=5'>
+            Бронирование
+        </xsl:when>
+    </xsl:choose>
+</xsl:template>
+
+<xsl:template name="phold">
+    <xsl:variable name="type" select="placeOnHold"/>
+    <xsl:choose>
+        <xsl:when test="$type=1">
+            Поставить в очередь
+        </xsl:when>
+        <xsl:when test="$type=2">
+            Не ставить в очередь
+        </xsl:when>
+        <xsl:when test="$type=3">
+            По правилам держателя
+        </xsl:when>
+    </xsl:choose>
+</xsl:template>
+
+<xsl:template name="item">
+    <xsl:apply-templates select="itemId"/>
+</xsl:template>
+
+<xsl:template match="itemId/itemType">
+    <xsl:variable name="type" select="."/>
+    <xsl:choose>
+        <xsl:when test="$type=1">
+            <img src="m.gif" alt="Монография" title="Монография"/>
+        </xsl:when>
+        <xsl:when test="$type=2">
+            <img src="s.gif" alt="Сериальное издание" title="Сериальное издание"/>
+        </xsl:when>
+        <xsl:when test="$type=3">
+            <img src="u.gif" alt="Прочее" title="Прочее"/>
+        </xsl:when>
+    </xsl:choose>
+    <br/>
+</xsl:template>
+
+<xsl:template match="itemId/callNumber">
+    Шифр:
+    <xsl:value-of select="."/>
+    <br/>
+</xsl:template>
+
+<xsl:template match="itemId/author">
+    Автор:
+    <xsl:value-of select="."/>
+    <br/>
+</xsl:template>
+
+<xsl:template match="itemId/title">
+    Заглавие:
+    <xsl:value-of select="."/>
+    <br/>
+</xsl:template>
+
+<xsl:template match="itemId/subTitle">
+    Подзаголовок:
+    <xsl:value-of select="."/>
+    <br/>
+</xsl:template>
+
+<xsl:template match="itemId/placeOfPublication">
+    Место публикации:
+    <xsl:value-of select="."/>
+    <br/>
+</xsl:template>
+
+<xsl:template match="itemId/publisher">
+    Издательство:
+    <xsl:value-of select="."/>
+    <br/>
+</xsl:template>
+
+<xsl:template match="itemId/seriesTitleNumber">
+    Серия + номер:
+    <xsl:value-of select="."/>
+    <br/>
+</xsl:template>
+
+<xsl:template match="itemId/volumeIssue">
+    Том / выпуск:
+    <xsl:value-of select="."/>
+    <br/>
+</xsl:template>
+
+<xsl:template match="itemId/edition">
+    Издание:
+    <xsl:value-of select="."/>
+    <br/>
+</xsl:template>
+
+<xsl:template match="itemId/publicationDate">
+    Дата публикации:
+    <xsl:value-of select="."/>
+    <br/>
+</xsl:template>
+
+<xsl:template match="itemId/publicationDateOfComponent">
+    Дата публикации части:
+    <xsl:value-of select="."/>
+    <br/>
+</xsl:template>
+
+<xsl:template match="itemId/authorOfArticle">
+    Автор статьи:
+    <xsl:value-of select="."/>
+    <br/>
+</xsl:template>
+
+<xsl:template match="itemId/titleOfArticle">
+    Заглавие статьи:
+    <xsl:value-of select="."/>
+    <br/>
+</xsl:template>
+
+<xsl:template match="itemId/pagination">
+    Страницы:
+    <xsl:value-of select="."/>
+    <br/>
+</xsl:template>
+
+<xsl:template match="itemId/nationalBibliographyNo">
+    # нац. библиографии:
+    <xsl:value-of select="."/>
+    <br/>
+</xsl:template>
+
+<xsl:template match="itemId/iSBN">
+    ISBN:
+    <xsl:value-of select="."/>
+    <br/>
+</xsl:template>
+
+<xsl:template match="itemId/iSSN">
+    ISSN:
+    <xsl:value-of select="."/>
+    <br/>
+</xsl:template>
+
+<xsl:template match="supplyMediumInfoType">
+    <xsl:variable name="type" select="supplyMediumType"/>
+    <xsl:choose>
+        <xsl:when test='$type=1'>
+            Печатное издание
+        </xsl:when>
+        <xsl:when test='$type=2'>
+            Фотокопия
+        </xsl:when>
+        <xsl:when test='$type=3'>
+            Микроноситель
+        </xsl:when>
+        <xsl:when test='$type=4'>
+            Кинофильм или видеозапись
+        </xsl:when>
+        <xsl:when test='$type=5'>
+            Аудиозапись
+        </xsl:when>
+        <xsl:when test='$type=6'>
+            Машиночитаемый
+        </xsl:when>
+        <xsl:when test='$type=7'>
+            Другой
+        </xsl:when>
+    </xsl:choose>
+    <xsl:if test="count(mediumCharacteristics) &gt; 0">
+        <br/>
+        Характеристики:
+        <xsl:value-of select="mediumCharacteristics"/>
+    </xsl:if>
+</xsl:template>
+
+<xsl:template name="tr_res">
+    <xsl:variable name="type" select="transactionResults"/>
+    <xsl:choose>
+        <xsl:when test='$type=1'>
+            Получены условия
+        </xsl:when>
+        <xsl:when test='$type=2'>
+            Необходимо повторить запрос позднее
+        </xsl:when>
+        <xsl:when test='$type=3'>
+            Отказ
+        </xsl:when>
+        <xsl:when test='$type=4'>
+            Получена информация о местонахождении документа
+        </xsl:when>
+        <xsl:when test='$type=5'>
+            Заказ будет выполнен позднее
+        </xsl:when>
+        <xsl:when test='$type=6'>
+            Запрос поставлен в очередь
+        </xsl:when>
+        <xsl:when test='$type=7'>
+            Получена информация о стоимости выполнения заказа
+        </xsl:when>
+    </xsl:choose>
+</xsl:template>
+
+<xsl:template match="dateForReply">
+    <tr>
+        <td><b>Срок ответа: </b></td>
+        <td>
+            <xsl:value-of select="."/>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="retryDate">
+    <tr>
+        <td><b>Дата повтора запроса: </b></td>
+        <td>
+            <xsl:value-of select="."/>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="estimatedDateAvailable">
+    <tr>
+        <td><b>Будет в наличии с: </b></td>
+        <td>
+            <xsl:value-of select="."/>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="supplyDate">
+    <tr>
+        <td><b>Дата доставки: </b></td>
+        <td>
+            <xsl:value-of select="."/>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="costEstimate">
+    <tr>
+        <td><b>Примерная стоимость: </b></td>
+        <td>
+            <xsl:value-of select="."/>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="conditions">
+    <tr>
+        <td><b>Условия доставки: </b></td>
+        <td>
+            <xsl:variable name="r" select="."/>
+            <xsl:choose>
+                <xsl:when test="$r=13">
+                    Недостаточно средств для выполнения заказа
+                </xsl:when>
+                <xsl:when test="$r=14">
+                    Платная услуга
+                </xsl:when>
+                <xsl:when test="$r=15">
+                    Необходима предоплата
+                </xsl:when>
+                <xsl:when test="$r=16">
+                    Необходимо согласие с требованиями авторского права
+                </xsl:when>
+                <xsl:when test="$r=22">
+                    Использование только в библиотеке
+                </xsl:when>
+                <xsl:when test="$r=23">
+                    Копирование запрещено
+                </xsl:when>
+                <xsl:when test="$r=24">
+                    Требуется подпись читателя
+                </xsl:when>
+                <xsl:when test="$r=25">
+                    Использвание только в особом отделе
+                </xsl:when>
+                <xsl:when test="$r=27">
+                    Другая
+                </xsl:when>
+                <xsl:when test="$r=28">
+                    Локальная
+                </xsl:when>
+            </xsl:choose>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="reasonNotAvailable">
+    <tr>
+        <td><b>Причина недоступности документа: </b></td>
+        <td>
+            <xsl:variable name="r" select="."/>
+            <xsl:choose>
+                <xsl:when test="$r=1">
+                    Выдан
+                </xsl:when>
+                <xsl:when test="$r=2">
+                    В обработке
+                </xsl:when>
+                <xsl:when test="$r=6">
+                    Заказан, но еще не получен
+                </xsl:when>
+                <xsl:when test="$r=7">
+                    Том / выпуск еще не приобретен
+                </xsl:when>
+                <xsl:when test="$r=8">
+                    В переплете
+                </xsl:when>
+                <xsl:when test="$r=13">
+                    Недостаточно средств для выполнения заказа
+                </xsl:when>
+                <xsl:when test="$r=14">
+                    Платная услуга
+                </xsl:when>
+                <xsl:when test="$r=15">
+                    Необходима предоплата
+                </xsl:when>
+                <xsl:when test="$r=16">
+                    Необходимо согласие с требованиями авторского права
+                </xsl:when>
+                <xsl:when test="$r=17">
+                    Неполное или неправильное описание документа
+                </xsl:when>
+                <xsl:when test="$r=19">
+                    На документ есть очередь
+                </xsl:when>
+                <xsl:when test="$r=27">
+                    Другая
+                </xsl:when>
+                <xsl:when test="$r=28">
+                    Локальная
+                </xsl:when>
+            </xsl:choose>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="reasonUnfilled">
+    <tr>
+        <td><b>Причина отказа: </b></td>
+        <td>
+            <xsl:variable name="r" select="."/>
+            <xsl:choose>
+                <xsl:when test="$r=1">
+                    Документ выдан
+                </xsl:when>
+                <xsl:when test="$r=2">
+                    Документ в обработке
+                </xsl:when>
+                <xsl:when test="$r=3">
+                    Документ утерян и/или списан
+                </xsl:when>
+                <xsl:when test="$r=4">
+                    Документ не выдается
+                </xsl:when>
+                <xsl:when test="$r=5">
+                    Документа нет в фонде
+                </xsl:when>
+                <xsl:when test="$r=6">
+                    Документ заказан, но еще не получен
+                </xsl:when>
+                <xsl:when test="$r=7">
+                    Том / выпуск еще не приобретен
+                </xsl:when>
+                <xsl:when test="$r=8">
+                    Документ в переплете
+                </xsl:when>
+                <xsl:when test="$r=9">
+                    Отсутствуют необходимые части / страницы документа
+                </xsl:when>
+                <xsl:when test="$r=10">
+                    Нет на месте
+                </xsl:when>
+                <xsl:when test="$r=11">
+                    Документ временно не выдается
+                </xsl:when>
+                <xsl:when test="$r=12">
+                    Документ в плохом состоянии
+                </xsl:when>
+                <xsl:when test="$r=13">
+                    Недостаточно средств для выполнения заказа
+                </xsl:when>
+                <xsl:when test="$r=14">
+                    Платная услуга
+                </xsl:when>
+                <xsl:when test="$r=15">
+                    Необходима предоплата
+                </xsl:when>
+                <xsl:when test="$r=16">
+                    Необходимо согласие с требованиями авторского права
+                </xsl:when>
+                <xsl:when test="$r=17">
+                    Неполное или неправильное описание документа
+                </xsl:when>
+                <xsl:when test="$r=18">
+                    Держатель документа не найден
+                </xsl:when>
+                <xsl:when test="$r=19">
+                    На документ есть очередь
+                </xsl:when>
+                <xsl:when test="$r=20">
+                    Обслуживание не предусмотрено правилами
+                </xsl:when>
+                <xsl:when test="$r=21">
+                    Не поддерживается обмен требуемыми сообщениями
+                </xsl:when>
+                <xsl:when test="$r=27">
+                    Другая
+                </xsl:when>
+                <xsl:when test="$r=28">
+                    Локальная
+                </xsl:when>
+            </xsl:choose>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="reasonWillSupply">
+    <tr>
+        <td><b>Причина задержки: </b></td>
+        <td>
+            <xsl:variable name="r" select="."/>
+            <xsl:choose>
+                <xsl:when test="$r=1">
+                    Выдан
+                </xsl:when>
+                <xsl:when test="$r=2">
+                    В обработке
+                </xsl:when>
+                <xsl:when test="$r=6">
+                    Заказан, но еще не получен
+                </xsl:when>
+                <xsl:when test="$r=8">
+                    В переплете
+                </xsl:when>
+                <xsl:when test="$r=19">
+                    На документ есть очередь
+                </xsl:when>
+                <xsl:when test="$r=26">
+                    Готовится к отправке
+                </xsl:when>
+                <xsl:when test="$r=27">
+                    Другая
+                </xsl:when>
+                <xsl:when test="$r=28">
+                    Локальная
+                </xsl:when>
+            </xsl:choose>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="holdPlacedMediumType">
+    <tr>
+        <td><b>Носитель: </b></td>
+        <td>
+            <xsl:variable name="r" select="."/>
+            <xsl:choose>
+                <xsl:when test="$r=1">
+                    Печатный
+                </xsl:when>
+                <xsl:when test="$r=3">
+                    Микроформа
+                </xsl:when>
+                <xsl:when test="$r=4">
+                    Фильм или видеозапись
+                </xsl:when>
+                <xsl:when test="$r=5">
+                    Аудиозапись
+                </xsl:when>
+                <xsl:when test="$r=6">
+                    Машиночитаемый
+                </xsl:when>
+                <xsl:when test="$r=7">
+                    Другой
+                </xsl:when>
+            </xsl:choose>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="shippedConditions">
+    <tr>
+        <td><b>Условия: </b></td>
+        <td>
+            <xsl:variable name="r" select="."/>
+            <xsl:choose>
+                <xsl:when test="$r=22">
+                    Использование только в библиотеке
+                </xsl:when>
+                <xsl:when test="$r=23">
+                    Копирование запрещено
+                </xsl:when>
+                <xsl:when test="$r=24">
+                    Требуется подпись читателя
+                </xsl:when>
+                <xsl:when test="$r=25">
+                    Использвание только в особом отделе
+                </xsl:when>
+                <xsl:when test="$r=27">
+                    Другие
+                </xsl:when>
+            </xsl:choose>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="currencyCode">
+    <xsl:choose>
+        <xsl:when test=".='RUB'">
+            Российских рублей
+        </xsl:when>
+        <xsl:when test=".='USD'">
+            Долларов США
+        </xsl:when>
+    </xsl:choose>
+</xsl:template>
+
+<xsl:template match="shippedVia">
+    <xsl:choose>
+        <xsl:when test="physicalDelivery">
+            <xsl:value-of select="physicalDelivery"/>
+        </xsl:when>
+        <xsl:when test="electronicDelivery/electronicDeliveryService">
+            <xsl:apply-templates select="electronicDelivery/electronicDeliveryService"/>
+        </xsl:when>
+    </xsl:choose>
+</xsl:template>
+
+<xsl:template match="electronicDeliveryService">
+    <xsl:if test="eDeliveryDescription">
+        <xsl:apply-templates select="eDeliveryDescription"/>
+        <br/>
+    </xsl:if>
+    <xsl:choose>
+        <xsl:when test="nameOrCode and eDeliveryDetails/eDeliveryAddress/telecomServiceIdentifier = 'http'">
+            <a href="{$doc_dir}/{nameOrCode}">
+                <xsl:text>Web</xsl:text>
+            </a>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:apply-templates select="eDeliveryDetails"/>
+            <br/>
+            <xsl:apply-templates select="nameOrCode"/>
+        </xsl:otherwise>
+    </xsl:choose>
+</xsl:template>
+
+<xsl:template match="eDeliveryDescription">
+    <xsl:text>Описание:</xsl:text>
+    <xsl:choose>
+        <xsl:when test=". = 'image/tiff'">
+            <xsl:text>TIFF</xsl:text>
+        </xsl:when>
+        <xsl:when test=". = 'application/pdf'">
+            <xsl:text>PDF</xsl:text>
+        </xsl:when>
+        <xsl:when test=". = 'text/plain'">
+            <xsl:text>Простой текст</xsl:text>
+        </xsl:when>
+    </xsl:choose>
+</xsl:template>
+
+<xsl:template match="eDeliveryDetails">
+    <xsl:if test="eDeliveryAddress/telecomServiceIdentifier">
+        <xsl:text>Способ доставки:</xsl:text>
+        <xsl:choose>
+            <xsl:when test="eDeliveryAddress/telecomServiceIdentifier = 'http'">
+                <xsl:text>Web</xsl:text>
+            </xsl:when>
+            <xsl:when test="eDeliveryAddress/telecomServiceIdentifier = 'mailto'">
+                <xsl:text>Эл. почта</xsl:text>
+            </xsl:when>
+            <xsl:when test="eDeliveryAddress/telecomServiceIdentifier = 'fax'">
+                <xsl:text>Факс</xsl:text>
+            </xsl:when>
+        </xsl:choose>
+        <br/>
+    </xsl:if>
+    <xsl:if test="eDeliveryAddress/telecomServiceAddress">
+        <xsl:text>Адрес:</xsl:text>
+        <xsl:choose>
+            <xsl:when test="eDeliveryAddress/telecomServiceIdentifier = 'mailto'">
+                <a href="mailto:{eDeliveryAddress/telecomServiceAddress}">
+                    <xsl:value-of select="eDeliveryAddress/telecomServiceAddress"/>
+                </a>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="eDeliveryAddress/telecomServiceAddress"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:if>
+</xsl:template>
+
+<xsl:template match="nameOrCode">
+    <xsl:text>Идентификатор:</xsl:text>
+    <xsl:value-of select="."/>
+</xsl:template>
+
+</xsl:stylesheet>

@@ -220,11 +220,20 @@ def get_org(request):
 @api
 def find_orgs(request):
     name = request.GET.get('name', None)
-    if not name:
-        raise WrongArguments()
+    ill_service = request.GET.get('ill_service', None)
+    edd_service = request.GET.get('edd_service', None)
+    mail = request.GET.get('mail', None)
 
     if name:
         libraries = Library.objects.filter(name__iexact=name)
+    elif ill_service:
+        libraries = Library.objects.filter(ill_service__icontains=ill_service)
+    elif edd_service:
+        libraries = Library.objects.filter(edd_service__icontains=edd_service)
+    elif mail:
+        libraries = Library.objects.filter(mail__icontains=mail)
+    else:
+        raise WrongArguments()
 
     libraries_list = []
     for library in libraries:
