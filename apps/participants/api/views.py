@@ -137,7 +137,6 @@ class ApiLibrary(object):
 def auth_user(request):
     username = request.GET.get('username', None)
     password = request.GET.get('password', None)
-    print username, password
     if not username or not password:
         raise WrongArguments()
 
@@ -227,7 +226,10 @@ def find_orgs(request):
     if name:
         libraries = Library.objects.filter(name__iexact=name)
     elif ill_service:
-        libraries = Library.objects.filter(ill_service__icontains=ill_service)
+        if ill_service == '*':
+            libraries = Library.objects.filter(ill_service__gte=0)
+        else:
+            libraries = Library.objects.filter(ill_service__icontains=ill_service)
     elif edd_service:
         libraries = Library.objects.filter(edd_service__icontains=edd_service)
     elif mail:

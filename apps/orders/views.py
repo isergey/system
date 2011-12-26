@@ -306,7 +306,7 @@ def org_by_district(request, catalog_id=''):
     if request.method == 'POST' and 'district' in request.POST:
         district = request.POST['district']
 
-        libraries = Library.objects.filter(district=district)
+        libraries = Library.objects.filter(district=district).exclude(parent_id=None)
 
 
         orgs = []
@@ -411,13 +411,14 @@ def make_order(request):
     except Library.DoesNotExist:
         return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Организация не найдена'}))
 
-
+    # если библиотека - объединение, то посылаем в нее
     if library.is_root_node():
         manager_id = ''
         reciver_id = library.code
     else:
-        manager_id = library.code
-        reciver_id = library.get_root().code
+        #иначе, посылаем в объединение, но обработчик заказа
+        manager_id = library.code # кому адресуется
+        reciver_id = library.get_root().code # кому маршрутизируется
 
     sender_id = request.user.username #id отправителя
     copy_info =  request.POST.get('copy_info', '')
