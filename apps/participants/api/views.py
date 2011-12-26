@@ -227,7 +227,7 @@ def find_orgs(request):
         libraries = Library.objects.filter(name__iexact=name)
     elif ill_service:
         if ill_service == '*':
-            libraries = Library.objects.filter(ill_service__gte=0)
+            libraries = Library.objects.filter(ill_service__gt=0)
         else:
             libraries = Library.objects.filter(ill_service__icontains=ill_service)
     elif edd_service:
