@@ -306,7 +306,7 @@ def org_by_district(request, catalog_id=''):
     if request.method == 'POST' and 'district' in request.POST:
         district = request.POST['district']
 
-        libraries = Library.objects.filter(district=district).exclude(parent_id=None)
+        libraries = Library.objects.filter(district=district).exclude(parent=None)
 
 
         orgs = []

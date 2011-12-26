@@ -1,8 +1,6 @@
-from django.views.generic.simple import direct_to_template
-#from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.csrf import csrf_protect
+from django.shortcuts import render
 
 
 def index(request):
-    return direct_to_template(request, 'site_index/index.html')
+    return render(request, 'site_index/index.html')
 
