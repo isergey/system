@@ -4,6 +4,8 @@ from django.shortcuts import render,get_object_or_404, get_list_or_404 ,Http404,
 import simplejson
 from districts import districts_list, find_district
 from models import Library, District
+from django.contrib.auth.decorators import login_required
+
 
 def make_library_dict(library):
     return {
@@ -84,7 +86,7 @@ def by_district(request, id):
                                'district':district,
                                'js_orgs':js_orgs})
 
-
+@login_required
 def xml_dump(request):
     lines = [u'<?xml version="1.0"?>', u'<organizations>', u'<localization language="rus">']
     libraries = Library.objects.all()
