@@ -102,3 +102,12 @@ class SavedDocument(models.Model):
     expiry_date = models.DateTimeField(db_index=True, null=True, verbose_name=u"Дата когда документ удалится")
     full_document = models.TextField(null=True, blank=True, verbose_name=u"Полная запись на документ")
     short_document = models.TextField(null=True, blank=True, verbose_name=u"Краткая запись на документ")
+
+
+class SearchRequestLog(models.Model):
+    catalog = models.ForeignKey(ZCatalog, null=True)
+    search_id = models.CharField(max_length=32, verbose_name=u'Идентификатор запроса', db_index=True)
+    use = models.CharField(max_length=32, verbose_name=u"Точка доступа", db_index=True)
+    normalize = models.CharField(max_length=256, verbose_name=u'Нормализованный терм', db_index=True)
+    not_normalize = models.CharField(max_length=256, verbose_name=u'Ненормализованный терм',db_index=True)
+    datetime = models.DateTimeField(auto_now_add=True, auto_now=True, db_index=True)

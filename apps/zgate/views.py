@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+import simplejson
+from lxml import etree
+import xml.etree.cElementTree as ET
+import time
+import pymorphy
+
+
 from django.utils.http import urlquote
 from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404, render
@@ -7,16 +14,14 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from guardian.core import ObjectPermissionChecker
-import simplejson
-from lxml import etree
-import xml.etree.cElementTree as ET
-import time
+
 from participants.models import Library
 #catalogs = settings.ZGATE['catalogs']
 
 from models import ZCatalog, SavedRequest, SavedDocument
 import zworker
 from libs import humanquery
+
 def json_error(error):
     return simplejson.dumps({'status': 'error',
                              'error': error},
@@ -214,6 +219,73 @@ def save_document(request):
     return response
 
 
+import uuid
+from models import SearchRequestLog
+morph = pymorphy.get_morph(settings.PROJECT_PATH + 'data/pymorphy/ru/cdb', 'cdb')
+def log_search_request(request, catalog):
+
+    def clean_term(term):
+        """
+        Возвращает кортеж из ненормализованног и нормализованного терма
+        """
+        terms = term.strip().lower().split()
+        nn_term = u' '.join(terms)
+
+        n_terms = []
+        #нормализация
+        for t in terms:
+            n_term = morph.normalize(t.upper())
+            if isinstance(n_term, set):
+                n_terms.append(n_term.pop().lower())
+            elif isinstance(n_term, unicode):
+                n_terms.append(n_term.lower())
+
+        n_term = u' '.join(n_terms)
+        return (nn_term, n_term)
+
+
+    search_request_id =  uuid.uuid4().hex
+    term_groups = []
+
+
+    term = request.POST.get('TERM_1', None)
+    if term:
+        forms = clean_term(term)
+        term_groups.append({
+            'nn': forms[0],
+            'n':  forms[1],
+            'use': request.POST.get('USE_1',u'not defined'),
+
+        })
+
+    term = request.POST.get('TERM_2', None)
+    if term:
+        forms = clean_term(term)
+        term_groups.append({
+            'nn': forms[0],
+            'n':  forms[1],
+            'use': request.POST.get('USE_2',u'not defined'),
+
+        })
+
+    term = request.POST.get('TERM_3', None)
+    if term:
+        term_groups.append({
+            'nn': forms[0],
+            'n':  forms[1],
+            'use': request.POST.get('USE_3',u'not defined'),
+
+        })
+
+    for group in term_groups:
+        SearchRequestLog(
+            catalog=catalog,
+            search_id=search_request_id,
+            use=group['use'],
+            normalize=group['n'],
+            not_normalize=group['nn'],
+        ).save()
+
 
 def index(request, catalog_id='', slug=''):
     if catalog_id:
@@ -231,6 +303,8 @@ def index(request, catalog_id='', slug=''):
 
     zgate_url = catalog.url
     if request.method == 'POST' and 'SESSION_ID' in request.POST:
+
+        log_search_request(request, catalog)
         (result, cookies) = zworker.request(zgate_url, data=request.POST, cookies=request.COOKIES)
         response =  render_search_result(request, catalog, zresult=result, )
         return set_cookies_to_response(cookies,response)

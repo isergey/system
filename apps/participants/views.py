@@ -90,7 +90,7 @@ def by_district(request, id):
 
 @login_required
 def xml_dump(request):
-    lines = [u'<?xml version="1.0"?>', u'<organizations>', u'<localization language="rus">']
+    lines = [u'<?xml version="1.0" encoding="UTF-8"?>', u'<organizations>', u'<localization language="rus">']
     libraries = Library.objects.select_related().all()
     for library in libraries:
         if library.parent:
