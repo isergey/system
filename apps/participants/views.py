@@ -89,10 +89,10 @@ def by_district(request, id):
 @login_required
 def xml_dump(request):
     lines = [u'<?xml version="1.0"?>', u'<organizations>', u'<localization language="rus">']
-    libraries = Library.objects.all()
-    print libraries
+    libraries = Library.objects.select_related().all()
     for library in libraries:
-        lines.append(u'<org id="'+library.code+'">'+library.name+'</org>')
+        if library.parent:
+            lines.append(u'<org id="'+library.code+'">'+library.name+' ('+library.parent.name+')</org>')
 
     lines.append(u'</localization>')
     lines.append(u'</organizations>')
