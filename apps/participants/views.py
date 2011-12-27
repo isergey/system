@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from django.shortcuts import render,get_object_or_404, get_list_or_404 ,Http404
+from django.shortcuts import render,get_object_or_404, get_list_or_404 ,Http404, HttpResponse
 import simplejson
 from districts import districts_list, find_district
 from models import Library, District
@@ -83,3 +83,15 @@ def by_district(request, id):
                               {'ldap_orgs':libraries,
                                'district':district,
                                'js_orgs':js_orgs})
+
+
+def xml_dump(request):
+    lines = [u'<?xml version="1.0"?>', u'<organizations>', u'<localization language="rus">']
+    libraries = Library.objects.all()
+    print libraries
+    for library in libraries:
+        lines.append(u'<org id="'+library.code+'">'+library.name+'</org>')
+
+    lines.append(u'</localization>')
+    lines.append(u'</organizations>')
+    return HttpResponse(u'\n'.join(lines))

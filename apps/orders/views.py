@@ -411,14 +411,26 @@ def make_order(request):
     except Library.DoesNotExist:
         return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Организация не найдена'}))
 
-    # если библиотека - объединение, то посылаем в нее
-    if library.is_root_node():
+    def get_first_recivier_code(library):
+        ancestors = library.get_ancestors()
+        for ancestor in ancestors:
+            if ancestor.ill_service and ancestor.ill_service.strip():
+                return ancestor.code
+        return None
+
+    # если у библиотеки указан ill адрес доставки, то пересылаем заказ ей
+    if library.ill_service and library.ill_service.strip():
         manager_id = ''
         reciver_id = library.code
+
+    # иначе ищем родителя, у которого есть адрес доставки
     else:
-        #иначе, посылаем в объединение, но обработчик заказа
-        manager_id = library.code # кому адресуется
-        reciver_id = library.get_root().code # кому маршрутизируется
+        manager_id = library.code
+        reciver_id = get_first_recivier_code(library)
+
+        if not reciver_id:
+            return  HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Организация не может получать заявки'}))
+
 
     sender_id = request.user.username #id отправителя
     copy_info =  request.POST.get('copy_info', '')

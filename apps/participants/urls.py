@@ -11,6 +11,7 @@ urlpatterns = patterns('participants.views',
     url(r'^districts/detail/(?P<code>[a-zA-Z\d]+)/$', 'detail_by_district', name="participants_detail_by_district"),
     url(r'^districts/$', 'districts', name="participants_districts"),
     url(r'^districts/(?P<id>\d+)/$', 'by_district', name="participants_by_district"),
+    url(r'^xml/$', 'xml_dump', name="participants_xml_dump"),
 
 
 
