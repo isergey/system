@@ -33,7 +33,6 @@ def request(url, data={}, cookies={}):
             mrequest = mrequest.urlencode()
         result = opener.open(url, data=mrequest)
     else:
-        print url
         result = opener.open(url)
 
     cookies = Cookie.SimpleCookie(result.headers['Set-Cookie'])
@@ -42,7 +41,6 @@ def request(url, data={}, cookies={}):
         cookies_dict[key]=cookies.get(key).value
 
     results = result.read()
-    #print results
     return (results, cookies_dict)
 
 
