@@ -9,8 +9,12 @@ entry_point = ''
 
 def request(url, data={}, cookies={}):
     opener = urllib2.build_opener()
+    cc = []
     for key in  cookies:
-        opener.addheaders.append(('Cookie', '%s=%s' % (key, cookies[key])))
+        cc.append( '%s=%s' % (key, cookies[key]))
+    cc = '; '.join(cc)
+
+    opener.addheaders.append(('Cookie', cc))
 
     if len(data):
         mrequest = data.copy()
