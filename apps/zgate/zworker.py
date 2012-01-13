@@ -33,6 +33,7 @@ def request(url, data={}, cookies={}):
             mrequest = mrequest.urlencode()
         result = opener.open(url, data=mrequest)
     else:
+        print url
         result = opener.open(url)
 
     cookies = Cookie.SimpleCookie(result.headers['Set-Cookie'])
@@ -45,15 +46,12 @@ def request(url, data={}, cookies={}):
     return (results, cookies_dict)
 
 
-def get_zgate_form(zgate_url, xml, xsl, entry_point='', lang='rus', username='', password='', cookies={}):
+def get_zgate_form(zgate_url, xml, xsl, lang='rus',cookies={}):
     data = {
         'FORM_HOST_PORT': '%s,%s' % (xml, xsl),
         'LANG': lang,
         'ACTION': 'init',
         }
-    #if username and password:
-    #   data['USERID'] = username
-    #   data['PASSWORD'] = password
     return request(zgate_url, data, cookies)
 
 
@@ -105,9 +103,11 @@ def get_body_element(html_string):
     return getattr(tree, 'body', None)
 
 
+
 def element_to_html(element):
     tree = etree.ElementTree(element)
     return etree.tostring(tree, method="html", encoding='UTF-8', )
+
 
 
 def make_html_body_content(body_element):

@@ -17,7 +17,6 @@ from django.shortcuts import redirect
 from libs.ill import ILLRequest
 from libs.order_manager.manager import OrderManager
 
-
 from libs.ldapwork.ldap_work import LdapWork, LdapWorkException, LdapConnection
 import zgate.zworker as  zworker
 from zgate.models import ZCatalog
@@ -31,6 +30,7 @@ def set_cookies_to_response(cookies, response):
     for key in cookies:
         response.set_cookie(key, cookies[key])
     return response
+
 
 def ajax_login_required(view_func):
     def wrap(request, *args, **kwargs):
@@ -67,7 +67,7 @@ apdy_type_titles = {
     }
 
 apdu_reason_will_supply = {
-    '1': u'Получены условия',
+    '1': u'Заказ будет выполнен позднее',
     '2': u'Необходимо повторить запрос позднее',
     '3': u'Отказ',
     '4': u'Получена информация о местонахождении документа',
@@ -95,12 +95,10 @@ apdu_unfilled_results = {
 
 #Вид и статусы заказов, в зависимоти от которых можно удалять заказ
 can_delete_statuses = {
-    '1': ['shipped', 'received', 'notsupplied','checkedin'], #document
+    '1': ['shipped', 'received', 'notsupplied', 'checkedin'], #document
     '2': ['shipped', 'received', 'notsupplied', 'checkedin'], #copy
-    '5': ['shipped','notsupplied', 'checkedin'] #reserve
+    '5': ['shipped', 'notsupplied', 'checkedin'] #reserve
 }
-
-
 
 xslt_root = etree.parse(settings.ORDERS['xsl_templates']['marc'])
 transform = etree.XSLT(xslt_root)
@@ -116,11 +114,10 @@ def check_for_can_delete(transaction):
                 return True
     return False
 
+
 @login_required
 def index(request):
     def format_time(datestr='', timestr=''):
-
-
         if datestr:
             datestr = time.strptime(datestr, "%Y%m%d")
             datestr = time.strftime("%d.%m.%Y", datestr)
@@ -128,6 +125,7 @@ def index(request):
             timestr = time.strptime(timestr, "%H%M%S")
             timestr = time.strftime("%H:%M:%S", timestr)
         return datestr + ' ' + timestr
+
     order_manager = OrderManager(settings.ORDERS['db_catalog'], settings.ORDERS['rdx_path'])
     transactions = order_manager.get_orders(request.user.username)
     orgs = {}
@@ -170,7 +168,8 @@ def index(request):
                 order['order_id'] = apdu.delivery_status.transaction_id['tq']
                 order['org_info'] = org_by_id(apdu.delivery_status.responder_id['pois']['is'])
                 if apdu.delivery_status.third_party_info_type['tpit']['stl']['stlt']['si']:
-                    order['org_info'] = org_by_id(apdu.delivery_status.third_party_info_type['tpit']['stl']['stlt']['si'])
+                    order['org_info'] = org_by_id(
+                        apdu.delivery_status.third_party_info_type['tpit']['stl']['stlt']['si'])
                 apdu_map['requester_note'] = apdu.delivery_status.requester_note
                 order['record'] = res
                 order['user_comments'] = apdu.delivery_status.requester_note
@@ -258,10 +257,9 @@ def order(request, order_type='', org_id=''):
             '|||') #временно меняем символы новой строки, чтобы сработала регулярка ыыы
         xml_record = re.match(compiled_regx, xml_record).group('section')
         xml_record = xml_record.replace("|||", '\n')
-        response =  render(request, 'orders/orders_done.html',
+        response = render(request, 'orders/orders_done.html',
                 {'error': xml_record})
         return set_cookies_to_response(cookies, response)
-
 
     order_manager = OrderManager(settings.ORDERS['db_catalog'], settings.ORDERS['rdx_path'])
     #return HttpResponse(u'Заказ сделан '+ order_type +'<br/>'+ org_id +'<br/>'+xml_record.decode('utf-8'))
@@ -308,7 +306,6 @@ def org_by_district(request, catalog_id=''):
 
         libraries = Library.objects.filter(district=district).exclude(parent=None)
 
-
         orgs = []
         for org in libraries:
             orgs.append({'code': org.code, 'title': org.name})
@@ -321,16 +318,14 @@ def org_by_district(request, catalog_id=''):
 
 def org_by_code(request):
     if request.method == 'POST' and 'code' in request.POST:
-
-
         library = get_object_or_404(Library, code=request.POST['code'])
 
         org = {
             'code': library.code,
             'title': library.name,
-            'postal_address': getattr(library,'postal_address', u'не указан'),
-            'phone': getattr(library,'phone', u'не указан'),
-            'email': getattr(library,'mail', u'не указан')
+            'postal_address': getattr(library, 'postal_address', u'не указан'),
+            'phone': getattr(library, 'phone', u'не указан'),
+            'email': getattr(library, 'mail', u'не указан')
         }
 
         json = simplejson.dumps({'status': 'ok', 'org_info': org}, ensure_ascii=False)
@@ -347,14 +342,11 @@ def make_order(request):
     order_type = request.POST.get('type', None)
     order_manager_id = request.POST.get('org_id', None) # организация, которая получит заказ
 
-
-
     order_time = datetime.datetime.now()
 
     order_copy_limit = 1
     order_document_limit = 2
     order_reserve_limit = 3
-
 
     user_order_times = UserOrderTimes.objects.filter(
         user=request.user,
@@ -367,22 +359,24 @@ def make_order(request):
 
     if order_type == 'document':
         if user_order_times >= order_document_limit:
-            return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'На сегодня Ваш лимит заказов на доставку в эту библиотеку исчерпан'},
+            return HttpResponse(simplejson.dumps(
+                    {'status': 'error', 'error': 'На сегодня Ваш лимит заказов на доставку в эту библиотеку исчерпан'},
                 ensure_ascii=False))
     elif order_type == 'copy':
         if user_order_times >= order_copy_limit:
-            return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'На сегодня Ваш лимит заказов на копию в эту библиотеку исчерпан'},
+            return HttpResponse(simplejson.dumps(
+                    {'status': 'error', 'error': 'На сегодня Ваш лимит заказов на копию в эту библиотеку исчерпан'},
                 ensure_ascii=False))
     elif order_type == 'reserve':
         if user_order_times >= order_reserve_limit:
-            return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'На сегодня Ваш лимит заказов на бронирование в эту библиотеку исчерпан'},
+            return HttpResponse(simplejson.dumps({'status': 'error',
+                                                  'error': 'На сегодня Ваш лимит заказов на бронирование в эту библиотеку исчерпан'}
+                ,
                 ensure_ascii=False))
 
     else:
         return HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Неизвестный тип заказа'},
             ensure_ascii=False))
-
-
 
     catalog = get_object_or_404(ZCatalog, latin_title=request.POST['catalog_id'])
     zgate_url = catalog.url
@@ -400,8 +394,6 @@ def make_order(request):
         tree = ET.XML(xml_record)
     except SyntaxError as e:
         return HttpResponse(json_error(u'Заказ не выполнен. Возможно, время сессии истекло'))
-
-
 
     order_manager = OrderManager(settings.ORDERS['db_catalog'], settings.ORDERS['rdx_path'])
 
@@ -431,10 +423,8 @@ def make_order(request):
         if not reciver_id:
             return  HttpResponse(simplejson.dumps({'status': 'error', 'error': 'Организация не может получать заявки'}))
 
-
     sender_id = request.user.username #id отправителя
-    copy_info =  request.POST.get('copy_info', '')
-
+    copy_info = request.POST.get('copy_info', '')
 
     try:
         order_manager.order_document(

@@ -270,6 +270,7 @@ def log_search_request(request, catalog):
 
     term = request.POST.get('TERM_3', None)
     if term:
+        forms = clean_term(term)
         term_groups.append({
             'nn': forms[0],
             'n':  forms[1],
@@ -286,7 +287,7 @@ def log_search_request(request, catalog):
             not_normalize=group['nn'],
         ).save()
 
-
+import lxml
 def index(request, catalog_id='', slug=''):
     if catalog_id:
         catalog = get_object_or_404(ZCatalog, id=catalog_id)
@@ -320,13 +321,23 @@ def index(request, catalog_id='', slug=''):
             vars = request.GET['zstate'].split(' ')
             cookies = {}
             if vars[0] == 'form':
-                (zresult, cookies) = zworker.request(url, cookies=request.COOKIES)
+
+                try:
+                    (zresult, cookies) = zworker.request(url, cookies=request.COOKIES)
+                except Exception:
+                    return HttpResponse(u'Получен некорретный ответ. Попробуйте осуществить поиск еще раз.')
+
                 response = render_form(request, zresult=zresult, catalog=catalog)
                 return set_cookies_to_response(cookies,response)
 
             elif vars[0] == 'present':
                 if vars[4] == '1' and vars[5] == 'F':
-                    response = render_detail(request, catalog)
+
+                    try:
+                        response = render_detail(request, catalog)
+                    except Exception:
+                        return HttpResponse(u'Сервер не может корректно отобразить результат. Повторите запрос еще раз.')
+
                     return set_cookies_to_response(cookies,response)
 
                 response = render_search_result(request, catalog)
