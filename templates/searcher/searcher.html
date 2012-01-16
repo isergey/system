@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+    <style>
+        .zgate input {
+            border-radius: 2px;
+            border: 1px solid #dfdfdf;
+            background: #fff;
+            padding: 5px;
+            color: #333333;
+        }
+
+        .zgate select {
+            padding: 4px;
+            border-radius: 0px;
+            border: 1px solid #dfdfdf;
+            background: #f4f4f5;
+            color: #333333;
+        }
+
+        .zgate tbody tr:nth-child(even) td, .zgate tbody tr.even td {
+            background: #fff;
+        }
+
+        .buttons input[type=submit] {
+            background: #f4f4f5;
+            cursor: pointer;
+        }
+    </style>
+    <h3>Издания с 2009 года</h3>
+    <div class="zgate text">
+        {% include 'searcher/form.html' %}
+    </div>
+
+    <div id="search_results" class="text">
+        {% for search_result in search_results %}
+
+            <div class="result_item column last">
+                <div class="item_number alt column span-2">№{{ search_result.number }}</div>
+                <div class="column span-14  last">
+                    <div class="item_title">
+                        <a href="#?id={{ search_result.record.controlfields.001|urlencode }}&search_url={{ search_url|urlencode }}">{{ search_result.record.datafields.200.0.subfields.a.0|safe }}</a>
+                    </div>
+                    {% if search_result.record.datafields.702.0.subfields.a.0 %}
+                        <div class="item_author">
+                            {{ search_result.record.datafields.702.0.subfields.a.0 }}
+                        </div>
+                    {% endif %}
+                    {% if search_result.record.datafields.606 %}
+                        <div class="item_field">
+                            Рубрики:
+                            {% for field in search_result.record.datafields.606 %}
+                                {% for subfield in field.subfields.a %}
+                                    <a href="{% url searcher_index %}?use=subject&ft=on&term={{ subfield }}">{{ subfield }}</a>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <div>
+                        <a href="{% url searcher_detail %}?number={{ search_result.number }}">Подробнее</a>
+                    </div>
+                    {#                    <div class="item_info">#}
+                    {#                        {% trans "Access" %}: <span style="color: green;">{% trans "free" %}</span>#}
+                    {#                    </div>#}
+                </div>
+            </div>
+            <hr/>
+        {% empty %}
+            {% if request.GET.term %}
+                <span style="font-size: 1.5em">Нет результатов</span>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+    {% load pagination_tag %}
+    {% if pages_list.paginator.num_pages > 1 %}
+        <div align="center" class="column span-16 last">
+            {% pagination pages_list %}
+        </div>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,16 @@
+<form method="get" id="search_form" action="">
+    <div style="overflow:hidden;">
+        <select name="use" class="search_point">
+            <option value="anywhere"
+                    {% if request.GET.use == 'anywhere' %}selected="selected"{% endif %}>Везде</option>
+            <option value="author"
+                    {% if request.GET.use == 'author' %}selected="selected"{% endif %}>Автор</option>
+            <option value="title"
+                    {% if request.GET.use == 'title' %}selected="selected"{% endif %}>Заглавие</option>
+            <option value="subject"
+                    {% if request.GET.use == 'subject' %}selected="selected"{% endif %}>Рубрика</option>
+        </select>
+        <input name="term" id="search_input" value="{{ request.GET.term }}" type="text">
+        <input type="submit" value="Поиск"/>
+    </div>
+</form>
