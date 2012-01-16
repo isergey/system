@@ -180,7 +180,7 @@ INSTALLED_APPS = (
     'guestbook',
     'reginlib',
     'api',
-    'searcher',
+#    'searcher',
     'administration',
     #'libportal.apps.professional',
     'captcha',
