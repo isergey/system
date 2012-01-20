@@ -113,7 +113,7 @@ MARC
     <xsl:when test="$org/organizations/localization[@language=$lang]/org[@id=$oname]">
       <xsl:choose>
         <xsl:when test="string-length($org.link.URL) &gt; 0">
-          <a href="{$org.link.URL}{$oname}"><xsl:value-of select="$org/organizations/localization[@language=$lang]/org[@id=$oname]"/></a>
+          <a href="#1"><xsl:value-of select="$org/organizations/localization[@language=$lang]/org[@id=$oname]"/></a>
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="$org/organizations/localization[@language=$lang]/org[@id=$oname]"/>

@@ -1,12 +1,17 @@
 #encoding: utf-8
+from lxml import etree as ET
+#import xml.etree.cElementTree as ET
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django. shortcuts import render, HttpResponse, Http404, redirect
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 from libs import pyaz
-from libs import pymarc
+from libs.pymarc2.record import UnimarcRecord, Record
+from libs.pymarc2 import marcxml
 
+from participants.models import Library
 ZBASES = {
     'ksob': {
         'server': {
@@ -21,7 +26,10 @@ ZBASES = {
     },
  }
 
-cache = {}
+full_xslt_root = ET.parse(settings.ZGATE['xsl_templates']['full_document'])
+full_transform = ET.XSLT(full_xslt_root)
+
+
 def do_search(request):
     USE_ATTRIBUTES = {
         'anywhere': u'1035',
@@ -77,18 +85,18 @@ def do_search(request):
 
         for zrecord in zrecords.object_list:
             number += 1
-            record = pymarc.Record(data=zrecord, to_unicode=True, encoding='utf-8')
-            #record.add_field(pymarc.Field(tag='993', indicators=(' ', ' '), subfields=('a', record.as_md5(),)))
-            #record = highlighting(fuzzy_terms, record)
-            #print record
-            search_results.append(
-                    {
-                    'number': number,
-                    'record': record.as_dict(),
-                    'zrecord': zrecord
-                }
-            )
-        cache['zrecords'] = search_results
+            record = UnimarcRecord(raw=zrecord, raw_encoding='utf-8')
+            search_results.append({
+                'number': number,
+                'record': record,
+            })
+
+        request.session['zrequest'] = {
+            'query': query,
+            'base': base,
+        }
+
+        #cache['zrecords'] = search_results
         return (search_results, zrecords)
 
 def index(request):
@@ -96,9 +104,8 @@ def index(request):
     if term:
         try:
             search_results = do_search(request)
-        except pyaz.ZConnectionExceptiony:
+        except pyaz.ZConnectionException:
             return HttpResponse(u'Невозможно установть соединение с библиографической базой. Попробуйте позднее.')
-        print search_results
         return render(request, 'searcher/searcher.html', {
             'search_results': search_results[0],
             'pages_list':search_results[1]
@@ -107,12 +114,86 @@ def index(request):
 
 def detail(request):
     number = request.GET.get('number', None)
-    zrecords = cache['zrecords']
-    if number and zrecords:
-        number = int(number)
-        for zrecord in zrecords:
-            print zrecord['number']
-            if int(number) == zrecord['number']:
-                return render(request, 'searcher/detail.html', {
-                    'record':zrecord['record']
-                })
+    #zrecords = cache['zrecords']
+    base = request.session['zrequest']['base']
+    query = request.session['zrequest']['query']
+    zconnection = pyaz.ZConnection(
+        base['server']
+    )
+
+    zconnection.connect(str(base['server']['host']), int(base['server']['port']))
+    zresults = zconnection.search(query)
+    zrecord = zresults[(int(number)-1)]
+    zrecord = UnimarcRecord(raw=zrecord, raw_encoding='utf-8')
+    xml_record = marcxml.record_to_rustam_xml(zrecord)
+    result_tree = full_transform(xml_record)
+    full_document = unicode(result_tree)
+
+    try:
+        owners = get_document_owners(xml_record)
+        record_id = get_record_id(xml_record)
+        save_document = True
+    except SyntaxError as e:
+        pass #не будем добавлять держателей
+
+
+    return render(request, 'searcher/detail.html', {
+        'record': full_document,
+        'owners': owners,
+        'record_id': record_id,
+        'save_document': save_document,
+    })
+
+
+
+"""
+xml_record ETreeElement
+return list of owners
+"""
+
+def get_document_owners(xml_record):
+
+    def get_subfields(field_code, subfield_code):
+        org_ids = []
+        fields = xml_record.findall('field')
+
+        for field in fields:
+            if field.attrib['id'] == field_code:
+                subfileds = field.findall('subfield')
+
+                for subfiled in subfileds:
+                    if subfiled.attrib['id'] == subfield_code:
+                        if subfiled.text:
+                            org_ids.append(subfiled.text) # сиглы организаций (code)
+                            break
+        return org_ids
+
+    #сперва ищем держателей в 850 поле
+    owners =  get_subfields('850', 'a')
+    if not owners:
+        owners =  get_subfields('899', 'a')
+        #если нет то в 899
+
+    owners_dicts = []
+
+    if owners:
+        libraries = Library.objects.filter(code__in=owners)
+        for org in libraries:
+            owners_dicts.append({
+                'code':org.code,
+                'name': org.name
+            })
+    return owners_dicts
+
+"""
+xml_record ETreeElement
+return record id string or None if record not have id
+"""
+
+def get_record_id(xml_record):
+    fields = xml_record.findall('field')
+    for field in fields:
+        if field.attrib['id'] == '001':
+            if field.text:
+                return field.text
+    return None

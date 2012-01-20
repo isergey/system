@@ -381,6 +381,7 @@ def record_to_rustam_xml(record, syntax='1.2.840.10003.5.28', quiet=False, names
             control_field.set('id', field.tag)
             control_field.text = field.data
         elif field.tag[0] == '4':
+
             data_field = ET.SubElement(root, 'field')
             data_field.set('id', field.tag)
 

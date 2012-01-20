@@ -11,6 +11,6 @@
                     {% if request.GET.use == 'subject' %}selected="selected"{% endif %}>Рубрика</option>
         </select>
         <input name="term" id="search_input" value="{{ request.GET.term }}" type="text">
-        <input type="submit" value="Поиск"/>
+        <input type="submit" value="Поиск" class="btn"/>
     </div>
 </form>

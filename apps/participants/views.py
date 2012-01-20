@@ -22,8 +22,9 @@ def make_library_dict(library):
 
 def index(request):
     library_systems = Library.objects.filter(parent=None).order_by('weight')
-    return render(request, 'participants/cbs_list.html',
-            {'orgs': library_systems})
+    return render(request, 'participants/cbs_list.html', {
+        'orgs': library_systems
+    })
 
 
 def cbs_list(request, code):
@@ -35,11 +36,12 @@ def cbs_list(request, code):
         orgs.append(make_library_dict(org))
 
     js_orgs = simplejson.dumps(orgs, encoding='utf-8', ensure_ascii=False)
-    return render(request, 'participants/participants_list_by_cbs.html',
-            {'cbs_name': library_system.name,
-             'cbs_code': id,
-             'ldap_orgs': orgs,
-             'js_orgs': js_orgs})
+    return render(request, 'participants/participants_list_by_cbs.html', {
+        'cbs_name': library_system.name,
+        'cbs_code': id,
+        'ldap_orgs': orgs,
+        'js_orgs': js_orgs
+    })
 
 
 def detail_by_cbs(request, code):
@@ -50,11 +52,12 @@ def detail_by_cbs(request, code):
     orgs.append(make_library_dict(library))
 
     js_orgs = simplejson.dumps(orgs, encoding='utf-8', ensure_ascii=False)
-    return render(request, 'participants/participants_detail_by_cbs.html',
-            {'cbs_name': library.parent.name,
-             'cbs_code': library.parent.code,
-             'library': library,
-             'js_orgs': js_orgs})
+    return render(request, 'participants/participants_detail_by_cbs.html', {
+        'cbs_name': getattr(library.parent, 'name', None),
+        'cbs_code': getattr(library.parent, 'code', None),
+        'library': library,
+        'js_orgs': js_orgs
+    })
 
 
 def detail_by_district(request, code):
@@ -70,8 +73,9 @@ def detail_by_district(request, code):
 
 
 def districts(request):
-    return render(request, 'participants/districts_list.html',
-            {'districts': districts_list})
+    return render(request, 'participants/districts_list.html', {
+        'districts': districts_list
+    })
 
 
 def by_district(request, id):
@@ -82,10 +86,11 @@ def by_district(request, id):
         orgs.append(make_library_dict(org))
 
     js_orgs = simplejson.dumps(orgs, encoding='utf-8', ensure_ascii=False)
-    return render(request, 'participants/participants_list_by_districts.html',
-            {'ldap_orgs': libraries,
-             'district': district,
-             'js_orgs': js_orgs})
+    return render(request, 'participants/participants_list_by_districts.html', {
+        'ldap_orgs': libraries,
+        'district': district,
+        'js_orgs': js_orgs
+    })
 
 
 @login_required

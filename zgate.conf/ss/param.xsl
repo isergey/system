@@ -159,7 +159,7 @@
 <xsl:param name="subject" select="true()"/>
 <xsl:param name="class" select="true()"/>
 <xsl:param name="record.source" select="false()"/>
-<xsl:param name="holdings" select="false()"/>
+<xsl:param name="holdings" select="true()"/>
 <xsl:param name="marc.labels" select="false()"/>
 <xsl:param name="marc.download" select="false()"/>
 <xsl:param name="download.all" select="false()"/>

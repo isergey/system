@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
  * $Log: param.xsl,v $
+ * Revision 1.30  2011/06/14 12:58:43  rustam
+ * Minor changes
+ *
+ * Revision 1.29  2011/04/28 05:30:54  rustam
+ * Conditional translation with PVM
+ *
  * Revision 1.28  2010/12/17 14:32:25  rustam
  * interface redesign
  *
@@ -90,7 +96,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"> 
 
 <!-- Common parameters -->
-<xsl:param name="lang" select="'eng'"/>
+<xsl:param name="lang" select="'rus'"/>
 <xsl:param name="charset" select="'UTF-8'"/>
 <xsl:param name="session.id" select="''"/>
 <xsl:param name="target" select="''"/>
@@ -98,9 +104,9 @@
 <xsl:param name="stylesheet.URL" select="'/ss/zgate.css'"/>
 <xsl:param name="ZURL.resolver" select="'zurlhtml'"/>
 <xsl:param name="attribute.set" select="'1.2.840.10003.3.1'"/>
-<xsl:param name="ad" select="document('attr.xml')"/>
+<!--<xsl:param name="ad" select="document('attr.xml')"/>-->
 
-<!-- Form creation parameters -->
+<!-- Form creation parameters 
 <xsl:param name="msg.form" select="document('form_msg.xml')"/>
 <xsl:param name="ed" select="document('expand.xml')"/>
 <xsl:param name="ld" select="document('lang.xml')"/>
@@ -140,8 +146,9 @@
 <xsl:param name="onload" select="''"/>
 <xsl:param name="extra.template" select="false()"/>
 <xsl:param name="extra.header" select="''"/>
-<xsl:param name="extra.js" select="''"/>
+<xsl:param name="extra.js" select="''"/>-->
 <xsl:param name="circ.db" select="'circ'"/>
+
 
 <!-- Workflow and record representation parameters -->
 <xsl:param name="fmt" select="'F'"/>
@@ -156,10 +163,10 @@
 <xsl:param name="record.syntax" select="'!'"/>
 <xsl:param name="ht" select="true()"/>
 <xsl:param name="abstract" select="true()"/>
-<xsl:param name="subject" select="true()"/>
+<xsl:param name="subject" select="false()"/>
 <xsl:param name="class" select="true()"/>
-<xsl:param name="record.source" select="true()"/>
-<xsl:param name="holdings" select="true()"/>
+<xsl:param name="record.source" select="false()"/>
+<xsl:param name="holdings" select="false()"/>
 <xsl:param name="marc.labels" select="false()"/>
 <xsl:param name="marc.download" select="false()"/>
 <xsl:param name="download.all" select="false()"/>
@@ -177,17 +184,17 @@
 <xsl:param name="author.link" select="true()"/>
 <xsl:param name="schemaId" select="''"/>
 <xsl:param name="user.id" select="''"/>
-<xsl:param name="neg.cs" select="'ISO-8859-1'"/>
 <xsl:param name="profile" select="'simple.xsl'"/>
 <xsl:param name="msg" select="document('zgate_msg.xml')"/>
 <xsl:param name="org" select="document('zgate_org.xml')"/>
-<xsl:param name="dia" select="document('diag.xml')"/>
-<xsl:param name="units" select="document('zgate_units.xml')"/>
+<!--<xsl:param name="dia" select="document('diag.xml')"/>
+ <xsl:param name="units" select="document('zgate_units.xml')"/>
 <xsl:param name="country" select="document('zgate_countries.xml')"/>
-<xsl:param name="ia" select="document('zgate_id2addr.xml')"/>
+<xsl:param name="ia" select="document('zgate_id2addr.xml')"/>-->
 <xsl:param name="order.restriction" select="'Электронный заказ на книговыдачу невозможен'"/>
-<xsl:param name="circ.desk" select="document('circ_desk.xml')"/>
+<!--<xsl:param name="circ.desk" select="document('circ_desk.xml')"/>-->
 <xsl:param name="check.records" select="'checkRecords();'"/>
-<xsl:param name="org.link.URL" select="'http://new.arlicon.com/ajax/getOrgFullInfo.php?code='"/>
+<xsl:param name="org.link.URL" select="'http://arbicon.ru/ajax/getOrgFullInfo.php?code='"/>
 <xsl:param name="cover" select="'Обложка'"/>
+<xsl:param name="opac.holdings.reconstruction" select="true()"/>
 </xsl:stylesheet>

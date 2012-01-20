@@ -1,51 +1,131 @@
 {% extends 'base.html' %}
 {% block content %}
 
+
     <hr/>
 
-    <h2><a href="{% url searcher_index %}?{{ search_url }}">результаты поиска</a>
-        → {{ record.datafields.200.0.subfields.a.0 }}
+    <h2><a href="javascript:history.go(-1)" class="btn"> ← вернуться к результатам поиска</a>
     </h2>
 
-    <hr/>
 
-    <div class="item_title">
-        <h3>{{  record.datafields.200.0.subfields.a.0 }}</h3>
+    <div class="text">
+        {{ record|safe }}
     </div>
 
-    {% if record.datafields.702.0.subfields.a.0 %}
-        <div class="item_author">
-            {{ search_result.record.datafields.702.0.subfields.a.0}}
-        </div>
-    {% endif %}
+{#    <div class="item_title">#}
+{#        <h3>{{  record.datafields.200.0.subfields.a.0 }}</h3>#}
+{#    </div>#}
+{##}
+{#    {% if record.datafields.702.0.subfields.a.0 %}#}
+{#        <div class="item_author">#}
+{#            {{ search_result.record.datafields.702.0.subfields.a.0}}#}
+{#        </div>#}
+{#    {% endif %}#}
+{##}
+{#    {% if record.datafields.517.0.subfields.a.0 %}#}
+{#        <div class="item_field">#}
+{#            {{ record.517.a }}#}
+{#        </div>#}
+{#    {% endif %}#}
+{##}
+{##}
+{#    {% if record.datafields.606 %}#}
+{#        <div class="item_field">#}
+{#            Рубрики:#}
+{#            {% for field in record.datafields.606  %}#}
+{#                {% for subfield in field.subfields.a %}#}
+{#                    <a href="#">{{ subfield }}</a>#}
+{#                {% endfor %}#}
+{#            {% endfor %}#}
+{#        </div>#}
+{#    {% endif %}#}
 
-    {% if record.datafields.517.0.subfields.a.0 %}
-        <div class="item_field">
-            {{ record.517.a }}
-        </div>
-    {% endif %}
-
-
-    {% if record.datafields.606 %}
-        <div class="item_field">
-            Рубрики:
-            {% for field in record.datafields.606  %}
-                {% for subfield in field.subfields.a %}
-                    <a href="#">{{ subfield }}</a>
-                {% endfor %}
-            {% endfor %}
-        </div>
-    {% endif %}
 
 
 
-
-
+    <hr/>
     <hr class="space"/>
+    <style type="text/css">
+        .owners p, p+p {
+            margin: 0;
+            padding: 0;
+        }
 
+
+    </style>
+    {% if save_document %}
+        <a href="#save_document_dialog" id="save_document_button" class="save_document_dialog blue awesome">Сохранить в
+            документах</a>
+    {% endif %}
+
+    <div class="owners text">
+        {% if owners %}
+            {% load order_tags %}
+{#            {% if catalog.can_reserve %}#}
+                <p style="padding-top:20px"><strong>Документ есть в следующих библиотеках:</strong><p>
+                <ul class="owners">
+                    {% for owner in owners %}
+                        <li><a class="reserve_document blue awesome" id="{{ owner.code }}"
+                               href="#reserve">Забронировать</a> {{ owner.name }}
+                        </li>
+                    {% endfor %}
+                </ul>
+{#            {% endif %}#}
+{#            {% if catalog.can_order_copy or catalog.can_order_document %}#}
+                <p style="padding-top:5px"><strong>Вы можете:</strong><p>
+                <ul class="order_buttons">
+{#                    {% if catalog.can_order_copy %}#}
+                        <li><a href="#order" id="order_copy" class="order_copy blue awesome">Заказать копию
+                            документа</a>
+                        </li>
+{#                    {% endif %}#}
+{#                    {% if catalog.can_order_document %}#}
+                        <li><a href="#order" id="order_document" class="order_document blue awesome">Заказать документ во
+                        временное пользование</a>
+{#                    {% endif %}#}
+                    <li>
+                </ul>
+{#            {% endif %}#}
+        {% endif %}
+    </div>
+
+    <div style="display:none;">
+        <div id="save_document_dialog" style="width: 530px;">
+            <b><p>Сохранение документа:</p></b>
+
+            <div id="saving_document_record" style="margin:5px 0 10px 0; border: 1px solid #C1C3C4;">
+            </div>
+            <p style="margin:10px 0 0 0">Заметки<br/>
+                <textarea id="saving_document_comments"
+                          style="width:97%;height:50px;border: 1px solid #C1C3C4;"></textarea>
+            </p>
+            <a style="margin:0 0 5px 0;" href="#reserve" id='do_save_document_button'
+               class="save_document_button blue awesome">Сохранить</a></p>
+        </div>
+    </div>
+
+    <div style="display:none;">
+        <div id="reserve" style="width: 530px;">
+            <b><p>Бронирование документа:</p></b>
+
+            <div id="reserve_record" style="margin:5px 0 10px 0; border: 1px solid #C1C3C4;">
+            </div>
+            <div>
+                <p><b>Информация о библиотеке:</b></p>
+
+                <div id="reserve_org_info"></div>
+            </div>
+            <p style="margin:10px 0 0 0">Комментарии к заказу<br/>
+                <textarea id="reserve_comments" style="width:430px;height:50px;border: 1px solid #C1C3C4;"></textarea>
+            </p>
+            <a style="margin:0 0 5px 0;" href="#reserve" id='do_reserve_button' class="order_button blue awesome">Забронировать</a></p>
+
+        </div>
+    </div>
 
     <script src="http://cdn.jquerytools.org/1.2.5/jquery.tools.min.js"></script>
     <script type="text/javascript">
         $("#show_full_document").tooltip({'relative':true});
     </script>
+
 {% endblock %}

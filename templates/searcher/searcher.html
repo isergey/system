@@ -2,13 +2,11 @@
 {% block content %}
     <style>
         .zgate input {
-            border-radius: 2px;
-            border: 1px solid #dfdfdf;
-            background: #fff;
             padding: 5px;
-            color: #333333;
         }
-
+        .zgate input[type=text] {
+            width: 350px;
+        }
         .zgate select {
             padding: 4px;
             border-radius: 0px;
@@ -25,6 +23,30 @@
             background: #f4f4f5;
             cursor: pointer;
         }
+
+        .item_title{
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 20px;
+         }
+        .btn.detail {
+            padding: 2px;
+            margin: 5px 0 5px 0;
+        }
+        .label {
+            padding: 1px 3px 2px;
+            font-size: 9.75px;
+            font-weight: bold;
+            color: white;
+            text-transform: uppercase;
+            white-space: nowrap;
+            background-color: #BFBFBF;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+        }
+        .label.rubric {
+            background-color: #62CFFC;
+        }
     </style>
     <h3>Издания с 2009 года</h3>
     <div class="zgate text">
@@ -35,14 +57,20 @@
         {% for search_result in search_results %}
 
             <div class="result_item column last">
-                <div class="item_number alt column span-2">№{{ search_result.number }}</div>
-                <div class="column span-14  last">
+                <div class="item_number alt column span-1">№{{ search_result.number }}</div>
+                <div class="column span-12  last">
                     <div class="item_title">
-                        <a href="#?id={{ search_result.record.controlfields.001|urlencode }}&search_url={{ search_url|urlencode }}">{{ search_result.record.datafields.200.0.subfields.a.0|safe }}</a>
+                        <a href="{% url searcher_detail %}?number={{ search_result.number }}">{{ search_result.record.200.0.a.0.data }}</a>
                     </div>
-                    {% if search_result.record.datafields.702.0.subfields.a.0 %}
-                        <div class="item_author">
-                            {{ search_result.record.datafields.702.0.subfields.a.0 }}
+                    {% if search_result.record.702 or search_result.record.700 %}
+                        <div class="item_field">
+                            Автор:
+                            {% for field in search_result.record.702 %}
+                                    <a href="{% url searcher_index %}?use=author&ft=on&term={{ field.subfields.a.0.data }}">{{ field.subfields.a.0.data }} {{ field.subfields.b.0.data }} </a>
+                            {% endfor %}
+                            {% for field in search_result.record.700 %}
+                                <a href="{% url searcher_index %}?use=author&ft=on&term={{ field.subfields.a.0.data }}">{{ field.subfields.a.0.data }} {{ field.subfields.b.0.data }} </a>
+                            {% endfor %}
                         </div>
                     {% endif %}
                     {% if search_result.record.datafields.606 %}
@@ -50,13 +78,13 @@
                             Рубрики:
                             {% for field in search_result.record.datafields.606 %}
                                 {% for subfield in field.subfields.a %}
-                                    <a href="{% url searcher_index %}?use=subject&ft=on&term={{ subfield }}">{{ subfield }}</a>
+                                    <a class="label rubric" href="{% url searcher_index %}?use=subject&ft=on&term={{ subfield }}">{{ subfield }}</a>
                                 {% endfor %}
                             {% endfor %}
                         </div>
                     {% endif %}
                     <div>
-                        <a href="{% url searcher_detail %}?number={{ search_result.number }}">Подробнее</a>
+                        <a href="{% url searcher_detail %}?number={{ search_result.number }}" class="btn detail">Подробнее</a>
                     </div>
                     {#                    <div class="item_info">#}
                     {#                        {% trans "Access" %}: <span style="color: green;">{% trans "free" %}</span>#}
