@@ -26,38 +26,37 @@ def index(request):
         'orgs': library_systems
     })
 
-
-def cbs_list(request, code):
-    library_system = get_object_or_404(Library, code=code)
-    libraries = Library.objects.filter(parent=library_system)
-    orgs = []
-
-    for org in libraries:
-        orgs.append(make_library_dict(org))
-
-    js_orgs = simplejson.dumps(orgs, encoding='utf-8', ensure_ascii=False)
-    return render(request, 'participants/participants_list_by_cbs.html', {
-        'cbs_name': library_system.name,
-        'cbs_code': id,
-        'ldap_orgs': orgs,
-        'js_orgs': js_orgs
-    })
-
-
-def detail_by_cbs(request, code):
+def detail(request, code):
     library = get_object_or_404(Library, code=code)
+    # если цбс
+    if not library.parent_id:
+        libraries = Library.objects.filter(parent=library)
+        orgs = []
 
-    orgs = []
+        for org in libraries:
+            orgs.append(make_library_dict(org))
 
-    orgs.append(make_library_dict(library))
+        js_orgs = simplejson.dumps(orgs, encoding='utf-8', ensure_ascii=False)
+        return render(request, 'participants/participants_list_by_cbs.html', {
+            'cbs_name': library.name,
+            'cbs_code': library.code,
+            'ldap_orgs': orgs,
+            'js_orgs': js_orgs
+        })
+    else:
+        orgs = []
 
-    js_orgs = simplejson.dumps(orgs, encoding='utf-8', ensure_ascii=False)
-    return render(request, 'participants/participants_detail_by_cbs.html', {
-        'cbs_name': getattr(library.parent, 'name', None),
-        'cbs_code': getattr(library.parent, 'code', None),
-        'library': library,
-        'js_orgs': js_orgs
-    })
+        orgs.append(make_library_dict(library))
+
+        js_orgs = simplejson.dumps(orgs, encoding='utf-8', ensure_ascii=False)
+        return render(request, 'participants/participants_detail_by_cbs.html', {
+            'cbs_name': getattr(library.parent, 'name', None),
+            'cbs_code': getattr(library.parent, 'code', None),
+            'library': library,
+            'js_orgs': js_orgs
+        })
+        pass
+
 
 
 def detail_by_district(request, code):

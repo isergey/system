@@ -17,7 +17,7 @@
         <h3><a href="{% url participants_index %}">Библиотеки</a> → {{ cbs_name }}</h3>
         <ul class="org_list">
             {% for ldap_org in  ldap_orgs %}
-                <li><a href="{% url participants_detail_by_cbs ldap_org.code %}">{{ ldap_org.title }}</a><br/>
+                <li><a href="{% url participants_detail ldap_org.code %}">{{ ldap_org.title }}</a><br/>
                     Адрес: {{ ldap_org.address }}<br/>
                     Часы работы: {{ ldap_org.plans }}<br/>
                     Телефон: {{ ldap_org.phone }} <br/>
