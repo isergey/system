@@ -54,7 +54,7 @@ def render_search_result(request, catalog, zresult=''):
         else:
             url = url + '?' + request.GET['zstate'].replace(' ', '+')
 
-        (zresult, cookies) = zworker.request(url)
+        (zresult, cookies) = zworker.request(url, cookies=request.COOKIES)
     try:
         zresults_body_element = zworker.get_body_element(zresult)
 
@@ -63,9 +63,10 @@ def render_search_result(request, catalog, zresult=''):
         return HttpResponse(u'Некорректный url')
     result = zworker.make_html_body_content(zresults_body_element)
 
-    response = render(request, 'zgate/search_results.html',
-            {'catalog_title': catalog.title,
-             'search_results': result})
+    response = render(request, 'zgate/search_results.html', {
+        'catalog_title': catalog.title,
+        'search_results': result
+    })
 
     return  set_cookies_to_response(cookies, response)
 
@@ -89,8 +90,9 @@ def help(request, catalog_id='', slug=''):
     if slug:
         catalog = get_object_or_404(ZCatalog, latin_title=slug)
 
-    return render(request, 'zgate/help.html',
-            {'catalog': catalog})
+    return render(request, 'zgate/help.html', {
+        'catalog': catalog
+    })
 
 
 def render_detail(request, catalog):
@@ -122,16 +124,16 @@ def render_detail(request, catalog):
 
 
     result = zworker.make_html_body_content(zresults_body_element)
-    response =  render(request, 'zgate/search_results.html',
-            {'catalog_title': catalog.title,
-             'search_results': result,
-             'owners': owners,
-             'record_id': record_id,
-             'zsession': zsession,
-             'zoffset': zoffset,
-             'catalog': catalog,
-             'save_document': save_document,
-             })
+    response =  render(request, 'zgate/search_results.html', {
+        'catalog_title': catalog.title,
+        'search_results': result,
+        'owners': owners,
+        'record_id': record_id,
+        'zsession': zsession,
+        'zoffset': zoffset,
+        'catalog': catalog,
+        'save_document': save_document,
+    })
     return set_cookies_to_response(cookies, response)
 
 @login_required
@@ -157,13 +159,14 @@ def save_requests(request, catalog):
 
     saved_request = SavedRequest(zcatalog=catalog, user=request.user, zurls=zurls, query=query, human_query=human_query)
     saved_request.save()
-    return render(request, 'zgate/save_request.html',
-            {'saved_request': saved_request,
-             'module':'zgate'})
+    return render(request, 'zgate/save_request.html', {
+        'saved_request': saved_request,
+        'module':'zgate'
+    })
 
 def save_document(request):
     if request.method != 'POST':
-        return HttpResponse('Only post requests');
+        return HttpResponse('Only post requests')
 
 
     expiry_date = None
@@ -215,7 +218,7 @@ def save_document(request):
 
     saved_document.save()
 
-    response =  HttpResponse(simplejson.dumps({'status': 'ok'}, ensure_ascii=False));
+    response =  HttpResponse(simplejson.dumps({'status': 'ok'}, ensure_ascii=False))
     return response
 
 
@@ -287,8 +290,12 @@ def log_search_request(request, catalog):
             not_normalize=group['nn'],
         ).save()
 
+
+
+
 import lxml
 def index(request, catalog_id='', slug=''):
+    catalog = None
     if catalog_id:
         catalog = get_object_or_404(ZCatalog, id=catalog_id)
     if slug:
@@ -328,7 +335,7 @@ def index(request, catalog_id='', slug=''):
                     return HttpResponse(u'Получен некорретный ответ. Попробуйте осуществить поиск еще раз.')
 
                 response = render_form(request, zresult=zresult, catalog=catalog)
-                return set_cookies_to_response(cookies,response)
+                return set_cookies_to_response(cookies, response)
 
             elif vars[0] == 'present':
                 if vars[4] == '1' and vars[5] == 'F':
@@ -343,8 +350,10 @@ def index(request, catalog_id='', slug=''):
                 response = render_search_result(request, catalog)
                 return set_cookies_to_response(cookies,response)
             else:
+                print 'ededed'
+                print request
                 response = render_search_result(request, catalog)
-                return set_cookies_to_response(cookies,response)
+                return set_cookies_to_response(cookies, response)
         else: #значит только инициализация формы
         #            if not catalog.can_search:
         #                return Htt
@@ -438,9 +447,10 @@ def saved_requests_list(request):
     except (EmptyPage, InvalidPage):
         saved_requests_list = paginator.page(paginator.num_pages)
 
-    return render(request, 'zgate/saved_requests_list.html',
-            {'saved_requests_list': saved_requests_list,
-             'module':'zgate'})
+    return render(request, 'zgate/saved_requests_list.html',  {
+        'saved_requests_list': saved_requests_list,
+        'module':'zgate'
+    })
 
 
 

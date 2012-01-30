@@ -147,7 +147,9 @@ hr.space {
 
     text-align: center;
 }
-
+.block #auth form{
+    margin: 0;
+}
 .block #auth .auth_title {
     font-size: 20px;
     color: #e2dede;
@@ -165,6 +167,7 @@ hr.space {
     background: url("../images/theme/auth_field_bg.png") no-repeat;
 
 }
+
 
 .block #auth .input_field input[type=text], .input_field input[type=password] {
     font-family: 'PT Sans', serif;
@@ -334,13 +337,18 @@ select {
     top: 1px;
 }
 
-.awesome {
+.awesome{
     font-size: 12px;
 }
 div.awesome{
-    margin-bottom:5px; 
-    padding-top: 10px;
-    padding-bottom: 5px;min-height:30px
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    line-height: 15px;
+    margin: 0 0 5px 0;
+    font-size: 14px;
+    padding: 10px 0 0 0;
+    min-height:40px;
+    width: 100%;
 }
 div.awesome a{
     color: #fff;
@@ -350,6 +358,11 @@ div.awesome a{
 .blue.awesome {
     background-color: #1c6495;
 }
+
+.orange.awesome {
+    background-color: #FF5C00;
+}
+
 
 .vote_bars {
     background: #222 url(/media/images/theme/alert-overlay.png) repeat-x;
@@ -839,7 +852,7 @@ textarea[readonly] {
 .help-inline, .help-block {
     font-size: 13px;
     line-height: 18px;
-    color: #bfbfbf;
+    color: #9e9e9e;
 }
 .help-inline {
     padding-left: 5px;
@@ -1168,4 +1181,17 @@ textarea[readonly] {
 button.btn::-moz-focus-inner, input[type=submit].btn::-moz-focus-inner {
     padding: 0;
     border: 0;
+}
+
+
+.input_field input{
+    -webkit-transition:0;
+    padding: 2px;
+
+    outline: 0;
+    border-color: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
 }

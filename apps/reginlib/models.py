@@ -19,14 +19,57 @@ REGISTRATION_STATUSES = (
 
 # регистрация пользователя в библиотеке
 class UserLibRegistation(models.Model):
-    user = models.ForeignKey(User)
-    library = models.ForeignKey(Library, verbose_name=u"Библиотека",
-        help_text=u'Выберите библиотеку, в которую отправится заявка')
-    status = models.IntegerField(choices=REGISTRATION_STATUSES, db_index=True, verbose_name=u'Статус', default=0)
-    first_name = models.CharField(max_length=32, verbose_name=u'Имя, отчество')
-    last_name = models.CharField(max_length=32, verbose_name=u'Фамилия')
-    visit_date = models.DateField(verbose_name=u'Дата визита', help_text=u'Укажите желаемую дату визита в библиотеку')
-    create_date = models.DateTimeField(auto_now=True, auto_now_add=True)
+
+    user = models.ForeignKey(User, unique=True)
+
+    recive_library = models.ForeignKey(
+        Library,
+        verbose_name=u"Библиотека получатель заявки",
+        help_text=u'Библиотека, которая получит заявку'
+    )
+
+    manage_library = models.ForeignKey(
+        Library,
+        verbose_name=u"Библиотека обработчик заявки",
+        help_text=u'Библиотека, в которой осуществляется регистрация',
+        related_name='manage_library'
+    )
+
+    status = models.IntegerField(
+        choices=REGISTRATION_STATUSES,
+        db_index=True,
+        verbose_name=u'Статус',
+        default=0
+    )
+
+    first_name = models.CharField(
+        max_length=32,
+        verbose_name=u'Имя, отчество'
+    )
+
+    last_name = models.CharField(
+        max_length=32,
+        verbose_name=u'Фамилия'
+    )
+
+    email = models.EmailField(
+        max_length=256,
+        verbose_name=u'Адрес электронной почты'
+    )
+
+    phone = models.CharField(
+        max_length=16,
+        verbose_name=u"Телефон для связи"
+    )
+
+    visit_date = models.DateField(
+        verbose_name=u'Дата визита',
+        help_text=u'Укажите желаемую дату визита в библиотеку'
+    )
+
+    create_date = models.DateTimeField(
+        auto_now=True, auto_now_add=True
+    )
 
 
     def next_statuses(self):
@@ -67,9 +110,6 @@ class UserLibRegistation(models.Model):
 
     def can_delete(self):
         return not (self.can_take_to_process() or self.can_reject() or self.can_complete())
-
-    class Meta:
-        unique_together = ('user', 'library', 'status')
 
 
 class RegistrationManager(models.Model):

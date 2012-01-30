@@ -218,6 +218,7 @@ def record_to_rustam_xml(record, syntax='1.2.840.10003.5.28', namespace=False):
     return root
 
 
+
 # xml decoders
 
 def record_to_xml(record):

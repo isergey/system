@@ -39,14 +39,41 @@
     }
     </style>
 
+    <h2>Регистрация в библиотеку: {% if library.parent %}{{ library.parent.name }} → {% endif %} {{ library.name }}</h2>
     <form action="" method="POST" class="libreg form-stacked">
         <fieldset>
             {{ form.as_div }}
+            <div class="required">
+                <label for="id_library">Выберите библиотеку:</label>
+                <select name="manage_library" id="id_library">
+                    <option value="0">----------</option>
+                </select>
+            </div>
             <input type="submit" value="Отправить заявку на регистрацию" class="btn">
         </fieldset>
     </form>
 
 
 
+<script type="text/javascript">
+$("#id_district").change(function () {
+    $.ajax({
+        url:'{% url participants_json_by_district %}',
+        type:'POST',
+        dataType:"json",
+        async:false,
+        data:{district:$("#id_district").val()},
+        success:function (orgs) {
+            var lib_select = $('#id_library');
+            lib_select.html('');
+            libs =['<option value="0">----------</option>'];
+            for (index in orgs) {
+                libs.push('<option value="' + orgs[index]['id'] + '">' +  orgs[index]['title'] + '</option>');
+            }
+            lib_select.html((libs.join('')));
+        }
+    });
 
+});
+</script>
 {% endblock %}

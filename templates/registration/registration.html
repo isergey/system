@@ -1,174 +1,33 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <style>
-        label {
+    <style type="text/css">
+        .registration input[type=text]{
+            width: 80%;
+        }
+        .registration label{
             font-weight: normal;
         }
-
-        #reg_user label {
-        /*font-weight: normal;*/
-        }
-
-        #reg_user h3 {
-            height: 28px;
-            text-indent: -8000px;
-        }
-
-        #reg_user fieldset {
-            margin: 0;
-            padding: 0;
-            border: none;
-            padding-bottom: 1em;
-
-        }
-
-        #reg_user legend {
-            display: none;
-        }
-
-        #reg_user p {
-            margin: .5em 20px;
-        }
-
-        #reg_user label {
-            display: block;
-        }
-
-        #reg_user input[type="text"], #reg_user textarea, #reg_user input[type="password"] {
-
-            border-radius: 5px;
-            width: 97%;
-            border: 1px solid #dfdfdf;
-            background: #fff;
-            padding: 5px 3px;
-            color: #333333;
-        }
-
-        #reg_user ul label {
-            font-size: 110%;
-        }
-
-        #reg_user textarea {
-
-            font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
-            font-size: 110%;
-        }
-
-        #reg_user ul {
-            list-style: none;
-        }
-
-        #reg_user textarea {
-            height: 60px;
-            overflow: auto;
-        }
-
-        #reg_user p.submit {
-
-            text-align: center;
-        }
-
-        #reg_user p.submit button {
-            height: 30px;
-            float: none;
-        }
-
-        #reg_user button {
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-            -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-            -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /*filter: progid:DXImageTransform.Microsoft.shadow(direction=120, color=#000000, strength=5);*/
-            border-radius: 5px;
-
-        }
-
-        form p {
-            margin: 0;
-            padding: 0,
-        }
-
-        form .required {
+        .registration  .required label{
             font-weight: bold;
         }
-
-        form span.help {
-            color: #555555;
+        fieldset div {
+            padding-bottom: 10px;
         }
-
-        input + label {
-            margin-top: 1em;
-            display: block;
-        }
-
-        fieldset ul.errorlist {
-            margin-left: 5px;
-            margin-top: -15px;
-            margin-bottom: -10px;
-            color: #ff3333;
+        ul.errorlist{
+            margin: 0;
+            color: red;
+            list-style: none;
+            padding: 0;
         }
     </style>
     <div class="text">
         <h3 align="center">Регистрация на портале</h3>
-        <form name="reg_user" id="reg_user" action="{% url ldaccounts_registration %}" method="post">
+        <form action="" method="POST" class="registration form-stacked">
             <fieldset>
-                <p class="first">
-                    <label {% if form.username.field.required %} class="required" {% endif %}
-                                                                 for="{{ form.username.auto_id }}">
-                        {{ form.username.label }} 
-                    </label>
-                    <span class="help">Только латинские буквы и цифры без пробела. {{ form.username.help_text }}</span>
-                    {{ form.username }}
-                    {{ form.username.errors }}
-                </p>
-                <p>
-                    <label {% if form.password.field.required %} class="required" {% endif %}
-                                                                 for="{{ form.password.auto_id }}">
-                        {{ form.password.label }}
-                    </label>
-                    <span class="help">Пароль может содержать любые символы. Пароль чувствителен к регистру. {{ form.password.help_text }}</span>
-                    {{ form.password }}
-                    {{ form.password.errors }}
-                </p>
-                <p>
-                    <label {% if form.password2.field.required %} class="required" {% endif %}
-                                                                  for="{{ form.password2.auto_id }}">
-                        {{ form.password2.label }}
-                    </label>
-                    {% if form.password2.help_text %}<span class="help">{{ form.password2.help_text }}</span>{% endif %}
-                    {{ form.password2 }}
-                    {{ form.password2.errors }}
-                </p>
-                <p>
-                    <label {% if form.email.field.required %} class="required" {% endif %}
-                                                              for="{{ form.email.auto_id }}">
-                        {{ form.email.label }}
-                    </label>
-                    <span class="help">На email будет выслан код для подтверждения регистрации</span>
-                    {{ form.email }}
-                    {{ form.email.errors }}
-                </p>
-                <p>
-                    <label {% if form.first_name.field.required %} class="required" {% endif %}
-                                                                   for="{{ form.first_name.auto_id }}">
-                        {{ form.first_name.label }}
-                    </label>
-                    {% if form.first_name.help_text %}<span
-                            class="help">{{ form.first_name.help_text }}</span>{% endif %}
-                    {{ form.first_name }}
-                    {{ form.first_name.errors }}
-                </p>
-                <p>
-                    <label {% if form.tel_number.field.required %} class="required" {% endif %}
-                                                                   for="{{ form.tel_number.auto_id }}">
-                        {{ form.tel_number.label }}
-                    </label>
-                    {% if form.tel_number.help_text %}<span
-                            class="help">{{ form.tel_number.help_text }}</span>{% endif %}
-                    {{ form.tel_number }}
-                    {{ form.tel_number.errors }}
-                </p>
+                {{ form.as_div }}
+                <input type="submit" value="Регистрация" class="btn">
             </fieldset>
-            <p align="center"><a class="awesome blue" href="#" onclick="document.reg_user.submit();">Регистрация</a></p>
         </form>
     </div>
 {% endblock %}

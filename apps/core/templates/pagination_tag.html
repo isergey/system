@@ -3,7 +3,7 @@
 <div class="pagination">
     <span class="step-links">
     {% if page.has_previous %}
-        <a href="{% add_get page=page.previous_page_number %}" class="previous">{% trans "previous" %}</a>
+        <a href="{% add_get page=page.previous_page_number %}" class="previous">Предыдущая</a>
     {% endif %}
 
         {% for pnum in begin %}
@@ -29,7 +29,7 @@
             <span class="continue">...</span>
             {% for pnum in end %}
                 {% ifequal page.number pnum %}
-                    <span class="current">{{ pnum }}</span>
+                    <span class="current ">{{ pnum }}</span>
                 {% else %}
                     <a href="{% add_get page=pnum %}">{{ pnum }}</a>
                 {% endifequal %}
@@ -37,7 +37,7 @@
         {% endif %}
 
     {% if page.has_next %}
-        <a href="{% add_get page=page.next_page_number %}" class="next">{% trans "next" %}</a>
+        <a href="{% add_get page=page.next_page_number %}" class="next">Следующая</a>
     {% endif %}
     </span>
 </div>

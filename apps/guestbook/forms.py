@@ -4,10 +4,10 @@ from django.forms import ModelForm
 from models import Feedback
 from captcha.fields import CaptchaField
 from django.utils.html import strip_tags
+from common.forms import CoolModelForm
 
-
-class FeedbackForm(ModelForm):
-    captcha = CaptchaField(label=u"Введите текст изображенный на картинке*", error_messages={'invalid': u"Введенный текст не совпадает с тексом на картинке"})
+class FeedbackForm(CoolModelForm):
+    captcha = CaptchaField(label=u"Введите текст изображенный на картинке", error_messages={'invalid': u"Введенный текст не совпадает с тексом на картинке"})
     class Meta:
         model = Feedback
         exclude = ["published"]

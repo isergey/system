@@ -7,14 +7,17 @@ from django.utils.translation import ugettext_lazy as _
 from libs.ldapwork.ldap_work import LdapWork, LdapWorkException, LdapConnection
 #from libs.ldapwork.ldap_work import LdapWork, LdapWorkException
 from libs.ldapwork.ldapuser import LdapUser
+from common.forms import CoolModelForm, CoolForm
+
+
 class LoginForm(auth_forms.AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs["size"] = 65
         self.fields['password'].widget.attrs["size"] = 65
 
-class RegistrationForm(forms.Form):
-    username = forms.CharField(max_length=50, label="Имя пользователя")
+class RegistrationForm(CoolForm):
+    username = forms.CharField(max_length=50, label="Логин", help_text=u"Разрешены буквы латинского алфавита и цифры")
     password = forms.CharField( min_length=6, max_length=50,
                                 label="Пароль", widget=forms.PasswordInput)
     password2 = forms.CharField(min_length=6, max_length=50,

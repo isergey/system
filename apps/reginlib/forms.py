@@ -3,37 +3,36 @@ from django import forms
 from models import UserLibRegistation, StatusChange
 from django.forms.extras.widgets import SelectDateWidget
 from django.contrib.admin import widgets
+from models import Library
+from vendors.mptt.fields import TreeNodeChoiceField
+from common.forms import CoolModelForm
+from participants.districts import get_districts_choices
+
+from participants.models import District
+
+def get_districts_choices(with_empty_row=False):
+    districts = District.objects.select_related().all()
+    choices = []
+    if with_empty_row:
+        choices.append((0, u'----'))
+    for district in districts:
+        choices.append((district.id, district.city.name + u': '+ district.name))
+    return choices
 
 
-class SexyModelForm(forms.ModelForm):
-    #error_css_class = 'class-error'
-    required_css_class = 'required'
-    def __init__(self, *args, **kwargs):
-        super(forms.ModelForm, self).__init__(*args, **kwargs)
-        # adding css classes to widgets without define the fields:
-#        for field in self.fields:
-#            self.fields[field].widget.attrs['class'] = 'some-class other-class'
-    def as_div(self):
-        "Returns this form rendered as HTML <div>s."
-        return self._html_output(
-            normal_row = u'<div%(html_class_attr)s>%(label)s %(field)s %(errors)s %(help_text)s </div>',
-            error_row = u'<div class="error">%s</div>',
-            row_ender = '</div>',
-            help_text_html = u'<span class="help-block">%s</span>',
-            errors_on_separate_row = False)
-
-
-class UserLibRegistationForm(SexyModelForm):
+class UserLibRegistationForm(CoolModelForm):
+    district = forms.ChoiceField(choices=get_districts_choices(True), label=u'Выберите район',
+        help_text=u'Нажмите на список, чтобы выбрать район, в котором находится библиотека')
     visit_date = forms.DateField(
         label=u'Дата визита',widget=widgets.AdminDateWidget,
         help_text=u'Укажите дату визита в библиотеку для окончательного оформления регистрации (дд.мм.гггг)'
     )
     class Meta:
         model = UserLibRegistation
-        exclude = ('user','status')
+        exclude = ('user','status', 'recive_library', 'manage_library')
 
 
-class ChangeStatusForm(SexyModelForm):
+class ChangeStatusForm(CoolModelForm):
     comments = forms.CharField(widget=forms.Textarea, label=u'Комментарии пользователю')
     class Meta:
         model = StatusChange

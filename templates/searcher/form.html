@@ -1,16 +1,63 @@
+
 <form method="get" id="search_form" action="">
-    <div style="overflow:hidden;">
-        <select name="use" class="search_point">
-            <option value="anywhere"
-                    {% if request.GET.use == 'anywhere' %}selected="selected"{% endif %}>Везде</option>
-            <option value="author"
-                    {% if request.GET.use == 'author' %}selected="selected"{% endif %}>Автор</option>
-            <option value="title"
-                    {% if request.GET.use == 'title' %}selected="selected"{% endif %}>Заглавие</option>
-            <option value="subject"
-                    {% if request.GET.use == 'subject' %}selected="selected"{% endif %}>Рубрика</option>
-        </select>
-        <input name="term" id="search_input" value="{{ request.GET.term }}" type="text">
-        <input type="submit" value="Поиск" class="btn"/>
+    <div class="rows">
+        {% for row in form_attr.rows %}
+            <div class="row" id="row_{{ forloop.counter0 }}">
+                {% if forloop.counter0 > 0 %}
+                    <div>
+                        <select name="operator" id="operator_{{ forloop.counter0 }}">
+                            <option value="0" {% if row.operator == '0' %}selected="selected"{% endif %}>И</option>
+                            <option value="1" {% if row.operator == '1' %}selected="selected"{% endif %}>ИЛИ</option>
+                            <option value="2" {% if row.operator == '2' %}selected="selected"{% endif %}>И НЕ</option>
+                        </select>
+                        <a href="#1" class="delete_operator">Удалить условие</a>
+                    </div>
+                {% endif %}
+                <div>
+                    <select name="use" class="use">
+                        {% for use in form_attr.use %}
+                            <option value="{{ use.id }}"
+                                    {% if row.use == use.id %}selected="selected"{% endif %}>{{ use.title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <input name="term" id="term_{{ forloop.counter0 }}" value="{{ row.init }}" type="text">
+                </div>
+            </div>
+        {% endfor %}
     </div>
+        <div class="additionsl">
+            <a href="#1" id='add_row'>Добавить условие</a>
+        </div>
+        <input type="submit" value="Поиск" class="btn"/>
 </form>
+
+<script type="text/javascript">
+
+    $('#add_row').click(function() {
+        var lastRow = $('.row:last').clone();
+        var id = lastRow.attr('id').split('_');
+        var num_id = parseInt(id[1]) + 1;
+        if ($(".rows .row").length > 4) {
+            alert("Максимальное количество условий");
+            return;
+        }
+        var id_title = id[0];
+        var  operator_select = '<div>\
+            <select name="operator" id="operator_'+num_id+'">\
+                <option value="0">И</option>\
+                <option value="1">ИЛИ</option>\
+                <option value="2">И НЕ</option>\
+            </select>\
+            <a href="#1" class="delete_operator">Удалить условие</a>\
+            </div>';
+        lastRow.attr('id', id_title + '_' + num_id);
+        if (num_id == 1){
+            lastRow.html(operator_select + lastRow.html());
+        }
+        lastRow.appendTo('.rows');
+    });
+    $(document).on('click','.delete_operator', function(){
+        $(this).parent().parent().remove();
+    });
+</script>

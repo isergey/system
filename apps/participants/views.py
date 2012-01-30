@@ -93,6 +93,21 @@ def by_district(request, id):
     })
 
 
+def by_district_json(request):
+    if request.method == 'POST' and 'district' in request.POST:
+        district = request.POST['district']
+
+        libraries = Library.objects.filter(district=district).exclude(parent=None)
+
+        orgs = []
+        for org in libraries:
+            orgs.append({'id': org.id, 'title': org.name})
+
+        json = simplejson.dumps(orgs, ensure_ascii=False)
+        return HttpResponse(json)
+    else:
+        return HttpResponse('Only post requests')
+
 @login_required
 def xml_dump(request):
     lines = [u'<?xml version="1.0" encoding="UTF-8"?>', u'<organizations>', u'<localization language="rus">']

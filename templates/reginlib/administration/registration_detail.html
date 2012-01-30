@@ -3,7 +3,7 @@
     Детальная информация о регистрации
 {% endblock %}
 {% block menu %}
-    <a href="#1"><< Заявки</a>
+    <h4><a href="{% url reginlib_checkout %}">Начало</a></h4>
 {#    <h3>Обслуживаемые библиотеки</h3>#}
 {#    <ul>#}
 {#    {% for library in libraries %}#}
@@ -27,11 +27,7 @@
     </style>
     <ul style="list-style: none;">
         <li style="padding-bottom: 10px; font-size: 16px">
-            <b>Номер заявки</b>: {{ registration.id }} Статус: <span class="status{{ registration.status }}"> {{ registration.get_status_display }}</span><br/>
-            <b>Библиотека</b>: <a href="#1">{{ registration.library.name }}</a><br/>
-            <b>Пользователь</b>: <a href="#">{{ registration.user.username }}</a><br/>
-            <b>Дата поступления заявки</b>: {{ registration.create_date }}<br/>
-            <b>Дата запланированного визита</b>: {{ registration.visit_date }}<br/>
+            {% include 'reginlib/administration/registration_rows.html' %}
         </li>
         <li>
             <div class="actions">

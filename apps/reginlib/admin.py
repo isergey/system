@@ -3,7 +3,7 @@ from django.contrib import admin
 from reginlib.models import UserLibRegistation, StatusChange, RegistrationManager
 
 class UserLibRegistationAdmin(admin.ModelAdmin):
-    list_display = ('user','library', 'create_date')
+    list_display = ('user','recive_library', 'manage_library', 'create_date')
 
 admin.site.register(UserLibRegistation, UserLibRegistationAdmin)
 

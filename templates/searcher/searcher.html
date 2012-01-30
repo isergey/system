@@ -5,7 +5,7 @@
             padding: 5px;
         }
         .zgate input[type=text] {
-            width: 350px;
+            width: 300px;
         }
         .zgate select {
             padding: 4px;
@@ -47,6 +47,18 @@
         .label.rubric {
             background-color: #62CFFC;
         }
+        .pagination {
+           font-size: 14px;
+        }
+        .pagination .current {
+            font-weight: bold;
+            background: #049cdb;
+            padding: 0 3px 0 3px;
+            color: white;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+        }
     </style>
     <h3>Издания с 2009 года</h3>
     <div class="zgate text">
@@ -57,34 +69,39 @@
         {% for search_result in search_results %}
 
             <div class="result_item column last">
-                <div class="item_number alt column span-1">№{{ search_result.number }}</div>
+{#                <div class="item_number alt column span-1">№{{ search_result.number }}</div>#}
                 <div class="column span-12  last">
                     <div class="item_title">
-                        <a href="{% url searcher_detail %}?number={{ search_result.number }}">{{ search_result.record.200.0.a.0.data }}</a>
+                        <a href="{% url searcher_slug_detail catalog.latin_title %}?number={{ search_result.number }}">{{ search_result.record.get_title }}</a>
                     </div>
                     {% if search_result.record.702 or search_result.record.700 %}
                         <div class="item_field">
                             Автор:
                             {% for field in search_result.record.702 %}
-                                    <a href="{% url searcher_index %}?use=author&ft=on&term={{ field.subfields.a.0.data }}">{{ field.subfields.a.0.data }} {{ field.subfields.b.0.data }} </a>
+                                    <a title="Осуществить поиск по автору" href="{% url searcher_slug_index catalog.latin_title %}?use=1003&ft=on&term={{ field.subfields.a.0.data }}">{{ field.subfields.a.0.data }} {{ field.subfields.b.0.data }} </a>
                             {% endfor %}
                             {% for field in search_result.record.700 %}
-                                <a href="{% url searcher_index %}?use=author&ft=on&term={{ field.subfields.a.0.data }}">{{ field.subfields.a.0.data }} {{ field.subfields.b.0.data }} </a>
+                                <a title="Осуществить поиск по автору" href="{% url searcher_slug_index catalog.latin_title  %}?use=1003&ft=on&term={{ field.subfields.a.0.data }}">{{ field.subfields.a.0.data }} {{ field.subfields.b.0.data }} </a>
                             {% endfor %}
                         </div>
                     {% endif %}
-                    {% if search_result.record.datafields.606 %}
+                    {% if search_result.record.606 %}
                         <div class="item_field">
                             Рубрики:
-                            {% for field in search_result.record.datafields.606 %}
+                            {% for field in search_result.record.606 %}
                                 {% for subfield in field.subfields.a %}
-                                    <a class="label rubric" href="{% url searcher_index %}?use=subject&ft=on&term={{ subfield }}">{{ subfield }}</a>
+                                    <a title="Осуществить поиск по рубрике" class="label rubric" href="{% url searcher_slug_index catalog.latin_title %}?use=21&ft=on&term={{ subfield.data }}">{{ subfield.data }}</a>
                                 {% endfor %}
                             {% endfor %}
                         </div>
                     {% endif %}
+                    {% if search_result.record.210 %}
+                        <div class="item_field">
+                            Год издания: {{ search_result.record.210.0.d.0.data }}
+                        </div>
+                    {% endif %}
                     <div>
-                        <a href="{% url searcher_detail %}?number={{ search_result.number }}" class="btn detail">Подробнее</a>
+                        <a href="{% url searcher_slug_detail catalog.latin_title %}?number={{ search_result.number }}" class="btn detail">Подробнее</a>
                     </div>
                     {#                    <div class="item_info">#}
                     {#                        {% trans "Access" %}: <span style="color: green;">{% trans "free" %}</span>#}

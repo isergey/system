@@ -160,9 +160,9 @@
             </div>
         {% endif %}
         {% if not user.is_authenticated %}
-            <div class="block right">
+            <div class="block">
                 <div class="headbg"></div>
-                <div class="content">
+                <div class="content" style="padding: 5px 10px 5px 7px">
                     <div align="center" style="width:100%;" class="awesome blue"><a href="/pages/s/for_librarians">Библиотечным
                         специалистам</a></div>
                 </div>
@@ -212,7 +212,7 @@
                         <a style="color:#fff;" href="{% url orders_index %}">Мои заказы</a><br/>
                         <a style="color:#fff;" href="{% url events_favorits %}">Мероприятия</a><br/>
                         <a style="color:#fff;" href="{% url zgate_saved_requests %}">Мои запросы</a><br/>
-                        <a style="color:#fff;" href="{% url zgate_saved_document_list %}">Мои документы</a>
+                        <a style="color:#fff;" href="{% url zgate_saved_document_list %}">Мои документы</a><br/>
                     </div>
 
                 </div>
@@ -220,15 +220,15 @@
             {% endif %}
         </div>
 
-        <div class="block right">
+        <div class="block" style="padding: 0 10px 0 7px">
             <div class="headbg"></div>
             <div class="content">
                 <a href="http://vhd.ruslan.ru/">
-                    <div align="center" style="width:100%;" class="awesome blue">Виртуальная справка</div>
+                    <div align="center" class="awesome blue">Виртуальная справка</div>
                 </a>
                 {% if user|in_groups:'admin, professional' %}
                     <a href="/professional/">
-                        <div align="center" style="width:100%;" class="awesome blue"><b>Профессиональная</b><br/><b>страница</b>
+                        <div align="center" class="awesome blue"><b>Профессиональная</b><br/><b>страница</b>
                         </div>
                     </a>
 {#                    <a href="#1">#}
@@ -236,19 +236,28 @@
 {#                        </div>#}
 {#                    </a>#}
                     <a href="/zgate/s/method/">
-                        <div align="center" style="width:100%;" class="awesome blue">Методическая копилка</div>
+                        <div align="center" class="awesome blue">Методическая копилка</div>
                     </a>
                     <a href="http://ill.ksob.spb.ru">
-                        <div align="center" style="width:100%;" class="awesome blue">АРМ МБА-ЭДД</div>
+                        <div align="center" class="awesome blue">АРМ МБА-ЭДД</div>
                     </a>
                     <a href="http://forum.ksob.spb.ru">
-                        <div align="center" style="width:100%;" class="awesome blue">Форум</div>
+                        <div align="center" class="awesome blue">Форум</div>
                     </a>
                 {% endif %}
             </div>
             <div class="footerbg"></div>
         </div>
 
+{#        <div class="block" style="padding: 0 10px 0 7px">#}
+{#            <div class="headbg"></div>#}
+{#            <div class="content">#}
+{#                <a href="{% url reginlib_registation %}">#}
+{#                    <div align="center" class="awesome orange"><b>Запись в библиотеку</b></div>#}
+{#                </a>#}
+{#            </div>#}
+{#            <div class="footerbg"></div>#}
+{#        </div>#}
 
         <div class="block">
             {% load events_tags %}

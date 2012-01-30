@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.join(PROJECT_PATH, "vendors"))
 sys.path.insert(0, os.path.join(PROJECT_PATH, "apps"))
 
 
-SITE_URL = 'http://ksob.spb.ru'
+
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
@@ -180,7 +180,7 @@ INSTALLED_APPS = (
     'guestbook',
     'reginlib',
     'api',
-    'searcher',
+    #'searcher',
     'administration',
     #'libportal.apps.professional',
     'captcha',

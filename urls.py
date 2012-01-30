@@ -34,7 +34,7 @@ urlpatterns = patterns('',
     (r'^professional/', include('professional.urls')),
     (r'^reginlib/', include('reginlib.urls')),
     (r'^api/', include('api.urls')),
-    (r'^searcher/', include('searcher.urls')),
+    #(r'^searcher/', include('searcher.urls')),
 
     (r'^captcha/', include('captcha.urls')),
         

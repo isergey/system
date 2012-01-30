@@ -15,7 +15,6 @@ def request(url, data={}, cookies={}):
     cc = '; '.join(cc)
 
     opener.addheaders.append(('Cookie', cc))
-
     if len(data):
         mrequest = data.copy()
         r = []
@@ -39,13 +38,13 @@ def request(url, data={}, cookies={}):
     else:
         result = opener.open(url)
 
-    cookies = Cookie.SimpleCookie(result.headers['Set-Cookie'])
-    cookies_dict = {}
-    for key in cookies:
-        cookies_dict[key]=cookies.get(key).value
+    cookies1 = Cookie.SimpleCookie(result.headers['Set-Cookie'])
+
+    for key in cookies1:
+        cookies[key]=cookies1.get(key).value
 
     results = result.read()
-    return (results, cookies_dict)
+    return (results, cookies)
 
 
 def get_zgate_form(zgate_url, xml, xsl, lang='rus',cookies={}):

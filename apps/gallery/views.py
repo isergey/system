@@ -18,7 +18,7 @@ import Image
 import os
 
 def index(request):
-    collections = Collection.objects.all()
+    collections = Collection.objects.all().order_by('-id')
 
     return direct_to_template(request, 'gallery/collections_list.html',
                               {'collections': collections,

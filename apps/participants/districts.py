@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 districts_list = [
+
     {'code': '1', 'title': u'Адмиралтейский'},
     {'code': '2', 'title': u'Василеостровский'},
     {'code': '3', 'title': u'Выборгский'},
@@ -19,6 +20,14 @@ districts_list = [
     {'code': '17', 'title': u'Фрунзенский'},
     {'code': '18', 'title': u'Центральный'},
 ]
+
+def get_districts_choices(with_select_row=False):
+    choices = []
+    if with_select_row:
+        choices.append((0, u'----'))
+    for district in districts_list:
+        choices.append((district['code'], district['title']))
+    return choices
 
 def find_district(code='', title=''):
     if code:

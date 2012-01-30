@@ -5,54 +5,33 @@
 {% block content %}
 
 
-<style type="text/css">
-.guestbook input,textarea{
-    width:90%;
-    border:1px #dfdfe0 solid;
-}
-.guestbook input{
-        height:20px;
-}
-.guestbook .textarea{
-       height: 20px;
-}
-</style>
-<div class="text">
-    <h3> <a href="{% url guestbook_index %}">Отзывы</a> → Написать отзыв</h3>
-<div class="guestbook">
+    <style type="text/css">
+        .guestbook input[type=text], textarea {
+            width: 90%;
+        }
+
+        .guestbook .textarea {
+            height: 20px;
+        }
+        fieldset div {
+            padding-bottom: 10px;
+        }
+    </style>
+    <div class="text">
+        <h3><a href="{% url guestbook_index %}">Отзывы</a> → Написать отзыв</h3>
+
+        <div class="guestbook">
 
 
-<form method="post" action="">
+            <form method="post" action="" class="form-stacked">
+                <fieldset>
+                    {{ form.as_div }}
+                    <input type="submit" value="Отправить" class="btn"/>
+                </fieldset>
 
-{% for field in form %}
-<div>
+            </form>
+        </div>
 
-    <label for="{{ field.auto_id }}">{% if field.field.required %} <strong>{{ field.label|safe }}</strong> {% else %} {{ field.label|safe }} {% endif %}</label><br/>
-    {{ field }}
-    {{ field.errors }}
-</div>
-<br/>
-{% endfor %}
-<br/>
-{##}
-{#<div>#}
-{#    {{ form.name }}#}
-{#</div>#}
-{#<div>#}
-{#    {{ form.organisation }}#}
-{#</div>#}
-{#<div>#}
-{#    <label for="{{ form.email.auto_id }}">{{ form.email.label }}</label>#}
-{#    {{ form.email }}#}
-{#    {{  }}#}
-{#</div>#}
-{#<div>#}
-{#    {{ form.message }}#}
-{#</div>#}
-    <button name="send" value="send" type="submit">Отправить</button>
-</form>
-</div>
-
-<p>Ваш отзыв будет опубликован после проверки. Спасибо.</p>
-</div>
+        <p>Ваш отзыв будет опубликован после проверки. Спасибо.</p>
+    </div>
 {% endblock %}

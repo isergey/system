@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}
+    Мои регистрации
+{% endblock %}
+{% block content %}
+    <h3>Список регистраций</h3>
+    <div class="text">
+        <ul style="list-style: none;  font-size: 16px">
+            {% for registration in registrations %}
+                <li style="padding-bottom: 10px;">
+                    <b>Номер заявки</b>: {{ registration.id }} Статус: <span class="status{{ registration.status }}"> {{ registration.get_status_display }}</span><br/>
+                    <b>Библиотека</b>: <a href="#1">{{ registration.manage_library.name }}</a><br/>
+                    <b>Дата поступления заявки</b>: {{ registration.create_date }}<br/>
+                    <b>Дата запланированного визита</b>: {{ registration.visit_date }}<br/>
+                    <a href="{% url reginlib_registration_user_detail registration.id %}">Подробнее</a>
+                </li>
+                <hr/>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
