@@ -1,3 +1,9 @@
+{% load cache %}
+{% load tree_menu_tags %}
+{% load ldaccounts_tags %}
+{% load events_tags %}
+{% load news_tags %}
+{% load polls_tags %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -114,10 +120,9 @@
             <div align="center" class="treeheader">Ресурсы библиотек
                 <hr/>
             </div>
-            {% load cache %}
+
             {% cache 30 main_menu %}
                 <div id="ksob_control">
-                    {% load tree_menu_tags %}
                     {% show_menu "main_menu" "unordered-list" %}
                 </div>
             {% endcache %}
@@ -130,7 +135,6 @@
             <div align="center" class="treeheader">Интернет ресурсы
                 <hr/>
             </div>
-            {% load cache %}
             {% cache 30 internet_resources %}
                 <div id="internet_resources">
                     {% show_menu "internet_resources" "unordered-list" %}
@@ -139,7 +143,7 @@
         </div>
         <div class="footerbg"></div>
     </div>
-    {% load ldaccounts_tags %}
+
     {% if user|in_groups:'admin, professional' %}
 
         <div class="block white">
@@ -150,7 +154,6 @@
                 </div>
                 <div id="prof_menu">
                     {% cache 30 prof_menu %}
-                        {% load tree_menu_tags %}
                         {% show_menu "prof_menu" "unordered-list" %}
                     {% endcache %}
                 </div>
@@ -263,20 +266,17 @@
     {#        </div>#}
 
     <div class="block">
-        {% load events_tags %}
+
         {% event_calendar %}
     </div>
     {% cache 30 news_feed %}
         <div class="block">
-            {% load news_tags %}
+
             {% news_feed %}
         </div>
     {% endcache %}
     <div class="block">
-        {% load polls_tags %}
-
         {% poll_form %}
-
     </div>
 
 </div>

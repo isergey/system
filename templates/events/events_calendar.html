@@ -1,56 +1,67 @@
-{% extends "base.html" %}
-{% block title %}
-    Календарь мероприятий
-{% endblock %}
-{% block content %}
 
-<div class="event_calendar">
-<table cellspacing="0">
-    <thead>
-	    <tr>
-		    <th>Пн</th><th>Вт</th><th>Ср</th>
-			<th>Чт</th><th>Пт</th><th>Сб</th>
-			<th>ВС</th>
-		</tr>
-	</thead>
-    <tbody>
+<div class="right_module span-5">
+    <div class="head">
+        <h3 class="title"><a href="{% url events_index %}">События</a></h3>
+    </div>
+    <div class="midl">
+        <div class="content event_calendar">
+            <form name="event_calendar_filter" action="" method="POST">
+                {{ form.month }}
+                {{ form.year }}
+            </form>
+            <hr style="margin:0"/>
 
-{% for week in calendar %}
-    <tr>
-    {% for day in week %}
-        {% if day.day != 0 %}
-            {% if day.today %}
-        <td class="today">
-            {% endif %}
-            {% if day.events %}
-        <td class="date_has_event">
-            {% endif %}
-            {% if not day.today and not day.events %}
-        <td>
-            {% endif %}
-            {{ day.day }}
-            {% if  day.events %}
-        <div class="events">
-            <ul>
-                    {% for event in day.events %}
-    	        <li>
-                    <span class="title"><a href="#" >{{ event.title }}</a></span>
-                    <span class="desc">{{ event.desc }}</span>
-                </li>
+            <table cellspacing="0">
+                <thead>
+                <tr>
+                    <th>Пн</th>
+                    <th>Вт</th>
+                    <th>Ср</th>
+                    <th>Чт</th>
+                    <th>Пт</th>
+                    <th>Сб</th>
+                    <th>ВС</th>
+                </tr>
+                </thead>
+                <tbody>
+                
+                {% for week in calendar %}
+                    <tr>{% for day in week %}
+                        {% if day.day != 0 %}
+                            {% if day.today and not day.events %}
+                                <td class="today">
+                            {% endif %}
+                            {% if day.events %}
+                                <td class="">
+                            {% endif %}
+                            {% if not day.today and not day.events %}
+                                <td>
+                            {% endif %}
+
+                            {% if  day.events %}
+                                <a class='awesome blue' href="{% url events_by_date  year month day.day %}" title="Показать события дня"> {{ day.day }}</a>
+                            {% else %}
+                                {{ day.day }}
+                            {% endif %}
+                        {% else %}
+
+                            <td class="padding">
+                        {% endif %}
+                    </td>
+                        {% if day.today %}
+                        {% endif %}
                     {% endfor %}
-            </ul>
+                    </tr>
+                {% endfor %}
+               
+                </tbody>
+            </table>
+
         </div>
-            {% endif %}
-        {% else %}
-        <td class="padding">
-        {% endif %}
-        </td>
-        {% if day.today %}
-        {% endif %}
-    {% endfor %}
-    </tr>
-{% endfor %}
-    </tbody>
-</table>
+    </div>
+    <div class="footer"></div>
+
 </div>
-{% endblock %}
+
+
+

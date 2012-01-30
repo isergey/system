@@ -5,7 +5,7 @@ from apps.events.forms import CalendarFilterForm, get_current_month_choice, get_
 
 register = template.Library()
 
-@register.inclusion_tag('events/events_calendar1.html',takes_context=True)
+@register.inclusion_tag('events/events_calendar.html',takes_context=True)
 def event_calendar(context,y=0, m=0):
     from datetime import date
     import calendar
