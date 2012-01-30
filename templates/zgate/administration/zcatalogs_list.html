@@ -23,6 +23,9 @@
                     <a  title="Перейти к каталогу"  class="button" href="{% url zgate_index zcatalog.id %}" target="_blank">
                         <img src="/media/images/icons/search_16.png" alt=""/>
                     </a>
+                    <a  title="Статистика каталога"  class="button" href="{% url administration_zgate_statistics zcatalog.id %}" >
+                        <img src="/media/images/icons/statistics_16.png" alt=""/>
+                    </a>
                     <a title="Редактировать каталог" class="button" href="{% url administration_zgate_edit zcatalog.id %}">
                         <img src="/media/images/icons/pencil_16.png" alt=""/>
                     </a>

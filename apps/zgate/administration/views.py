@@ -3,6 +3,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.generic.simple import direct_to_template
 #from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from guardian.decorators import permission_required_or_403
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
@@ -28,9 +29,12 @@ def index(request):
     except (EmptyPage, InvalidPage):
         zcatalogs_list = paginator.page(paginator.num_pages)
 
-    return direct_to_template(request, 'zgate/administration/zcatalogs_list.html',
-                              {'zcatalogs_list': zcatalogs_list,
-                               'active_module': 'zgate'})
+    return render(request, 'zgate/administration/zcatalogs_list.html', {
+        'zcatalogs_list': zcatalogs_list,
+        'active_module': 'zgate'
+    })
+
+
 
 @permission_required_or_403('zgate.add_zcatalog')
 def create(request):
@@ -45,9 +49,12 @@ def create(request):
     else:
         form = ZCatalogForm()
 
-    return direct_to_template(request, 'zgate/administration/zcatalog_create.html',
-                              {'form': form,
-                               'active_module': 'zgate'})
+    return render(request, 'zgate/administration/zcatalog_create.html', {
+        'form': form,
+        'active_module': 'zgate'
+    })
+
+
 
 @permission_required_or_403('zgate.change_zcatalog')
 def edit(request, id):
@@ -67,13 +74,27 @@ def edit(request, id):
         init['view_catalog_groups'] = old_catalog_groups_ids
 
         form = ZCatalogForm(init,instance=zcatalog)
-    return direct_to_template(request, 'zgate/administration/zcatalog_edit.html',
-                              {'form': form,
-                               'zcatalog':zcatalog,
-                               'active_module': 'zgate'})
+    return render(request, 'zgate/administration/zcatalog_edit.html', {
+        'form': form,
+        'zcatalog':zcatalog,
+        'active_module': 'zgate'
+    })
+
+
+
 
 @permission_required_or_403('zgate.delete_zcatalog')
 def delete(request, id):
     zcatalog = get_object_or_404(ZCatalog, id=id)
     zcatalog.delete()
     return HttpResponseRedirect(reverse('administration_zgate_index'))
+
+
+@permission_required_or_403('zgate.change_zcatalog')
+def statistics(request, id):
+    zcatalog = get_object_or_404(ZCatalog, id=id)
+
+    return render(request, 'zgate/administration/zcatalog_statistics.html', {
+        'zcatalog':zcatalog,
+        'active_module': 'zgate'
+    })
