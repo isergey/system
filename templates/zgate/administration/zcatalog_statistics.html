@@ -41,9 +41,6 @@
                     text:'Поисковые запросы в каталог'
                 },
                 xAxis:{
-                    title:{
-                        text:'Дни запросов'
-                    },
                     categories:categories,
                     labels:{
                         rotation:-45,
@@ -75,11 +72,11 @@
                         data:data,
                         dataLabels:{
                             enabled:true,
-                            //rotation:-90,
+                            rotation:-90,
                             color:Highcharts.theme.dataLabelsColor || '#FFFFFF',
                             align:'centre',
                             x:-3,
-                            y:20,
+                            y:10,
                             formatter:function () {
                                 return this.y;
                             },
