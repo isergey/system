@@ -49,10 +49,10 @@
                 xAxis:{
                     categories:categories,
                     labels:{
-                        rotation:-45,
+                        rotation:-90,
                         align:'right',
                         style:{
-                            font:'normal 13px Verdana, sans-serif'
+                            font:'normal 12px Verdana, sans-serif'
                         }
                     }
                 },
@@ -78,16 +78,9 @@
                         data:data,
                         dataLabels:{
                             enabled:true,
-                            rotation:-90,
-                            color:Highcharts.theme.dataLabelsColor || '#FFFFFF',
-                            align:'centre',
-                            x:-3,
-                            y:20,
-                            formatter:function () {
-                                return this.y;
-                            },
                             style:{
-                                font:'normal 11px Verdana, sans-serif'
+                                font:'normal 10px Verdana, sans-serif',
+                                'font-weight': 'bold'
                             }
                         }
                     }
@@ -97,7 +90,6 @@
 
         });
     </script>
-
 
 
     <hr class="space"/>
