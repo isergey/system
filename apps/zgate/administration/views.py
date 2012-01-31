@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import simplejson
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.generic.simple import direct_to_template
@@ -93,8 +94,10 @@ def delete(request, id):
 @permission_required_or_403('zgate.change_zcatalog')
 def statistics(request, id):
     zcatalog = get_object_or_404(ZCatalog, id=id)
-
+    rows = zcatalog.requests_by_day()
+    js_rows =  simplejson.dumps(rows, ensure_ascii=False)
     return render(request, 'zgate/administration/zcatalog_statistics.html', {
         'zcatalog':zcatalog,
+        'js_rows':js_rows,
         'active_module': 'zgate'
     })

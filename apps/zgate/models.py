@@ -1,10 +1,21 @@
 # -*- coding: utf-8 -*-
+import datetime
+from django.db import connection
 from django.db import models
 from django.contrib.auth.models import User
+
 DEFAULT_LANG_CHICES = (
     ('rus', u'Русский'),
     ('eng', u'English'),
     )
+
+def dictfetchall(cursor):
+    "Returns all rows from a cursor as a dict"
+    desc = cursor.description
+    return [
+    dict(zip([col[0] for col in desc], row))
+    for row in cursor.fetchall()
+    ]
 
 class ZCatalog(models.Model):
     title = models.CharField(
@@ -76,12 +87,36 @@ class ZCatalog(models.Model):
         return self.title
 
 
+    def requests_by_day(self):
+        cursor = connection.cursor()
+        cursor.execute(
+            """
+            SELECT
+                count(zgate_searchrequestlog.use) as count, zgate_searchrequestlog.datetime as datetime
+            FROM
+                zgate_searchrequestlog
+            WHERE
+                date(datetime) BETWEEN '2010-01-01 00:00:00'
+                AND  '2012-01-31 23:59:59'
+            GROUP BY
+                YEAR(datetime), MONTH(datetime), DAY(datetime)
+            """
+        )
+        #row = cursor.fetchone()
+        rows = []
+        for row in dictfetchall(cursor):
+            rows.append((row['datetime'].strftime('%d.%m.%Y'), row['count']))
+        return rows
+
+
     class Meta:
         verbose_name = u"Каталог (АРМ читателя)"
         verbose_name_plural = u"Каталоги (АРМ читателя)"
         permissions = (
             ('view_zcatalog', u'Доступ к каталогу'),
             )
+
+
 
 class SavedRequest(models.Model):
     zcatalog = models.ForeignKey(ZCatalog)
