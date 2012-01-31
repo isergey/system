@@ -29,7 +29,7 @@
         <ul style="list-style: none;">
             <li style="padding-bottom: 10px;">
                 <b>Номер заявки</b>: {{ registration.id }} Статус: <span class="status{{ registration.status }}"> {{ registration.get_status_display }}</span><br/>
-                <b>Библиотека</b>: <a href="{% url participants_detail_by_cbs registration.manage_library.code %}">{{ registration.manage_library.name }}</a><br/>
+                <b>Библиотека</b>: <a href="{% url participants_detail registration.manage_library.code %}">{{ registration.manage_library.name }}</a><br/>
                 <b>Дата поступления заявки</b>: {{ registration.create_date }}<br/>
                 <b>Дата запланированного визита</b>: {{ registration.visit_date }}<br/>
             </li>

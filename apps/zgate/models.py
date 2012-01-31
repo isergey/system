@@ -17,6 +17,27 @@ def dictfetchall(cursor):
     for row in cursor.fetchall()
     ]
 
+def requests_by_day(start_date=None, end_date=None, zcatalog_id=None):
+    cursor = connection.cursor()
+    cursor.execute(
+        """
+        SELECT
+            count(zgate_searchrequestlog.use) as count, zgate_searchrequestlog.datetime as datetime
+        FROM
+            zgate_searchrequestlog
+        WHERE
+            date(datetime) BETWEEN '2010-01-01 00:00:00'
+            AND  '2012-01-31 23:59:59'
+        GROUP BY
+            YEAR(datetime), MONTH(datetime), DAY(datetime)
+        """
+    )
+    #row = cursor.fetchone()
+    rows = []
+    for row in dictfetchall(cursor):
+        rows.append((row['datetime'].strftime('%d.%m.%Y'), row['count']))
+    return rows
+
 class ZCatalog(models.Model):
     title = models.CharField(
         verbose_name=u"Название каталога",
@@ -87,26 +108,7 @@ class ZCatalog(models.Model):
         return self.title
 
 
-    def requests_by_day(self):
-        cursor = connection.cursor()
-        cursor.execute(
-            """
-            SELECT
-                count(zgate_searchrequestlog.use) as count, zgate_searchrequestlog.datetime as datetime
-            FROM
-                zgate_searchrequestlog
-            WHERE
-                date(datetime) BETWEEN '2010-01-01 00:00:00'
-                AND  '2012-01-31 23:59:59'
-            GROUP BY
-                YEAR(datetime), MONTH(datetime), DAY(datetime)
-            """
-        )
-        #row = cursor.fetchone()
-        rows = []
-        for row in dictfetchall(cursor):
-            rows.append((row['datetime'].strftime('%d.%m.%Y'), row['count']))
-        return rows
+
 
 
     class Meta:

@@ -10,7 +10,8 @@ from guardian.decorators import permission_required_or_403
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 from apps.zgate.models import ZCatalog
-from forms import ZCatalogForm
+from apps.zgate.models import requests_by_day
+from forms import ZCatalogForm, PeriodForm
 from django.forms.models import model_to_dict
 
 from common.access.shortcuts import assign_perm_for_groups_id, get_group_ids_for_object_perm, edit_group_perms_for_object
@@ -93,11 +94,27 @@ def delete(request, id):
 
 @permission_required_or_403('zgate.change_zcatalog')
 def statistics(request, id):
+    """
+    тип графика
+    название графика
+    массив название
+    массив данных
+    подпись по x
+    подпись по y
+    """
     zcatalog = get_object_or_404(ZCatalog, id=id)
-    rows = zcatalog.requests_by_day()
-    js_rows =  simplejson.dumps(rows, ensure_ascii=False)
+
+    if request.method == 'POST':
+        period_form = PeriodForm(request.POST)
+        period_form.is_valid()
+        rows = requests_by_day()
+    else:
+        period_form = PeriodForm()
+        rows = requests_by_day()
+    data_rows =  simplejson.dumps(rows, ensure_ascii=False)
     return render(request, 'zgate/administration/zcatalog_statistics.html', {
         'zcatalog':zcatalog,
-        'js_rows':js_rows,
+        'data_rows':data_rows,
+        'period_form': period_form,
         'active_module': 'zgate'
     })

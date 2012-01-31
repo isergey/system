@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from django import forms
+from common.forms import CoolForm
 from apps.zgate.models import ZCatalog
 
 from common.access.choices import get_groups_choices
 from common.access.shortcuts import  check_perm_for_model
+from django.contrib.admin import widgets
 
 class ZCatalogForm(forms.ModelForm):
 
@@ -30,3 +32,20 @@ class ZCatalogForm(forms.ModelForm):
         self.fields['xml'].widget = forms.TextInput(attrs={'class':'text span-18'})
         self.fields['xsl'].widget = forms.TextInput(attrs={'class':'text span-18'})
 
+
+
+GROUP_CHOICES = (
+    (0, u'По дням'),
+    (1, u'По месяцам'),
+    (2, u'По годам'),
+)
+class PeriodForm(CoolForm):
+    start_date = forms.DateField(
+        label=u'Дата начала периода',widget=widgets.AdminDateWidget,
+    )
+
+    end_date = forms.DateField(
+        label=u'Дата конца периода',widget=widgets.AdminDateWidget,
+    )
+
+    group = forms.ChoiceField(label=u'Группировка', choices=GROUP_CHOICES, initial=0)
