@@ -11,7 +11,7 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 from apps.zgate.models import ZCatalog
 from apps.zgate.models import requests_count, requests_by_attributes, requests_by_term
-from forms import ZCatalogForm, PeriodForm, GroupForm, AttributesForm
+from forms import ZCatalogForm, PeriodForm, GroupForm, AttributesForm, ZCatalogForm
 from django.forms.models import model_to_dict
 
 from common.access.shortcuts import assign_perm_for_groups_id, get_group_ids_for_object_perm, edit_group_perms_for_object
@@ -93,7 +93,7 @@ def delete(request, id):
 
 
 @permission_required_or_403('zgate.change_zcatalog')
-def statistics(request, id):
+def statistics(request):
     """
     тип графика
     название графика
@@ -110,21 +110,21 @@ def statistics(request, id):
 
     statistics = request.GET.get('statistics', 'requests')
 
-    zcatalog = get_object_or_404(ZCatalog, id=id)
-    zcatalog_id = zcatalog.id
+    catalogs = ZCatalog.objects.all()
     start_date = datetime.datetime.now()
     end_date = datetime.datetime.now()
-    date_group = u'2'
+    date_group = u'2' # группировка по дням
     attributes = []
 
     period_form = PeriodForm()
     group_form = GroupForm()
     attributes_form = AttributesForm()
-
+    catalog_form = ZCatalogForm()
     if request.method == 'POST':
         period_form = PeriodForm(request.POST)
         group_form = GroupForm(request.POST)
         attributes_form = AttributesForm(request.POST)
+        catalog_form = ZCatalogForm(request.POST)
 
         if period_form.is_valid():
             start_date = period_form.cleaned_data['start_date']
@@ -136,13 +136,17 @@ def statistics(request, id):
         if attributes_form.is_valid():
             attributes = attributes_form.cleaned_data['attributes']
 
+        if catalog_form.is_valid():
+            catalogs = catalog_form.cleaned_data['catalogs']
+
+
     if statistics == 'requests':
         attributes_form = None
         rows = requests_count(
             start_date = start_date,
             end_date = end_date,
             group = date_group,
-            zcatalog_id = zcatalog_id
+            catalogs = catalogs
         )
         chart_title = u'Число поисковых запросов по дате'
         row_title = u'Число поисковых запросов'
@@ -154,7 +158,7 @@ def statistics(request, id):
             start_date = start_date,
             end_date = end_date,
             attributes = attributes,
-            zcatalog_id = zcatalog_id
+            catalogs = catalogs
         )
 
         chart_title = u'Число поисковых запросов по поисковым атрибутам'
@@ -168,7 +172,7 @@ def statistics(request, id):
             start_date = start_date,
             end_date = end_date,
             attributes = attributes,
-            zcatalog_id = zcatalog_id
+            catalogs = catalogs
         )
 
         chart_title = u'Число поисковых запросов по фразам'
@@ -183,8 +187,8 @@ def statistics(request, id):
 
 
     return render(request, 'zgate/administration/zcatalog_statistics.html', {
-        'zcatalog':zcatalog,
         'data_rows':data_rows,
+        'catalog_form': catalog_form,
         'period_form': period_form,
         'group_form': group_form,
         'attributes_form': attributes_form,

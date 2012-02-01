@@ -1,6 +1,6 @@
 {% extends "zgate/administration/zcatalogs.html" %}
 {% load adminmedia %}
-{% block module_action %}статистика ( {{ zcatalog.title }} ){% endblock %}
+{% block module_action %}статистика{% endblock %}
 {% block module_page %}
     <script type="text/javascript" src="/admin/jsi18n/"></script>
     <script type="text/javascript" src="/media/admin/js/core.js"></script>
@@ -20,6 +20,7 @@
     <div class="column span-19 prepend-1 last">
         <form action="" method="POST">
             <fieldset>
+                {{ catalog_form }}
                 {{ period_form.as_div }}
                 {{ group_form.as_div }}
                 {{ attributes_form.as_div }}

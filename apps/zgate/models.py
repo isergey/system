@@ -77,7 +77,7 @@ def date_group(group):
 
 
 
-def requests_count(start_date=None, end_date=None, group=u'2', zcatalog_id=None):
+def requests_count(start_date=None, end_date=None, group=u'2', catalogs=list()):
     """
     Статистика по количеству запросов в каталог(и)
     """
@@ -98,26 +98,22 @@ def requests_count(start_date=None, end_date=None, group=u'2', zcatalog_id=None)
         FROM
             zgate_searchrequestlog
     """
+    params = []
+    where = ['WHERE date(datetime) BETWEEN %s  AND  %s']
+    params.append(start_date)
+    params.append(end_date)
 
-    if zcatalog_id:
-        results = execute(
-            select +
-            """
-            WHERE
-                zgate_searchrequestlog.catalog_id = %s AND date(datetime) BETWEEN %s  AND  %s
-            """ +
-            group_by,
-            [zcatalog_id, start_date, end_date]
-        )
-    else:
-        results = execute(
-            select + """
-            WHERE
-                date(datetime) BETWEEN %s  AND  %s
-            """ +
-            group_by,
-            [start_date, end_date]
-        )
+    if catalogs:
+        catalog_ids = []
+        for catalog in catalogs:
+            catalog_ids.append(str(catalog.id))
+        catalog_ids = u', '.join(catalog_ids)
+        where.append(' AND zgate_searchrequestlog.catalog_id in (%s)' % catalog_ids)
+
+    where = u' '.join(where)
+    results = execute( select + where + group_by, params)
+
+
 
     rows = []
     format = '%d.%m.%Y'
@@ -135,7 +131,7 @@ def requests_count(start_date=None, end_date=None, group=u'2', zcatalog_id=None)
 
 
 
-def requests_by_attributes(start_date=None, end_date=None, attributes=list(), zcatalog_id=None):
+def requests_by_attributes(start_date=None, end_date=None, attributes=list(), catalogs=list()):
     if not start_date:
         start_date = datetime.datetime.now()
 
@@ -162,9 +158,12 @@ def requests_by_attributes(start_date=None, end_date=None, attributes=list(), zc
     params.append(end_date)
 
 
-    if zcatalog_id:
-        where.append('AND zgate_searchrequestlog.catalog_id = %s')
-        params.append(zcatalog_id)
+    if catalogs:
+        catalog_ids = []
+        for catalog in catalogs:
+            catalog_ids.append(str(catalog.id))
+        catalog_ids = u', '.join(catalog_ids)
+        where.append(' AND zgate_searchrequestlog.catalog_id in (%s)' % catalog_ids)
 
     if attributes:
         attributes_args = []
@@ -222,9 +221,12 @@ def requests_by_term(start_date=None, end_date=None, attributes=list(), zcatalog
     params.append(end_date)
 
 
-    if zcatalog_id:
-        where.append(u'AND zgate_searchrequestlog.catalog_id = %s')
-        params.append(zcatalog_id)
+    if catalogs:
+        catalog_ids = []
+        for catalog in catalogs:
+            catalog_ids.append(str(catalog.id))
+        catalog_ids = u', '.join(catalog_ids)
+        where.append(' AND zgate_searchrequestlog.catalog_id in (%s)' % catalog_ids)
 
     if attributes:
         attributes_args = []
