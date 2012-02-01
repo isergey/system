@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+import datetime
+
 from django import forms
 from common.forms import CoolForm
 from apps.zgate.models import ZCatalog
+from apps.zgate.models import get_search_attributes_in_log
 
 from common.access.choices import get_groups_choices
 from common.access.shortcuts import  check_perm_for_model
@@ -35,17 +38,36 @@ class ZCatalogForm(forms.ModelForm):
 
 
 GROUP_CHOICES = (
-    (0, u'По дням'),
-    (1, u'По месяцам'),
-    (2, u'По годам'),
+    (u'2', u'По дням'),
+    (u'1', u'По месяцам'),
+    (u'0', u'По годам'),
 )
+
+
+
+
 class PeriodForm(CoolForm):
-    start_date = forms.DateField(
+    start_date = forms.DateTimeField(
         label=u'Дата начала периода',widget=widgets.AdminDateWidget,
+        initial=datetime.datetime.now()
     )
 
-    end_date = forms.DateField(
+    end_date = forms.DateTimeField(
         label=u'Дата конца периода',widget=widgets.AdminDateWidget,
+        initial=datetime.datetime.now()
     )
 
-    group = forms.ChoiceField(label=u'Группировка', choices=GROUP_CHOICES, initial=0)
+
+
+class GroupForm(CoolForm):
+    group = forms.ChoiceField(label=u'Группировка', choices=GROUP_CHOICES, initial=2)
+
+
+
+class AttributesForm(CoolForm):
+    attributes = forms.MultipleChoiceField(
+        label=u'Отображаемые атрибуты',
+        choices=get_search_attributes_in_log(),
+        widget=forms.CheckboxSelectMultiple(),
+        required=False
+    )

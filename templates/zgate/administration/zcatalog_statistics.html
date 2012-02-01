@@ -12,14 +12,17 @@
     </script>
 
     <div class="module_actions column prepend-1 last">
-        <a href="#1" class="button">Статистика по поисковым атрибутам</a>
-        <a href="#1" class="button">Статистика по запросам</a>
+        <a href="?statistics=attributes" class="button">Статистика по поисковым атрибутам</a>
+        <a href="?statistics=requests" class="button">Статистика по запросам</a>
+        <a href="?statistics=terms" class="button">Статистика по фразам</a>
     </div>
     <hr/>
     <div class="column span-19 prepend-1 last">
         <form action="" method="POST">
             <fieldset>
                 {{ period_form.as_div }}
+                {{ group_form.as_div }}
+                {{ attributes_form.as_div }}
             </fieldset>
             <input type="submit" value="Показать" class="btn"/>
         </form>

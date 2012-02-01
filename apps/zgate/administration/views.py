@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import simplejson
+import datetime
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.views.generic.simple import direct_to_template
 #from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
@@ -10,8 +10,8 @@ from guardian.decorators import permission_required_or_403
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 from apps.zgate.models import ZCatalog
-from apps.zgate.models import requests_by_day
-from forms import ZCatalogForm, PeriodForm
+from apps.zgate.models import requests_count, requests_by_attributes, requests_by_term
+from forms import ZCatalogForm, PeriodForm, GroupForm, AttributesForm
 from django.forms.models import model_to_dict
 
 from common.access.shortcuts import assign_perm_for_groups_id, get_group_ids_for_object_perm, edit_group_perms_for_object
@@ -102,19 +102,96 @@ def statistics(request, id):
     подпись по x
     подпись по y
     """
+    chart_type = 'column'
+    chart_title = u'Название графика'
+    row_title = u'Параметр'
+    y_title = u'Ось Y'
+
+
+    statistics = request.GET.get('statistics', 'requests')
+
     zcatalog = get_object_or_404(ZCatalog, id=id)
+    zcatalog_id = zcatalog.id
+    start_date = datetime.datetime.now()
+    end_date = datetime.datetime.now()
+    date_group = u'2'
+    attributes = []
+
+    period_form = PeriodForm()
+    group_form = GroupForm()
+    attributes_form = AttributesForm()
 
     if request.method == 'POST':
         period_form = PeriodForm(request.POST)
-        period_form.is_valid()
-        rows = requests_by_day()
+        group_form = GroupForm(request.POST)
+        attributes_form = AttributesForm(request.POST)
+
+        if period_form.is_valid():
+            start_date = period_form.cleaned_data['start_date']
+            end_date = period_form.cleaned_data['end_date']
+
+        if group_form.is_valid():
+            date_group = group_form.cleaned_data['group']
+
+        if attributes_form.is_valid():
+            attributes = attributes_form.cleaned_data['attributes']
+
+    if statistics == 'requests':
+        attributes_form = None
+        rows = requests_count(
+            start_date = start_date,
+            end_date = end_date,
+            group = date_group,
+            zcatalog_id = zcatalog_id
+        )
+        chart_title = u'Число поисковых запросов по дате'
+        row_title = u'Число поисковых запросов'
+        y_title = u'Число поисковых запросов'
+
+    elif statistics == 'attributes':
+        group_form = None
+        rows = requests_by_attributes(
+            start_date = start_date,
+            end_date = end_date,
+            attributes = attributes,
+            zcatalog_id = zcatalog_id
+        )
+
+        chart_title = u'Число поисковых запросов по поисковым атрибутам'
+        row_title = u'Число поисковых запросов'
+        y_title = u'Число поисковых запросов'
+        chart_type = 'bar'
+
+    elif statistics == 'terms':
+        group_form = None
+        rows = requests_by_term(
+            start_date = start_date,
+            end_date = end_date,
+            attributes = attributes,
+            zcatalog_id = zcatalog_id
+        )
+
+        chart_title = u'Число поисковых запросов по фразам'
+        row_title = u'Число поисковых запросов'
+        y_title = u'Число поисковых запросов'
+        chart_type = 'bar'
     else:
-        period_form = PeriodForm()
-        rows = requests_by_day()
+        return HttpResponse(u'Неправильный тип статистики')
+
+
     data_rows =  simplejson.dumps(rows, ensure_ascii=False)
+
+
     return render(request, 'zgate/administration/zcatalog_statistics.html', {
         'zcatalog':zcatalog,
         'data_rows':data_rows,
         'period_form': period_form,
+        'group_form': group_form,
+        'attributes_form': attributes_form,
+        'chart_type': chart_type,
+        'chart_title': chart_title,
+        'y_title': y_title,
+        'row_title': row_title,
         'active_module': 'zgate'
     })
+
