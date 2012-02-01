@@ -194,7 +194,7 @@ def requests_by_attributes(start_date=None, end_date=None, attributes=list(), ca
         rows.append((ATTRIBUTES.get(row['attribute'], row['attribute']), row['count']))
     return rows
 
-def requests_by_term(start_date=None, end_date=None, attributes=list(), zcatalog_id=None):
+def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs=list()):
     if not start_date:
         start_date = datetime.datetime.now()
 
