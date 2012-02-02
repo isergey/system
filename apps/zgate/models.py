@@ -207,7 +207,7 @@ def requests_by_term(start_date=None, end_date=None, attributes=list(), catalogs
 
     select = u"""
         SELECT
-            count(zgate_searchrequestlog.not_normalize) as count, zgate_searchrequestlog.not_normalize as not_normalize
+            count(zgate_searchrequestlog.not_normalize) as count, zgate_searchrequestlog.not_normalize as normalize
         FROM
             zgate_searchrequestlog
     """
