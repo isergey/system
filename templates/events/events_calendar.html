@@ -56,6 +56,16 @@
                
                 </tbody>
             </table>
+            <h3>Поиск по событиям</h3>
+            <form action="{% url events_search %}" method="GET" style="margin: 0">
+                <select name="attr" style="width: 95%">
+                    <option value="any_t_ru" {% if request.GET.attr == "any_t_ru" %}selected="selected"{% endif %}>Везде</option>
+                    <option value="event_name_t_ru" {% if request.GET.attr == "event_name_t_ru" %}selected="selected"{% endif %}>Название</option>
+                    <option value="address_t_ru" {% if request.GET.attr == "address_t_ru" %}selected="selected"{% endif %}>Место проведения</option>
+                </select>
+                <input type="text" name="term" {% if request.GET.term %} value="{{ request.GET.term }}" {% endif %}>
+                <input type="submit" value="искать" class="btn">
+            </form>
         </div>
     </div>
     <div class="footer"></div>
