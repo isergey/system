@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import sunburnt
+import datetime
+
 from django.utils.html import escape, mark_safe, strip_tags, clean_html
 from django.conf import settings
 from django.http import HttpResponseRedirect
@@ -11,18 +13,8 @@ from models import Event, EventComment, FavoriteEvent, EventRemember
 from forms import CommentEventForm, AddToFavoriteForm
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
-import datetime
-import re
-#Замена запрещенных символов xnl пробелами
-RE_XML_ILLEGAL = u'([\u0000-\u0008\u000b-\u000c\u000e-\u001f\ufffe-\uffff])' +\
-                 u'|' +\
-                 u'([%s-%s][^%s-%s])|([^%s-%s][%s-%s])|([%s-%s]$)|(^[%s-%s])' %\
-                 (unichr(0xd800),unichr(0xdbff),unichr(0xdc00),unichr(0xdfff),
-                  unichr(0xd800),unichr(0xdbff),unichr(0xdc00),unichr(0xdfff),
-                  unichr(0xd800),unichr(0xdbff),unichr(0xdc00),unichr(0xdfff))
 
-def replace_illegal(xml_string):
-    return re.sub(RE_XML_ILLEGAL, " ", xml_string)
+from common.functions import replace_illegal
 
 
 def index(request):

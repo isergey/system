@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from apps.events.models import Event
 from forms import EventForm
 from django.forms.models import model_to_dict
-
+from common.functions import replace_illegal
 
 
 def inset_one(event):
