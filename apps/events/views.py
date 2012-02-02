@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sunburnt
 from django.utils.html import escape, mark_safe, strip_tags, clean_html
+from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
@@ -24,7 +25,6 @@ def replace_illegal(xml_string):
     return re.sub(RE_XML_ILLEGAL, " ", xml_string)
 
 
-SOLR_ADDRESS = 'http://localhost:8983/solr/'
 def index(request):
 
     paginator = Paginator(Event.objects.all().order_by('-start_date'), 20)
@@ -86,7 +86,7 @@ def search(request):
     if not attr and not term:
         return HttpResponse(u'Введите поисковое выражение')
 
-    si = sunburnt.SolrInterface(SOLR_ADDRESS)
+    si = sunburnt.SolrInterface(settings.SOLR_ADDRESS)
     events_list = []
     if attr:
         kwargs={attr:term}
@@ -98,10 +98,11 @@ def search(request):
 
         limit = 10
         offset = (page-1) * limit
+        print offset, limit
         results = si.query(**kwargs).paginate(start=offset, rows=limit).execute()
         paginator = Paginator(PageStub(results.result.numFound), limit)
 
-
+        object_list = None
         try:
             object_list = paginator.page(page)
         except (EmptyPage, InvalidPage):
@@ -119,23 +120,6 @@ def search(request):
     })
 
 
-
-def insert(request):
-    si = sunburnt.SolrInterface(SOLR_ADDRESS)
-    events_list = Event.objects.all()
-
-    for event in events_list:
-        doc = {
-            'id': unicode(event.id),
-            'event_name_t':  replace_illegal(event.title),
-            'event_name_t_ru':  replace_illegal(event.title),
-            'address_t': replace_illegal(event.address),
-            'address_t_ru': replace_illegal(event.address),
-            'any_t_ru': replace_illegal(' '.join((event.title, event.address)))
-        }
-        si.add(doc)
-    si.commit()
-    return HttpResponse(u'Ok')
 
 def calendar(request):
     from datetime import date
@@ -228,4 +212,25 @@ def comment_event(request, event_id):
         else:
             print form.errors
     return HttpResponseRedirect(reverse('events_show', args=[event_id]))
-    
+
+
+
+def insert(request):
+    """
+    insert to solr index all events
+    """
+    si = sunburnt.SolrInterface(settings.SOLR_ADDRESS)
+    events_list = Event.objects.all()
+
+    for event in events_list:
+        doc = {
+            'id': unicode(event.id),
+            'event_name_t':  replace_illegal(event.title),
+            'event_name_t_ru':  replace_illegal(event.title),
+            'address_t': replace_illegal(event.address),
+            'address_t_ru': replace_illegal(event.address),
+            'any_t_ru': replace_illegal(' '.join((event.title, event.address)))
+        }
+        si.add(doc)
+    si.commit()
+    return HttpResponse(u'Ok')
