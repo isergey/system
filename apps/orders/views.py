@@ -100,7 +100,7 @@ can_delete_statuses = {
     '5': ['shipped', 'notsupplied', 'checkedin'] #reserve
 }
 
-xslt_root = etree.parse(settings.ORDERS['xsl_templates']['marc'])
+xslt_root = etree.parse(settings.ZGATE['xsl_templates']['full_document'])
 transform = etree.XSLT(xslt_root)
 
 def check_for_can_delete(transaction):

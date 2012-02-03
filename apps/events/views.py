@@ -70,13 +70,12 @@ class PageStub:
 
 
 def search(request):
-
-
-
     attr = request.GET.get('attr', None)
     term = request.GET.get('term', None)
     if not attr and not term:
         return HttpResponse(u'Введите поисковое выражение')
+
+    print settings.SOLR_ADDRESS
 
     si = sunburnt.SolrInterface(settings.SOLR_ADDRESS)
     events_list = []
@@ -90,7 +89,7 @@ def search(request):
 
         limit = 10
         offset = (page-1) * limit
-        print offset, limit
+        print kwargs
         results = si.query(**kwargs).paginate(start=offset, rows=limit).execute()
         paginator = Paginator(PageStub(results.result.numFound), limit)
 
