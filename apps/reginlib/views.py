@@ -63,8 +63,8 @@ def registration(request):
                 manage_library = Library.objects.get(id=manage_library_id)
             except Exception:
                 return HttpResponse(u'Ошибка в передаче номера библиотеки')
-
-            user_lib_registration.user = request.user
+            if request.user.is_authenticated():
+                user_lib_registration.user = request.user
             user_lib_registration.manage_library = manage_library
             user_lib_registration.recive_library = manage_library.get_root()
             user_lib_registration.save()
@@ -95,11 +95,10 @@ def registration(request):
 
 
 
-@login_required
 def registration_user_detail(request, id):
 
     try:
-        registration = UserLibRegistation.objects.select_related().get(id=id, user=request.user)
+        registration = UserLibRegistation.objects.select_related().get(id=id)
     except UserLibRegistation.DoesNotExist:
         raise Http404()
 

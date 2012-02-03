@@ -1,6 +1,6 @@
 <b>Номер заявки</b>: {{ registration.id }} Статус: <span class="status{{ registration.status }}"> {{ registration.get_status_display }}</span><br/>
 <b>Библиотека регистратор</b>: <a href="#1">{{ registration.manage_library.name }}</a><br/>
-<b>Пользователь</b>: <a href="#">{{ registration.user.username }}</a><br/>
+<b>Пользователь</b>: {% if registration.user != None %}{{ registration.user.username }}{% else %} незарегистрированный {% endif %}<br/>
 <b>Имя</b>: {{ registration.first_name }}<br/>
 <b>Фамилия</b>: {{ registration.last_name }}<br/>
 <b>Телефон</b>: {{ registration.phone }}<br/>

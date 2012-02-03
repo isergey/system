@@ -20,7 +20,7 @@ REGISTRATION_STATUSES = (
 # регистрация пользователя в библиотеке
 class UserLibRegistation(models.Model):
 
-    user = models.ForeignKey(User, unique=True)
+    user = models.ForeignKey(User, unique=True, null=True)
 
     recive_library = models.ForeignKey(
         Library,

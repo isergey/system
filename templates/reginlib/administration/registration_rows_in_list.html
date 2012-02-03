@@ -1,5 +1,5 @@
 <b>Номер заявки</b>: {{ registration.id }} Статус: <span class="status{{ registration.status }}"> {{ registration.get_status_display }}</span><br/>
 <b>Библиотека регистратор</b>: <a href="#1">{{ registration.manage_library.name }}</a><br/>
-<b>Пользователь</b>: <a href="#">{{ registration.user.username }}</a><br/>
+<b>Пользователь</b>: {% if registration.user %}{{ registration.user.username }}{% else %} незарегистрированный {% endif %}<br/>
 <b>Дата поступления заявки</b>: {{ registration.create_date }}<br/>
 <b>Дата запланированного визита</b>: {{ registration.visit_date }}<br/>
