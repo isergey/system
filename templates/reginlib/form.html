@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load adminmedia %}
+{% load reginlib_tags %}
 
 {% block head %}
     <script type="text/javascript" src="/admin/jsi18n/"></script>
@@ -17,6 +18,10 @@
 {% endblock %}
 
 {% block content %}
+    {% if request.user|is_reg_manager%}
+        <a href="{% url reginlib_checkout %}" class="btn primary">Обслуживание заявок</a>
+        <hr/>
+    {% endif %}
 
     <style type="text/css">
     ul.errorlist{

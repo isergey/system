@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load reginlib_tags %}
 {% block title %}
     Детальная информация о регистрации
 {% endblock %}
@@ -6,6 +7,10 @@
     <h3><a href="{% url reginlib_checkout %}">Заявки</a></h3>
 {% endblock %}
 {% block content %}
+    {% if request.user|is_reg_manager%}
+        <a href="{% url reginlib_checkout %}" class="btn primary">Обслуживание заявок</a>
+        <hr/>
+    {% endif %}
     <style type="text/css">
         .status0{
             color: red;
@@ -24,6 +29,7 @@
             font-weight: bold;
         }
     </style>
+
     <div class="text">
     <h3>Регистрация в библиотеку</h3>
         <ul style="list-style: none;">
