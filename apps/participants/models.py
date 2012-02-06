@@ -99,7 +99,11 @@ class UserLibrary(models.Model):
 
     def clean(self):
         from django.core.exceptions import ValidationError
-        if not self.library.ill_service:
+        try:
+            library = self.library
+        except Library.DoesNotExist:
+            raise ValidationError(u'Укажите организацию к которой принадлежит пользователь.')
+        if not library.ill_service:
             raise ValidationError(u'У библиотеки нет ill адреса, она не сможет получать заказы. ill адрес необходимо узнать у администратора службы МБА и присвоить его библиотеке.')
 
     class Meta:
