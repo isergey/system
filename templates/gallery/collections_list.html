@@ -5,7 +5,7 @@
     <div class="text">
         <ul>
             {% for collection in collections %}
-                <li><a class="green" href="{%  url gallery_view collection.id %}">  {{ collection.title }}</a>
+                <li style="padding: 0 0 10px 0"><a class="green" href="{%  url gallery_view collection.id %}">  {{ collection.title }}</a>
                 {% gallery_preview collection.id %}
                 </li>
             {% empty %}
