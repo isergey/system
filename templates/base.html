@@ -329,117 +329,140 @@
     </div>
 </div>
 </div>
-{#<style>#}
-{#    #helper{#}
-{#        position: fixed; /* Абсолютное позиционирование */#}
-{#        bottom: 10px; /* Положение от нижнего края */#}
-{#        right: 10px; /* Положение от правого края */#}
-{#        width: 230px;#}
-{#        background: #B2B2B2;#}
-{##}
-{#    }#}
-{##}
-{#    .show_helper{#}
-{#        position: fixed;#}
-{#        bottom: 10px;#}
-{##}
-{#    }#}
-{##}
-{#    #helper .content{#}
-{#        background: #fff;#}
-{#        padding: 5px;#}
-{##}
-{#    }#}
-{##}
-{#    #helper .content #answer{#}
-{#        font-size: 14px;#}
-{#    }#}
-{##}
-{#    #helper .closer{#}
-{#        position: absolute;#}
-{#        background: #003f81;#}
-{#        /*top: 10px;*/#}
-{#        right: 10px;#}
-{#    }#}
-{##}
-{#    #helper #ask_form{#}
-{#        margin: 0;#}
-{#        padding: 0;#}
-{#    }#}
-{##}
-{#    #helper .content{#}
-{#        float: left;#}
-{#        width: 200px;#}
-{#    }#}
-{##}
-{#    .closer a{#}
-{#        color: white;#}
-{#    }#}
-{##}
-{#    #helper .hider{#}
-{#        background: green;#}
-{#        float: left;#}
-{#        width: 20px;#}
-{#        height: 100px;#}
-{#    }#}
-{##}
-{#    .rot-neg-90 {#}
-{#        /* rotate -90 deg, not sure if a negative number is supported so I used 270 */#}
-{#        -moz-transform: rotate(270deg);#}
-{#        -moz-transform-origin: 50% 50%;#}
-{#        -webkit-transform: rotate(270deg);#}
-{#        -webkit-transform-origin: 50% 50%;#}
-{#        /* IE support too convoluted for the time I've got on my hands... */#}
-{#    }#}
-{##}
-{#</style>#}
-{##}
-{#<div id="helper">#}
-{#    <div class="closer"><a href="#hide">X</a></div>#}
-{#    <div class="hider"><a href="#1"><div class="hider"> </div></a></div>#}
-{#    <div class="content">#}
-{#        <div id="answer">#}
-{#            Поговорим?#}
-{#        </div>#}
-{#        <form id="ask_form">#}
-{#            <input type="text" style="width: 95%" id="question"/>#}
-{#            <input type="submit" class="btn" id="ask_button"/>#}
-{#        </form>#}
-{#    </div>#}
-{##}
-{#</div>#}
+<style>
+    #helper{
+        position: fixed; /* Абсолютное позиционирование */
+        bottom: 10px; /* Положение от нижнего края */
+        right: 10px; /* Положение от правого края */
+        width: 230px;
+        background: #B2B2B2;
+
+    }
+
+    .show_helper{
+        position: fixed;
+        bottom: 10px;
+
+    }
+
+    #helper .content{
+        background: #fff;
+        padding: 5px;
+
+    }
+
+    #helper .content #answer{
+        font-size: 14px;
+    }
+
+    #helper .closer{
+        position: absolute;
+        background: #003f81;
+        /*top: 10px;*/
+        right: 10px;
+    }
+
+    #helper #ask_form{
+        margin: 0;
+        padding: 0;
+    }
+
+    #helper .content{
+        float: left;
+        width: 200px;
+    }
+
+    .closer a{
+        color: white;
+    }
+
+    #helper .hider{
+        background: green;
+        float: left;
+        width: 20px;
+        height: 100px;
+        cursor: pointer;
+    }
+
+    .rot-neg-90 {
+        /* rotate -90 deg, not sure if a negative number is supported so I used 270 */
+        -moz-transform: rotate(270deg);
+        -moz-transform-origin: 50% 50%;
+        -webkit-transform: rotate(270deg);
+        -webkit-transform-origin: 50% 50%;
+        /* IE support too convoluted for the time I've got on my hands... */
+    }
+
+</style>
+
+<div id="helper">
+    <div class="hider"></div>
+    <div class="content">
+        <div id="answer">
+            Поговорим?
+        </div>
+        <form id="ask_form">
+            <input type="text" style="width: 95%" id="question"/>
+            <input type="submit" class="btn" id="ask_button"/>
+        </form>
+    </div>
+
+</div>
 {#<div class="show_helper">#}
 {#    <div class="show"><a href="#show">Показать</a></div>#}
 {#</div>#}
 
-{##}
-{#<script type="text/javascript">#}
-{##}
-{#    $('#ask_form').submit(function(){#}
-{#        $.ajax({#}
-{#            url:'{% url helper_index %}',#}
-{#            type:'POST',#}
-{#            dataType:"json",#}
-{#            async:false,#}
-{#            data:{ask:$('#question').val()},#}
-{#            success:function (answer) {#}
-{#                $('#answer').html(answer['answer']);#}
-{#                $('#question').val('');#}
-{##}
-{#            }#}
-{#        });#}
-{#        return false;#}
-{#    });#}
-{##}
-{#    $('.hider').click(function(){#}
-{#        var helper =  $('#helper');#}
-{#        var right = parseInt(helper.css('right'));#}
-{##}
-{#        //alert(parseInt(right));#}
-{#        //$('.helper').css('right', -200);#}
-{#    });#}
-{##}
-{#</script>#}
+<script type="text/javascript" src="http://yandex.st/jquery/cookie/1.0/jquery.cookie.min.js"></script>
+<script type="text/javascript">
+
+    function show_helper(){
+
+        $('#helper').css('right', 10);
+    }
+
+    function hide_helper(){
+
+        $('#helper').css('right', -200);
+    }
+
+    $('#ask_form').submit(function(){
+        $.ajax({
+            url:'{% url helper_index %}',
+            type:'POST',
+            dataType:"json",
+            async:false,
+            data:{ask:$('#question').val()},
+            success:function (answer) {
+                $('#answer').html(answer['answer']);
+                $('#question').val('');
+
+            }
+        });
+        return false;
+    });
+
+    $('.hider').click(function(){
+        if (parseInt($('#helper').css('right')) == -200){
+            $.cookie('helper_box', 'show', { expires: 365 });
+            show_helper();
+        }
+        else{
+            $.cookie('helper_box', 'hide', { expires: 365 });
+            hide_helper();
+        }
+        //alert(parseInt(right));
+        //$('.helper').css('right', -200);
+    });
+
+    var helper_box = $.cookie('helper_box');
+    if (helper_box == 'show'){
+        show_helper();
+    }
+    else{
+        hide_helper();
+    }
+
+</script>
 <!--<div class="sun"></div>-->
 <!--</div>-->
 <div class="container2 shadow"></div>
