@@ -1,4 +1,5 @@
 # encoding: utf-8
+import re
 import datetime
 import sunburnt
 import simplejson as json
@@ -20,8 +21,10 @@ def index(request):
         request_terms = request.POST.get('ask', None)
 
         if request_terms:
-            terms = request_terms.split()
+            terms = re.findall(ur'\w+', request_terms,re.UNICODE)
+
             query = si.Q()
+
 
         for term in terms:
             query = (query | si.Q(ask_t_ru=term))
