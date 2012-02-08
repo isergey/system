@@ -111,6 +111,11 @@ class UserLibRegistation(models.Model):
     def can_delete(self):
         return not (self.can_take_to_process() or self.can_reject() or self.can_complete())
 
+    class Meta:
+        unique_together = ('user', 'recive_library')
+        verbose_name = u"Пользовательская регистрация"
+        verbose_name_plural = u"Пользовательские регистрации"
+
 
 class RegistrationManager(models.Model):
     user = models.ForeignKey(User)
@@ -119,7 +124,8 @@ class RegistrationManager(models.Model):
 
     class Meta:
         unique_together = ('user', 'library')
-
+        verbose_name = u"Менеджер"
+        verbose_name_plural = u"Менеджеры"
 
 # фиксация смены статуса
 class StatusChange(models.Model):

@@ -3,7 +3,7 @@ import sunburnt
 import simplejson as json
 from django.conf import settings
 from django.shortcuts import render, HttpResponse
-
+from models import AskLog
 
 def index(request):
     answer = {'answer':u'Какая-то борода...'}
@@ -16,10 +16,10 @@ def index(request):
             return HttpResponse(answer)
 
         query = None
-        terms = request.POST.get('ask', None)
+        request_terms = request.POST.get('ask', None)
 
-        if terms:
-            terms = terms.split()
+        if request_terms:
+            terms = request_terms.split()
             query = si.Q()
 
         for term in terms:
@@ -30,8 +30,10 @@ def index(request):
             results = si.query(query).execute()
 
         if results:
+            AskLog(normalize=request_terms, not_normalize=request_terms, answered=True).save()
             answer = {'answer': results[0]['answer_t']}
         else:
+            AskLog(normalize=request_terms, not_normalize=request_terms, answered=False).save()
             answer = {'answer': u'Возможно вы найдете ответ, нажав <a href="http://www.google.ru/search?q='+ request.POST.get('ask', u'ксоб') +u'+site:http%3A%2F%2Fksob.spb.ru" target="_blank">сюда</a>:-) Скоро я сам найду ответ!'}
 
     answer = json.dumps(answer, ensure_ascii=False)
