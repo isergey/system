@@ -1,4 +1,5 @@
 # encoding: utf-8
+import datetime
 import sunburnt
 import simplejson as json
 from django.conf import settings
@@ -31,7 +32,10 @@ def index(request):
 
         if results:
             AskLog(normalize=request_terms, not_normalize=request_terms, answered=True).save()
-            answer = {'answer': results[0]['answer_t']}
+            text = results[0]['answer_t']
+            if text.strip() == '{% date %}':
+                text = unicode(datetime.datetime.now())
+            answer = {'answer': text}
         else:
             AskLog(normalize=request_terms, not_normalize=request_terms, answered=False).save()
             answer = {'answer': u'Возможно вы найдете ответ, нажав <a href="http://www.google.ru/search?q='+ request.POST.get('ask', u'ксоб') +u'+site:http%3A%2F%2Fksob.spb.ru" target="_blank">сюда</a>:-) Скоро я сам найду ответ!'}
