@@ -34,7 +34,7 @@ def index(request):
             AskLog(normalize=request_terms, not_normalize=request_terms, answered=True).save()
             text = results[0]['answer_t']
             if text.strip() == '{% date %}':
-                text = unicode(datetime.datetime.now())
+                text = u'Текущие дата и время ' + datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
             answer = {'answer': text}
         else:
             AskLog(normalize=request_terms, not_normalize=request_terms, answered=False).save()
