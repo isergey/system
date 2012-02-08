@@ -89,7 +89,6 @@ def search(request):
 
         limit = 10
         offset = (page-1) * limit
-        print kwargs
         results = si.query(**kwargs).paginate(start=offset, rows=limit).execute()
         paginator = Paginator(PageStub(results.result.numFound), limit)
 
