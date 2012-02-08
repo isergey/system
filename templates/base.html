@@ -442,12 +442,13 @@
     });
 
     $('.hider').click(function(){
-        if (parseInt($('#helper').css('right')) == -200){
-            $.cookie('helper_box', 'show', { expires: 365 });
+        var helper_box = $.cookie('helper_box');
+        if (helper_box == 'hide'){
+            $.cookie('helper_box', 'show', { expires: 7, path: '/' });
             show_helper();
         }
         else{
-            $.cookie('helper_box', 'hide', { expires: 365 });
+            $.cookie('helper_box', 'hide', { expires: 7, path: '/' });
             hide_helper();
         }
         //alert(parseInt(right));
