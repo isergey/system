@@ -422,7 +422,7 @@
 
     function hide_helper(){
 
-        $('#helper').css('right', -200);
+        $('#helper').css('right', -210);
     }
 
     $('#ask_form').submit(function(){
@@ -451,9 +451,8 @@
             $.cookie('helper_box', 'hide', { expires: 7, path: '/' });
             hide_helper();
         }
-        //alert(parseInt(right));
-        //$('.helper').css('right', -200);
     });
+
 
     var helper_box = $.cookie('helper_box');
     if (helper_box == 'show'){
