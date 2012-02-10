@@ -19,7 +19,7 @@ def index(request):
 
         query = None
         request_terms = request.POST.get('ask', None)
-
+        terms = []
         if request_terms:
             terms = re.findall(ur'\w+', request_terms,re.UNICODE)
 

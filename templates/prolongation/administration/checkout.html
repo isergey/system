@@ -1,0 +1,45 @@
+{% extends "prolongation/administration/base.html" %}
+{% block title %}
+    Список заявок на продление
+{% endblock %}
+{% block menu %}
+    <h3>Обслуживаемые библиотеки</h3>
+    <ul>
+    {% for library in libraries %}
+        <li style="line-height: 15px;padding-bottom: 10px;"><a href="{% url prolongation_checkout_by_library library.id  %}">{{ library.name }}</a>
+{#        {% if library.num_new_userlibregistations > 0 %} ({{ library.num_new_userlibregistations }}) {% endif %}#}
+          {% if library.get_new_count > 0 %} <span class="status2">({{ library.get_new_count }})</span> {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}
+{% block module_content %}
+    <style type="text/css">
+        .status0{
+            color: red;
+            font-weight: bold;
+        }
+        .status1{
+            color: #ff7f50;
+            font-weight: bold;
+        }
+        .status2{
+            color: green;
+            font-weight: bold;
+        }
+        .status3{
+            color: #a52a2a;
+            font-weight: bold;
+        }
+    </style>
+    <ul style="list-style: none;  font-size: 16px">
+    {% for prolongation in prolongations %}
+        <li style="padding-bottom: 10px;">
+            {% include 'prolongation/administration/prolongation_rows_in_list.html' %}
+            <a href="{% url prolongation_prolongation_detail prolongation.id %}" class="btn">подробнее</a>
+        </li>
+        <hr/>
+    {% endfor %}
+    </ul>
+
+{% endblock %}

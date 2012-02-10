@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% load adminmedia %}
+{% load prolongation_tags %}
+
+{% block head %}
+    <script type="text/javascript" src="/admin/jsi18n/"></script>
+    <script type="text/javascript" src="/media/admin/js/core.js"></script>
+    <script type="text/javascript" src="/media/admin/js/calendar.js"></script>
+    <script type="text/javascript" src="/media/admin/js/admin/DateTimeShortcuts.js"></script>
+    <link rel="stylesheet" type="text/css" href="/media/admin/css/widgets.css"/>
+    <script type="text/javascript">
+        window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";
+    </script>
+{% endblock %}
+{% block title %}
+    Электронное продление
+{% endblock %}
+
+{% block content %}
+    {% if request.user|is_prolongation_manager%}
+        <a href="{% url prolongation_checkout %}" class="btn primary">Обслуживание заявок</a>
+        <hr/>
+    {% endif %}
+
+    <style type="text/css">
+    ul.errorlist{
+        list-style: none;
+        color: #e06d62;
+        margin: 0;
+        padding: 0;
+    }
+    form fieldset div{
+        padding-bottom: 10px;
+    }
+    form.libreg input[type=text]{
+        width: 95%;
+        border: 1px solid #BBB;
+    }
+
+
+    form #id_visit_date {
+        width: auto;
+    }
+    </style>
+
+    <h2>Заявление на продление: {% if library.parent %}{{ library.parent.name }} → {% endif %} {{ library.name }}</h2>
+    <form action="" method="POST" class="libreg form-stacked">
+        <fieldset>
+            {{ form.as_div }}
+            <div class="required">
+                <label for="id_library">Выберите библиотеку:</label>
+                <select name="manage_library" id="id_library">
+                    <option value="0">----------</option>
+                </select>
+            </div>
+            <input type="submit" value="Отправить заявку на продление" class="btn">
+        </fieldset>
+    </form>
+
+
+
+<script type="text/javascript">
+$("#id_district").change(function () {
+    $.ajax({
+        url:'{% url participants_json_by_district %}',
+        type:'POST',
+        dataType:"json",
+        async:false,
+        data:{district:$("#id_district").val()},
+        success:function (orgs) {
+            var lib_select = $('#id_library');
+            lib_select.html('');
+            libs =['<option value="0">----------</option>'];
+            for (index in orgs) {
+                libs.push('<option value="' + orgs[index]['id'] + '">' +  orgs[index]['title'] + '</option>');
+            }
+            lib_select.html((libs.join('')));
+        }
+    });
+
+});
+</script>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load prolongation_tags %}
+{% block title %}
+    Детальная информация о заявке на продление
+{% endblock %}
+{% block menu %}
+    <h3><a href="{% url prolongation_checkout %}">Заявки</a></h3>
+{% endblock %}
+{% block content %}
+    {% if request.user|is_prolongation_manager%}
+        <a href="{% url prolongation_checkout %}" class="btn primary">Обслуживание заявок</a>
+        <hr/>
+    {% endif %}
+    <style type="text/css">
+        .status0{
+            color: red;
+            font-weight: bold;
+        }
+        .status1{
+            color: #ff7f50;
+            font-weight: bold;
+        }
+        .status2{
+            color: green;
+            font-weight: bold;
+        }
+        .status3{
+            color: #a52a2a;
+            font-weight: bold;
+        }
+    </style>
+
+    <div class="text">
+    <h3>Электронное продление</h3>
+        <ul style="list-style: none;">
+            <li style="padding-bottom: 10px;">
+                {% include 'prolongation/prolongation_rows.html' %}
+            </li>
+            {% for status in statuses %}
+                <li>{{ status.change_date }}: <span class="status{{ status.status }}">{{ status.get_status_display }} </span><br/>
+                    {{ status.comments }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+{% endblock %}

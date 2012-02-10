@@ -9,7 +9,16 @@ from django.db import transaction
 
 
 
-
+def send_email_to_managers(registration):
+    message = u"""\
+Поступила новая заявка на запись пользователя в библиотеку. Для управления заявкой перейдите по адресу %s.\
+            """ % (
+        settings.SITE_URL + reverse('reginlib_registration_detail', args=[registration.id]),
+        )
+    managers = RegistrationManager.objects.filter(library=registration.recive_library_id)
+    for manager in managers:
+        send_mail(u'Поступила новая заявка на запись в библиотеку', message, 'robot@system',
+            [manager.notify_email],fail_silently=True)
 
 
 def manager_check(user, library):
@@ -70,11 +79,21 @@ def registration(request):
             user_lib_registration.save()
 
             message = u"""\
-Вы подали заявку на регистрацию в библиотеку %s.\
+Вы подали заявку на запись в библиотеку %s.\
 Состояние заявки Вы можете посмотреть пройдя по адресу %s.\
-            """ % (manage_library.name, settings.SITE_URL + reverse('reginlib_registration_user_detail', args=[user_lib_registration.id]))
-            send_mail(u'Регистрация в библиотеке', message, 'robot@system',
-                [user_lib_registration.email], fail_silently=False)
+            """ % (
+                    manage_library.name,
+                    settings.SITE_URL + reverse('reginlib_registration_user_detail', args=[user_lib_registration.id])
+                )
+            send_mail(
+                u'Регистрация в библиотеке',
+                message, 'robot@system',
+                [user_lib_registration.email],
+                fail_silently=True
+            )
+
+            send_email_to_managers(user_lib_registration)
+
             return render(request, 'reginlib/send_ok.html', {
                 'registration': user_lib_registration,
             })

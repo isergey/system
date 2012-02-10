@@ -1,0 +1,36 @@
+{% extends "prolongation/administration/base.html" %}
+{% block title %}
+    Детальная информация о заявке на продление
+{% endblock %}
+{% block menu %}
+    <h4><a href="{% url prolongation_checkout %}">Начало</a></h4>
+{% endblock %}
+{% block module_content %}
+    <style type="text/css">
+        .status0 {
+            color: red;
+            font-weight: bold;
+        }
+
+        .status1 {
+            color: #ff7f50;
+            font-weight: bold;
+        }
+    </style>
+    <ul style="list-style: none;">
+        <li style="padding-bottom: 10px; font-size: 16px">
+            {% include 'prolongation/administration/prolongation_rows.html' %}
+        </li>
+        <li>
+            <div class="actions">
+                {% if prolongation.can_take_to_process %}<a href="{% url prolongation_take_to_process prolongation.id %}"
+                                                            class="btn">Принять на обработку</a>{% endif %}
+                {% if prolongation.can_complete %}<a href="{% url prolongation_complete prolongation.id %}" class="btn">
+                    Одобрить продление</a>{% endif %}
+                {% if prolongation.can_reject %}<a href="{% url prolongation_reject prolongation.id %}" class="btn danger">
+                    Отказать в продлении</a>{% endif %}
+            </div>
+        </li>
+    </ul>
+
+{% endblock %}

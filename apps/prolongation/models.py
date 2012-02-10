@@ -1,26 +1,27 @@
 # encoding: utf-8
 
 from django.core.exceptions import ValidationError
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from participants.models import Library
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+from django.core.mail import send_mail
 
-
-REGISTRATION_STATUSES = (
+PROLONGATION_STATUSES = (
     (0, u'ожидание обработки'),
     (1, u'обрабатывается'),
-    (2, u'готово'),
+    (2, u'запрос выполнен'),
     (3, u'отклонено'),
     )
 
 
 
 # регистрация пользователя в библиотеке
-class UserLibRegistation(models.Model):
+class UserProlongation(models.Model):
 
-    user = models.ForeignKey(User, unique=True, null=True)
+    user = models.ForeignKey(User, null=True)
 
     recive_library = models.ForeignKey(
         Library,
@@ -32,11 +33,11 @@ class UserLibRegistation(models.Model):
         Library,
         verbose_name=u"Библиотека обработчик заявки",
         help_text=u'Библиотека, в которой осуществляется регистрация',
-        related_name='manage_library'
+        related_name='prolongation_manage_library'
     )
 
     status = models.IntegerField(
-        choices=REGISTRATION_STATUSES,
+        choices=PROLONGATION_STATUSES,
         db_index=True,
         verbose_name=u'Статус',
         default=0
@@ -52,6 +53,11 @@ class UserLibRegistation(models.Model):
         verbose_name=u'Фамилия'
     )
 
+    library_card_no = models.CharField(
+        max_length=32,
+        verbose_name=u"Номер читательского билета"
+    )
+
     email = models.EmailField(
         max_length=256,
         verbose_name=u'Адрес электронной почты'
@@ -59,12 +65,24 @@ class UserLibRegistation(models.Model):
 
     phone = models.CharField(
         max_length=16,
-        verbose_name=u"Телефон для связи"
+        verbose_name=u"Телефон для связи",
+        blank=True, null=True
+
     )
 
-    visit_date = models.DateField(
-        verbose_name=u'Дата визита',
-        help_text=u'Укажите желаемую дату визита в библиотеку'
+    doc_title = models.CharField(
+        max_length=512,
+        verbose_name=u"Название издания"
+    )
+
+    date_of_return = models.DateField(
+        verbose_name=u'Срок возврата',
+        help_text=u'Укажите дату, когда документ должен быть возвращен в библиотеку'
+    )
+
+    new_date_of_return = models.DateField(
+        verbose_name=u'Срок продления',
+        help_text=u'Укажите дату, до которой хотите продлить срок возврата. Не более, чем 30 дней со дня старого срока возврата'
     )
 
     create_date = models.DateTimeField(
@@ -76,6 +94,8 @@ class UserLibRegistation(models.Model):
         """
         Возвращает список статусов, которые может принять регистрация, в зависимости от текущего статуса
         """
+
+        #матрица переходов между статусами
         status_matrix = {
             0: [1, 3],
             1: [2, 3],
@@ -112,51 +132,57 @@ class UserLibRegistation(models.Model):
         return not (self.can_take_to_process() or self.can_reject() or self.can_complete())
 
     class Meta:
-        unique_together = ('user', 'recive_library')
-        verbose_name = u"Пользовательская регистрация"
-        verbose_name_plural = u"Пользовательские регистрации"
+        verbose_name = u"Электронное продление"
+        verbose_name_plural = u"Электронные продления"
 
 
-class RegistrationManager(models.Model):
+class ProlongationManager(models.Model):
     user = models.ForeignKey(User)
     library = models.ForeignKey(Library, verbose_name=u"Библиотека")
     notify_email = models.EmailField(max_length=128, verbose_name=u'Email для оповещения менеджера')
 
     class Meta:
         unique_together = ('user', 'library')
-        verbose_name = u"Менеджер записи в библиотеку"
-        verbose_name_plural = u"Менеджеры записи в библиотеку"
+        verbose_name = u"Менеджер продления"
+        verbose_name_plural = u"Менеджеры продления"
+
 
 # фиксация смены статуса
 class StatusChange(models.Model):
-    registration = models.ForeignKey(UserLibRegistation, verbose_name=u'Регистрация')
-    registration_manager = models.ForeignKey(RegistrationManager, verbose_name=u'Менеджер')
-    status = models.IntegerField(choices=REGISTRATION_STATUSES, db_index=True, verbose_name=u'Статус')
+    prolongation = models.ForeignKey(UserProlongation, verbose_name=u'Заявка на продление')
+    prolongation_manager = models.ForeignKey(ProlongationManager, verbose_name=u'Менеджер')
+    status = models.IntegerField(choices=PROLONGATION_STATUSES, db_index=True, verbose_name=u'Статус')
     change_date = models.DateTimeField(auto_now=True, auto_now_add=True, db_index=True) # дата смены статуса
     comments = models.CharField(max_length=1024, blank=True, verbose_name=u'Комментарии')
 
 
+
+
+
+
 @receiver(post_save, sender=StatusChange)
-def change_registration_status(sender, instance, **kwargs):
+def change_prolongation_status(sender, instance, **kwargs):
     """
-    Установка статуса регистрации
+    Установка статуса продления
     """
-    registration = instance.registration
-    registration.status = instance.status
-    registration.save()
-    send_email_to_user(registration)
+    prolongation = instance.prolongation
+    prolongation.status = instance.status
+    prolongation.save()
+    send_email_to_user(prolongation)
 
 
-def send_email_to_user(registration):
+
+def send_email_to_user(prolongation):
     message = u"""\
-Состояние вашей заявки на регистрациюв библиотеке %s изменилась.\
+Состояние вашей заявки на продление  %s в библиотеке %s изменилось.\
 Состояние заявки Вы можете посмотреть пройдя по адресу %s.\
             """ % (
-        manage_library.name,
-        settings.SITE_URL + reverse('reginlib_registration_user_detail', args=[registration.id])
+            prolongation.doc_title,
+            manage_library.name,
+            settings.SITE_URL + reverse('prolongation_prolongation_user_detail', args=[prolongation.id])
         )
-    send_mail(u'Изменение статуса заявки на регистрацию в библиотеке', message, 'robot@system',
-        [registration.email])
+    send_mail(u'Изменение статуса заявки на электронное продление издания', message, 'robot@system',
+        [prolongation.email])
     pass
 
 

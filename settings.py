@@ -179,6 +179,7 @@ INSTALLED_APPS = (
     'participants',
     'guestbook',
     'reginlib',
+    'prolongation',
     'helper',
     'api',
     #'searcher',

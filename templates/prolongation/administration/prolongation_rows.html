@@ -1,0 +1,11 @@
+<b>Номер заявки</b>: {{ prolongation.id }} Статус: <span class="status{{ prolongation.status }}"> {{ prolongation.get_status_display }}</span><br/>
+<b>Продлевающая библиотека</b>: <a href="#1">{{ prolongation.manage_library.name }}</a><br/>
+<b>Пользователь</b>: {% if prolongation.user != None %}{{ prolongation.user.username }}{% else %} незарегистрированный {% endif %}<br/>
+<b>Имя</b>: {{ prolongation.first_name }}<br/>
+<b>Фамилия</b>: {{ prolongation.last_name }}<br/>
+<b>Телефон</b>: {{ prolongation.phone }}<br/>
+<b>Email</b>: {{ prolongation.email }}<br/>
+<b>Номер читательского билета</b>: {{ prolongation.library_card_no }}<br/>
+<b>Название издания</b>: {{ prolongation.doc_title }}<br/>
+<b>Срок возврата</b>: {{ prolongation.date_of_return }}<br/>
+<b>Срок запланированного возврата</b>: {{ prolongation.new_date_of_return }}

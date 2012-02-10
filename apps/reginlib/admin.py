@@ -8,10 +8,10 @@ class UserLibRegistationAdmin(admin.ModelAdmin):
 admin.site.register(UserLibRegistation, UserLibRegistationAdmin)
 
 
-class StatusChangeAdmin(admin.ModelAdmin):
-    list_display = ('registration','status', 'change_date')
+#class StatusChangeAdmin(admin.ModelAdmin):
+#    list_display = ('registration','status', 'change_date')
 
-admin.site.register(StatusChange, StatusChangeAdmin)
+#admin.site.register(StatusChange, StatusChangeAdmin)
 
 
 class RegistrationManagerAdmin(admin.ModelAdmin):

@@ -1,0 +1,38 @@
+{% extends "prolongation/administration/base.html" %}
+{% block title %}
+    Список заявок на продление
+{% endblock %}
+{% block menu %}
+    <h4><a href="{% url prolongation_checkout %}">Начало</a></h4>
+{% endblock %}
+{% block module_content %}
+    <style type="text/css">
+    .status0{
+        color: red;
+        font-weight: bold;
+    }
+    .status1{
+        color: #ff7f50;
+        font-weight: bold;
+    }
+    .status2{
+        color: green;
+        font-weight: bold;
+    }
+    .status3{
+        color: #a52a2a;
+        font-weight: bold;
+    }
+    </style>
+    <h3>Заявки, поступившие в: {{ library.name }}</h3>
+    <hr/>
+    <ul style="list-style: none; font-size: 16px;">
+    {% for prolongation in prolongations %}
+        <li style="padding-bottom: 10px;">
+            {% include 'prolongation/administration/prolongation_rows_in_list.html' %}
+            <a href="{% url prolongation_prolongation_detail prolongation.id %}" class="btn">подробнее</a>
+        </li>
+    {% endfor %}
+    </ul>
+
+{% endblock %}

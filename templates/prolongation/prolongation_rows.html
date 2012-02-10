@@ -1,0 +1,6 @@
+<b>Номер заявки</b>: {{ prolongation.id }} Статус: <span class="status{{ prolongation.status }}"> {{ prolongation.get_status_display }}</span><br/>
+<b>Библиотека</b>: <a href="{% url participants_detail prolongation.manage_library.code %}">{{ prolongation.manage_library.name }}</a><br/>
+<b>Дата поступления заявки</b>: {{ prolongation.create_date }}<br/>
+<b>Название издания</b>: {{ prolongation.doc_title }}<br/>
+<b>Срок возврата</b>: {{ prolongation.date_of_return }}<br/>
+<b>Срок запланированного возврата</b>: {{ prolongation.new_date_of_return }}<br/>

@@ -335,7 +335,8 @@
         bottom: 10px; /* Положение от нижнего края */
         right: 10px; /* Положение от правого края */
         width: 230px;
-        background: #B2B2B2;
+        /*background: #B2B2B2;*/
+        background-image: '/media/images/helper/helper.png';
 
     }
 
@@ -346,6 +347,7 @@
     }
 
     #helper .content{
+        /*background-image: url('/media/images/helper/helper.png');*/
         background: #fff;
         padding: 5px;
 
@@ -382,6 +384,8 @@
         width: 20px;
         height: 100px;
         cursor: pointer;
+        color: white;
+        font-weight: bold;
     }
 
     .rot-neg-90 {
@@ -397,6 +401,7 @@
 
 <div id="helper">
     <div class="hider"></div>
+    <div><img src="/media/images/helper/helper.png" alt="" style="float: right;"></div>
     <div class="content">
         <div id="answer">
             Привет! :-)
@@ -416,12 +421,12 @@
 <script type="text/javascript">
 
     function show_helper(){
-
+        $('.hider').html('><br/>><br/>><br/>>');
         $('#helper').css('right', 10);
     }
 
     function hide_helper(){
-
+        $('.hider').html('<<br/><<br/><<br/><');
         $('#helper').css('right', -210);
     }
 

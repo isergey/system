@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}
+    Электронное продление
+{% endblock %}
+{% block content %}
+    <style type="text/css">
+        .status0{
+            color: red;
+            font-weight: bold;
+        }
+        .status1{
+            color: #ff7f50;
+            font-weight: bold;
+        }
+        .status2{
+            color: green;
+            font-weight: bold;
+        }
+        .status3{
+            color: #a52a2a;
+            font-weight: bold;
+        }
+    </style>
+    <h3>Список заявок на электронное продление</h3>
+    <div class="text">
+        <ul style="list-style: none;  font-size: 16px">
+            {% for prolongation in prolongations %}
+                <li style="padding-bottom: 10px;">
+                    <b>Номер заявки</b>: {{ prolongation.id }} Статус: <span class="status{{ prolongation.status }}"> {{ prolongation.get_status_display }}</span><br/>
+                    <b>Название издания</b>: {{ prolongation.doc_title }}<br/>
+                    <a class="btn" href="{% url prolongation_prolongation_user_detail prolongation.id %}">Подробнее</a>
+                </li>
+                <hr/>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "prolongation/administration/base.html" %}
+{% block title %}
+    Детальная информация о заявке на продление
+{% endblock %}
+{% block menu %}
+    <h4><a href="{% url prolongation_checkout %}">Начало</a></h4>
+{% endblock %}
+{% block module_content %}
+    <form action="" method="post" class="form-stacked">
+        <fieldset>
+            {{ form }}
+
+        </fieldset>
+        <div class="actions">
+            <input type="submit" value="Принять" class="btn"/>
+            <a href="{% url prolongation_prolongation_detail prolongation.id %}" class="btn primary">Отмена</a>
+        </div>
+    </form>
+{% endblock %}
