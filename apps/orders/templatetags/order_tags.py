@@ -33,5 +33,5 @@ def org_by_id(org_id):
             'name':org_id,
             'type':None
         }
-    cache.set(str(org_id), org_info)
+    cache.set(org_id.encode('utf-8'), org_info)
     return org_info
