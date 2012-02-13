@@ -7,13 +7,16 @@ from django.core.cache import cache
 @register.simple_tag
 def org_by_id(org_id):
 
-    org_info = cache.get(str(org_id), None)
+    org_info = cache.get(org_id.encode('utf-8'), None)
     if org_info:
         return org_info
 
 
-    org_info = {'code':'', 'name':'', 'type':''}
-    print org_id, '19217020'
+    org_info = {
+        'code':'',
+        'name':'',
+        'type':''
+    }
 
     try:
         library = Library.objects.get(code=org_id)
@@ -25,6 +28,10 @@ def org_by_id(org_id):
         else:
             org_info['type'] = 'library'
     except Library.DoesNotExist:
-        org_info = {'code':org_id, 'name':org_id, 'type':None}
+        org_info = {
+            'code':org_id,
+            'name':org_id,
+            'type':None
+        }
     cache.set(str(org_id), org_info)
     return org_info
