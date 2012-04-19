@@ -23,6 +23,8 @@ class News(models.Model):
     pub_date = models.DateTimeField(verbose_name=u"Дата публикации",
                                     auto_now_add=True)
 
+    special = models.BooleanField(verbose_name=u'Специальная новость', default=False,  db_index=True)
+
     def __unicode__(self):
         return self.title
 
@@ -35,3 +37,4 @@ class News(models.Model):
     class Meta:
         verbose_name = u"новость"
         verbose_name_plural = u"новости"
+

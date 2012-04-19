@@ -1,0 +1,18 @@
+{% if news %}
+    <div class="block white">
+        <div class="headbg"></div>
+
+        <div class="content">
+{#            <div align="center" class="treeheader"><b>Объявление</b>#}
+{#                <hr>#}
+{#            </div>#}
+            <div class="item">
+                <b>{{ news.0.title }}</b><br/>
+                {{ news.0.teaser }}
+                <div class="detail"><a href="{% url news_show news.0.id %}">
+                    подробнее</a></div>
+            </div>
+        </div>
+        <div class="footerbg"></div>
+    </div>
+{% endif %}

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import sunburnt
+from libs import sunburnt
 import datetime
 
 from django.utils.html import escape, mark_safe, strip_tags, clean_html

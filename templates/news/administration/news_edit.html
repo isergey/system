@@ -61,6 +61,15 @@
                     {% endif %}
                 </div>
                 <div class="last">
+                    <label for="{{ form.special.auto_id }}">{{ form.special.label }}</label>
+                    {{ form.special }}
+                    {% if form.special.errors %}
+                        <div class="error">
+                            {{ form.special.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="last">
                     <button type="submit" class="button positive" title="Применить изменения новости">
                         <img src="/media/css/bp/buttons/icons/tick.png" alt=""/> Применить
                     </button>

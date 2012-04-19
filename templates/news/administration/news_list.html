@@ -30,8 +30,8 @@
             </tr>
             {% for news in news_list.object_list %}
                 <tr>
-                    <td>{{ news.id }}</td>
-                    <td>{{ news.title }}</td>
+                    <td {% if news.special %}style="background: #fbd527" {% endif %}>{{ news.id }}</td>
+                    <td >{{ news.title }}</td>
                     <td>
                         {% if news.published %}
                             <span style="color:green;">Да</span>

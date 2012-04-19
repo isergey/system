@@ -1,7 +1,7 @@
 # encoding: utf-8
 import re
 import datetime
-import sunburnt
+from libs import sunburnt
 import simplejson as json
 from django.conf import settings
 from django.shortcuts import render, HttpResponse
