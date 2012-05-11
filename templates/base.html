@@ -268,7 +268,8 @@
         </div>
         <div class="footerbg"></div>
     </div>
-    {% if request.path == 'libportal.megazi.ru' %}
+
+    {% if request.META.HTTP_HOST == 'libportal.megazi.ru' %}
     <div class="block" style="padding: 0 10px 0 7px">
         <div class="headbg"></div>
         <div class="content">
