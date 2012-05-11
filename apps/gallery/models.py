@@ -29,9 +29,9 @@ class Collection(models.Model):
 class CollectionImage(models.Model):
     collection = models.ForeignKey(Collection)
     title = models.CharField(verbose_name=u"Название изображения",
-                             max_length=255, blank=True)
+                             max_length=512, blank=True)
     comments = models.TextField(verbose_name=u"Комментарии к изображению",
-                               max_length=255,blank=True)
+                               max_length=512,blank=True)
     file_name = models.CharField(max_length=64, blank=False)
     add_date_time = models.DateTimeField(verbose_name=u"Дата добавления",
                                          auto_now_add=True, null=False, blank=False)

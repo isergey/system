@@ -1,17 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from django.http import HttpResponse, Http404, HttpResponseRedirect
-from django.utils.http import urlquote
-from django.shortcuts import get_object_or_404
-from django.views.generic.simple import direct_to_template
-#from django.views.decorators.csrf import csrf_exempt
+from django.utils.translation import ugettext as _
+from django.http import HttpResponseForbidden
+from django.shortcuts import HttpResponse, Http404, HttpResponseRedirect, render
 from django.core.urlresolvers import reverse
-from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.forms.models import model_to_dict
 from django.contrib.auth.decorators import login_required
 from guardian.decorators import permission_required_or_403
-
-from forms import UploadFileForm
+from forms import UploadFileForm, CreateDirectory
 
 import os
 import datetime
@@ -24,7 +19,7 @@ mtypes = {
     'pdf': 'pdf',
     'doc': 'doc',
     'xls': 'xsl',
-    }
+}
 
 
 def chek_or_create_dir(path):
@@ -68,8 +63,8 @@ def get_file_map(path, show_path_url, show_path):
         }
 
     item_map['create_time'] = datetime.datetime.fromtimestamp(file_stat.st_ctime)
-    item_map['url'] = show_path_url + '/' + file_name
-    item_map['work_url'] = show_path + '/' + file_name
+    item_map['url'] = show_path_url.rstrip('/') + '/' + file_name
+    item_map['work_url'] = show_path + file_name
     return item_map
 
 
@@ -89,11 +84,13 @@ def get_dir_map(path, show_path):
     }
 
     item_map['create_time'] = datetime.datetime.fromtimestamp(dir_stat.st_ctime)
-    item_map['url'] = show_path + '/' + dir_name
+    item_map['url'] = show_path + '/' + dir_name + '/'
     return item_map
 
 
 def handle_uploaded_file(f, path):
+
+
     destination = open(path + '/' + f.name, 'wb+')
     for chunk in f.chunks():
         destination.write(chunk)
@@ -103,6 +100,9 @@ def handle_uploaded_file(f, path):
 
 @login_required
 def index(request):
+    if not request.user.has_module_perms('filebrowser'):
+        return HttpResponseForbidden()
+
     base_uplod_path = settings.FILEBROWSER['upload_dir']
 
     show_path = '' # root of upload path
@@ -113,7 +113,7 @@ def index(request):
         if '..' in path or '/.' in path:
             raise Http404(u"Path not founded")
 
-        show_path = '/%s' % path
+        show_path =  path
 
     show_path_url += show_path
 
@@ -128,7 +128,6 @@ def index(request):
     dir_map = []
     for dir_item in dir_items:
         path_to_dir_item = base_uplod_path + show_path + '/' + dir_item
-
         if os.path.isfile(path_to_dir_item):
             dir_map.append(get_file_map(path_to_dir_item, show_path_url, show_path))
 
@@ -136,7 +135,8 @@ def index(request):
             dir_map.append(get_dir_map(path_to_dir_item, show_path))
 
         # не выводим элемент
-        else: continue
+        else:
+            continue
 
     breadcrumbs = []
     path_dirs = show_path.strip('/').split('/')
@@ -151,24 +151,25 @@ def index(request):
             })
 
     upload_form = UploadFileForm(initial={'path': show_path})
+    dir_form = CreateDirectory(initial={'path': show_path}, prefix='dir_form')
 
     dir_map = sorted(dir_map, key=lambda x: x['create_time'], cmp=lambda x, y: cmp(x, y), reverse=True)
     dir_map = sorted(dir_map, key=lambda x: x['type'], cmp=lambda x, y: cmp(x.lower(), y.lower()))
 
-    return direct_to_template(request, 'filebrowser/administration/list.html', {
+    return render(request, 'filebrowser/administration/list.html', {
         'dir_map': dir_map,
         'breadcrumbs': breadcrumbs,
         'upload_form': upload_form,
+        'dir_form': dir_form,
         'active_module': 'filebrowser'
     })
 
 
 @login_required
+@permission_required_or_403('filebrowser.delete_file')
 def delete(request):
-    base_uplod_path = settings.FILEBROWSER['upload_dir']
 
-    show_path = '' # root of upload path
-    show_path_url = settings.FILEBROWSER['upload_dir_url']
+    base_uplod_path = settings.FILEBROWSER['upload_dir']
 
     current_dir = '/'
     if 'path' in request.GET:
@@ -186,24 +187,61 @@ def delete(request):
         if os.path.isdir(delete_path):
             shutil.rmtree(delete_path)
 
-    return HttpResponseRedirect(reverse('administration_filebrowser_index') + '?path=' + current_dir)
+    return HttpResponseRedirect(reverse('filebrowser:administration:index') + '?path=' + current_dir)
+
 
 
 @login_required
+@permission_required_or_403('filebrowser.add_file')
 def upload(request):
+
     path = '/'
     base_uplod_path = settings.FILEBROWSER['upload_dir']
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
+
         if form.is_valid():
             path = form.cleaned_data['path']
             upload_path = base_uplod_path + path
+
+            if os.path.isfile(upload_path + '/' + request.FILES['file'].name):
+                return HttpResponse(_(u'File with this name already exist. Please, delete old file or rename uploadable file.'))
+            elif  os.path.isdir(upload_path + '/' + request.FILES['file'].name):
+                return HttpResponse(_(u'Directory with this name already exist. Please, delete old directory or rename uploadable file.'))
+
             if not os.path.isdir(upload_path):
                 raise Http404(u"Path not founded")
 
             handle_uploaded_file(f=request.FILES['file'], path=upload_path)
 
-    return HttpResponseRedirect(reverse('administration_filebrowser_index') + '?path=' + path)
+    return HttpResponseRedirect(reverse('filebrowser:administration:index') + '?path=' + path)
+
+
+
+@login_required
+@permission_required_or_403('filebrowser.add_file')
+def create_directory(request):
+
+    path = '/'
+    base_uplod_path = settings.FILEBROWSER['upload_dir']
+
+    if request.method == 'POST':
+        dir_form = CreateDirectory(request.POST, prefix='dir_form')
+        if dir_form.is_valid():
+            path = dir_form.cleaned_data['path']
+            upload_path = base_uplod_path + path
+
+            if os.path.isfile(upload_path + '/' + dir_form.cleaned_data['name']):
+                return HttpResponse(_(u'File with this name already exist. Please, delete old file or rename creatable directory.'))
+            elif  os.path.isdir(upload_path + '/' + dir_form.cleaned_data['name']):
+                return HttpResponse(_(u'Directory with this name already exist. Please, delete old directory or or rename creatable directory.'))
+
+            if not os.path.isdir(upload_path):
+                raise Http404(_(u"Path not founded"))
+            upload_path = upload_path.rstrip('/')
+            os.mkdir(upload_path + '/' + dir_form.cleaned_data['name'], 0755)
+
+    return HttpResponseRedirect(reverse('filebrowser:administration:index') + '?path=' + path)
 
 
 
