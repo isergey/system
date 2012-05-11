@@ -268,7 +268,7 @@
         </div>
         <div class="footerbg"></div>
     </div>
-
+    {% if request.path == 'libportal.megazi.ru' %}
     <div class="block" style="padding: 0 10px 0 7px">
         <div class="headbg"></div>
         <div class="content">
@@ -288,7 +288,7 @@
         </div>
         <div class="footerbg"></div>
     </div>
-
+    {% endif %}
     <div class="block">
 
         {% event_calendar %}
@@ -484,9 +484,9 @@
 <!--</div>-->
 <div class="container2 shadow"></div>
 <script type="text/javascript">
-    if (document.domain != 'ks' + 'ob' + '.spb'+'.ru'){
-        window.location = 'http://ks' + 'ob' + '.spb'+'.ru/';
-    }
+//    if (document.domain != 'ks' + 'ob' + '.spb'+'.ru'){
+//        window.location = 'http://ks' + 'ob' + '.spb'+'.ru/';
+//    }
 </script>
 <!-- Yandex.Metrika counter -->
 <div style="display:none;">
