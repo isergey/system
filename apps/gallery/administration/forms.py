@@ -4,20 +4,20 @@ from apps.gallery.models import Collection
 
 class UploadFileForm(forms.Form):
     title = forms.CharField(label=u"Название изображения",
-                             max_length=255, required=False)
+                             max_length=512, required=False)
 
     comments = forms.CharField(label=u"Комментарии к изображению",
-                                max_length = 255,
+                                max_length = 512,
                                 widget=forms.Textarea(), required=False)
     file  = forms.FileField(label=u"Файл с изображением")
 
 
 class EditImageForm(forms.Form):
     title = forms.CharField(label=u"Название изображения",
-                             max_length=255,required=False)
+                             max_length=512,required=False)
 
     comments = forms.CharField(label=u"Комментарии к изображению",
-                                max_length = 255,
+                                max_length = 512,
                                 widget=forms.Textarea(), required=False)
                                 
 class CreateCollectionForm(forms.ModelForm):
