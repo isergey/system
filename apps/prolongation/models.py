@@ -178,7 +178,7 @@ def send_email_to_user(prolongation):
 Состояние заявки Вы можете посмотреть пройдя по адресу %s.\
             """ % (
             prolongation.doc_title,
-            manage_library.name,
+            prolongation.manage_library.name,
             settings.SITE_URL + reverse('prolongation_prolongation_user_detail', args=[prolongation.id])
         )
     send_mail(u'Изменение статуса заявки на электронное продление издания', message, 'robot@system',
