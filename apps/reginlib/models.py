@@ -152,7 +152,7 @@ def send_email_to_user(registration):
 Состояние вашей заявки на регистрациюв библиотеке %s изменилась.\
 Состояние заявки Вы можете посмотреть пройдя по адресу %s.\
             """ % (
-        manage_library.name,
+        registration.manage_library.name,
         settings.SITE_URL + reverse('reginlib_registration_user_detail', args=[registration.id])
         )
     send_mail(u'Изменение статуса заявки на регистрацию в библиотеке', message, 'robot@system',
