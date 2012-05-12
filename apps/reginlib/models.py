@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 from django.core.exceptions import ValidationError
+from django.shortcuts import urlresolvers
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
@@ -154,7 +155,7 @@ def send_email_to_user(registration):
 Состояние заявки Вы можете посмотреть пройдя по адресу %s.\
             """ % (
         registration.manage_library.name,
-        settings.SITE_URL + reverse('reginlib_registration_user_detail', args=[registration.id])
+        settings.SITE_URL + urlresolvers.reverse('reginlib_registration_user_detail', args=[registration.id])
         )
     send_mail(u'Изменение статуса заявки на регистрацию в библиотеке', message, 'robot@system',
         [registration.email])
