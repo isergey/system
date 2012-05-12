@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 from django.core.exceptions import ValidationError
+from django.shortcuts import urlresolvers
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
@@ -179,7 +180,7 @@ def send_email_to_user(prolongation):
             """ % (
             prolongation.doc_title,
             prolongation.manage_library.name,
-            settings.SITE_URL + reverse('prolongation_prolongation_user_detail', args=[prolongation.id])
+            settings.SITE_URL + urlresolvers.reverse('prolongation_prolongation_user_detail', args=[prolongation.id])
         )
     send_mail(u'Изменение статуса заявки на электронное продление издания', message, 'robot@system',
         [prolongation.email])
