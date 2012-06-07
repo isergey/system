@@ -14,7 +14,9 @@
     </style>
     <div class="text">
         <h3>Вход на портал</h3>
-
+        {% if form.errors %}
+            <h3 style="color: red;">Указаны неверные имя пользователя или пароль</h3>
+        {% endif %}
         <form method="post" action="." method='post' class="form-stacked">
             <fieldset>
                 <div class="required">
@@ -29,7 +31,7 @@
                     <label for="login-remember" class="not-stacked">Чужой компьютер </label>
                     <input type="checkbox" name="rememberme" value="1" id="login-remember">
                 </div>
-                <div><a href="#">Забыли пароль?</a></div>
+                <div><a href="{% url ldaccounts_remember_password %}">Забыли пароль?</a></div>
                 <input type="submit" value="Войти" class="btn">
                 {% if next %}
                     <input type="hidden" name="next" value="{{ next|escape }}"/>
