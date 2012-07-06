@@ -100,7 +100,7 @@ def by_district_json(request):
 
         orgs = []
         for org in libraries:
-            orgs.append({'id': org.id, 'title': org.name})
+            orgs.append(make_library_dict(org))
 
         json = simplejson.dumps(orgs, ensure_ascii=False)
         return HttpResponse(json)

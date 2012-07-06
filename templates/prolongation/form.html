@@ -92,7 +92,7 @@
                 lib_select.html('');
                 libs =['<option value="0">----------</option>'];
                 for (index in orgs) {
-                    libs.push('<option value="' + orgs[index]['id'] + '">' +  orgs[index]['title'] + '</option>');
+                    libs.push('<option value="' + orgs[index]['id'] + '">' +  orgs[index]['title'] +' ('+ orgs[index]['address'] +')</option>');
                 }
                 lib_select.html((libs.join('')));
             }

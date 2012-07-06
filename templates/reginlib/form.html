@@ -61,38 +61,38 @@
 
 
 
-<script type="text/javascript">
-    var manage_library = 0;
-    {% if request.POST.manage_library and request.POST.manage_library > 0 %}
-        manage_library = {{ request.POST.manage_library }};
-    {% endif %}
+    <script type="text/javascript">
+        var manage_library = 0;
+        {% if request.POST.manage_library and request.POST.manage_library > 0 %}
+            manage_library = {{ request.POST.manage_library }};
+        {% endif %}
 
-    if ($('#id_district').val() > 0){
-        loadLibraris();
-    }
-    $("#id_district").change(function () {
-        loadLibraris();
-    });
-    if (manage_library > 0){
-        $('#id_library option[value="'+manage_library+'"]').attr('selected', 'selected');
-    }
-    function loadLibraris(){
-        $.ajax({
-            url:'{% url participants_json_by_district %}',
-            type:'POST',
-            dataType:"json",
-            async:false,
-            data:{district:$("#id_district").val()},
-            success:function (orgs) {
-                var lib_select = $('#id_library');
-                lib_select.html('');
-                libs =['<option value="0">----------</option>'];
-                for (index in orgs) {
-                    libs.push('<option value="' + orgs[index]['id'] + '">' +  orgs[index]['title'] + '</option>');
-                }
-                lib_select.html((libs.join('')));
-            }
+        if ($('#id_district').val() > 0){
+            loadLibraris();
+        }
+        $("#id_district").change(function () {
+            loadLibraris();
         });
-    }
-</script>
+        if (manage_library > 0){
+            $('#id_library option[value="'+manage_library+'"]').attr('selected', 'selected');
+        }
+        function loadLibraris(){
+            $.ajax({
+                url:'{% url participants_json_by_district %}',
+                type:'POST',
+                dataType:"json",
+                async:false,
+                data:{district:$("#id_district").val()},
+                success:function (orgs) {
+                    var lib_select = $('#id_library');
+                    lib_select.html('');
+                    libs =['<option value="0">----------</option>'];
+                    for (index in orgs) {
+                        libs.push('<option value="' + orgs[index]['id'] + '">' +  orgs[index]['title'] +' ('+ orgs[index]['address'] +')</option>');
+                    }
+                    lib_select.html((libs.join('')));
+                }
+            });
+        }
+    </script>
 {% endblock %}
