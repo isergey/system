@@ -1,14 +1,39 @@
 
-<div class="right_module span-5">
-    <div class="head">
-        <h3 class="title">Новости</h3>
-    </div>
-    <div class="midl">
+{#<div class="right_module span-5">#}
+{#    <div class="head">#}
+{#        <h3 class="title">Новости</h3>#}
+{#    </div>#}
+{#    <div class="midl">#}
+        <style type="text/css">
+            .news .date{
+                color: white;
+                background-color: #367BA1;
+                width: 120px;
+                -moz-border-radius: 4px;
+                -webkit-border-radius: 4px;
+                -khtml-border-radius: 4px;
+                border-radius: 4px;
+                padding: 2px;
+                background-image: linear-gradient(bottom, rgb(57,106,143) 1%, rgb(89,146,189) 51%);
+                background-image: -o-linear-gradient(bottom, rgb(57,106,143) 1%, rgb(89,146,189) 51%);
+                background-image: -moz-linear-gradient(bottom, rgb(57,106,143) 1%, rgb(89,146,189) 51%);
+                background-image: -webkit-linear-gradient(bottom, rgb(57,106,143) 1%, rgb(89,146,189) 51%);
+                background-image: -ms-linear-gradient(bottom, rgb(57,106,143) 1%, rgb(89,146,189) 51%);
+
+                background-image: -webkit-gradient(
+                    linear,
+                    left bottom,
+                    left top,
+                    color-stop(0.01, rgb(57,106,143)),
+                    color-stop(0.51, rgb(89,146,189))
+                );
+            }
+        </style>
         <div class="content news">
             {% for news in news_list %}
                 <div class="item">
                     {{ news.title }}
-                    <div class="detail"><a href="{% url news_show news.id %}"><span class="date">{{ news.pub_date|date:"d M Y" }}</span>
+                    <div class="detail"><span class="date">{{ news.pub_date|date:"d E Y" }}</span><a href="{% url news_show news.id %}">
                         подробнее</a></div>
                 </div>
                 {% if not forloop.last %}<hr/>{% endif %}
@@ -16,6 +41,6 @@
                 Нет новостей.
             {% endfor %}
         </div>
-    </div>
-    <div class="footer"></div>
-</div>
+{#    </div>#}
+{#    <div class="footer"></div>#}
+{#</div>#}

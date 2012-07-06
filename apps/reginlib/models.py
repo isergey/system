@@ -151,10 +151,11 @@ def change_registration_status(sender, instance, **kwargs):
 
 def send_email_to_user(registration):
     message = u"""\
-Состояние вашей заявки на регистрациюв библиотеке %s изменилась.\
-Состояние заявки Вы можете посмотреть пройдя по адресу %s.\
+Состояние вашей заявки на регистрациюв библиотеке "%s" изменилось (статус: %s).\
+Подробную информацию о заявке Вы можете посмотреть пройдя по адресу %s.\
             """ % (
         registration.manage_library.name,
+        registration.get_status_display(),
         settings.SITE_URL + urlresolvers.reverse('reginlib_registration_user_detail', args=[registration.id])
         )
     send_mail(u'Изменение статуса заявки на регистрацию в библиотеке', message, 'robot@system',

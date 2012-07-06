@@ -63,7 +63,12 @@ def registration(request):
 
     if request.method == 'POST':
         form = UserLibRegistationForm(request.POST)
-
+        manage_library = request.POST.get('manage_library', None)
+        if not request.POST.get('manage_library', None) or manage_library == '0':
+            return render(request, 'reginlib/form.html', {
+                'form': form,
+                'alert': u'Вы не указали библиотеку'
+            })
         if form.is_valid():
             user_lib_registration = form.save(commit=False)
             manage_library_id = request.POST.get('manage_library', 0)
@@ -79,7 +84,7 @@ def registration(request):
             user_lib_registration.save()
 
             message = u"""\
-Вы подали заявку на запись в библиотеку %s.\
+Вы подали заявку на запись в библиотеку "%s".\
 Состояние заявки Вы можете посмотреть пройдя по адресу %s.\
             """ % (
                     manage_library.name,
@@ -99,11 +104,12 @@ def registration(request):
             })
     else:
         if request.user.is_authenticated():
-            form = UserLibRegistationForm(initial={
-                'first_name': request.user.first_name,
-                'last_name': request.user.last_name,
-                'email': request.user.email,
-            })
+#            form = UserLibRegistationForm(initial={
+#                'first_name': request.user.first_name,
+#                'last_name': request.user.last_name,
+#                'email': request.user.email,
+#            })
+            form = UserLibRegistationForm()
         else:
             form = UserLibRegistationForm()
 

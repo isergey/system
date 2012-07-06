@@ -18,6 +18,11 @@
 {% endblock %}
 
 {% block content %}
+    <style>
+    .datetimeshortcuts a:first-child{
+        display: none;
+    }
+    </style>
     {% if request.user|is_prolongation_manager%}
         <a href="{% url prolongation_checkout %}" class="btn primary">Обслуживание заявок</a>
         <hr/>
@@ -45,6 +50,7 @@
     </style>
 
     <h2>Заявление на продление: {% if library.parent %}{{ library.parent.name }} → {% endif %} {{ library.name }}</h2>
+    {% if alert %}<div style="background: #ff9490; padding: 5px;"><h3>{{ alert }}</h3></div>{% endif %}
     <form action="" method="POST" class="libreg form-stacked">
         <fieldset>
             {{ form.as_div }}
@@ -59,26 +65,38 @@
     </form>
 
 
-
 <script type="text/javascript">
-$("#id_district").change(function () {
-    $.ajax({
-        url:'{% url participants_json_by_district %}',
-        type:'POST',
-        dataType:"json",
-        async:false,
-        data:{district:$("#id_district").val()},
-        success:function (orgs) {
-            var lib_select = $('#id_library');
-            lib_select.html('');
-            libs =['<option value="0">----------</option>'];
-            for (index in orgs) {
-                libs.push('<option value="' + orgs[index]['id'] + '">' +  orgs[index]['title'] + '</option>');
-            }
-            lib_select.html((libs.join('')));
-        }
-    });
+    var manage_library = 0;
+    {% if request.POST.manage_library and request.POST.manage_library > 0 %}
+        manage_library = {{ request.POST.manage_library }};
+    {% endif %}
 
-});
+    if ($('#id_district').val() > 0){
+        loadLibraris();
+    }
+    $("#id_district").change(function () {
+        loadLibraris();
+    });
+    if (manage_library > 0){
+        $('#id_library option[value="'+manage_library+'"]').attr('selected', 'selected');
+    }
+    function loadLibraris(){
+        $.ajax({
+            url:'{% url participants_json_by_district %}',
+            type:'POST',
+            dataType:"json",
+            async:false,
+            data:{district:$("#id_district").val()},
+            success:function (orgs) {
+                var lib_select = $('#id_library');
+                lib_select.html('');
+                libs =['<option value="0">----------</option>'];
+                for (index in orgs) {
+                    libs.push('<option value="' + orgs[index]['id'] + '">' +  orgs[index]['title'] + '</option>');
+                }
+                lib_select.html((libs.join('')));
+            }
+        });
+    }
 </script>
 {% endblock %}

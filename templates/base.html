@@ -44,6 +44,38 @@
     <title>{% block title %}{% endblock %}</title>
 
     <script type="text/javascript">
+        $(document).ready(function() {
+            $("div.rnews").hover(function() {
+                $(this).css("cursor", "pointer");
+            });
+
+
+            $("div.rnews").click(function() {
+                document.location.href=  $(this).find("a").attr("href");
+            });
+
+            /*
+             $("ul#main_menu li").hover(function () {
+             $(this).children("ul").show();
+             $(this).children("ul").addClass("active");
+             }, function () {
+
+             $(this).children("ul").hide();
+             });
+
+             $("ul.active").hover( function () {}, function () { $(this).removeClass("active"); $(this).slideUp("slow");  });
+
+             $("a#openmap").click(function() {  $("#hidenmap").slideToggle("slow");   return false;    });
+
+             */
+            $("a#openmap").click(function() {  $("#hidenmap").slideToggle("slow");   return false;});
+            $("ul#main_menu li").hover(function () {
+                $(this).children("ul").show();
+
+
+            }, function () { $(this).children("ul").hide(); });
+        });
+
         $(function () {
             $('#vote_form').bind('submit', function (e) {
                 e.preventDefault(); // <-- important
@@ -51,12 +83,16 @@
                     target:'#form_results'
                 });
             });
-            $("#main_menu").treeview({
-                persist:"location",
-                collapsed:false,
-                unique:false,
-                animated:"fast"
-            });
+
+            /*
+             $("#main_menu").treeview({
+             persist:"location",
+             collapsed:false,
+             unique:false,
+             animated:"fast"
+             });
+             */
+
             $("#internet_resources").treeview({
                 persist:"location",
                 collapsed:true,
@@ -92,9 +128,11 @@
                 this.style['color'] = '#000';
                 this.type = 'password';
             });
-        })
+        });
 
     </script>
+
+
 </head>
 <body>
 
@@ -113,22 +151,155 @@
         </div>
     </div>
 </div>
-<div class="left_column column span-5">
-    <div class="block white">
-        <div class="headbg"></div>
-        <div class="content">
-            <div align="center" class="treeheader">Ресурсы библиотек
-                <hr/>
-            </div>
+<style>
+    ul#main_menu
+    {
+        padding-left:1px;
+        margin-bottom: 0;
+    }
 
-            {% cache 30 main_menu %}
-                <div id="ksob_control">
-                    {% show_menu "main_menu" "unordered-list" %}
+
+    ul#main_menu  li ul li
+    {
+        list-style-type:square;
+        padding: 5px 0;
+    }
+
+    ul#main_menu  li
+    {
+        padding: 5px 0;
+        position:relative;
+        display:block;
+    }
+    ul#main_menu  li span
+    {
+        font-size:16px;
+    }
+
+
+    ul#main_menu>li
+    {
+        /*background: url("http://pl.spb.ru/images/knopki1.png") no-repeat scroll left 1px transparent;*/
+        width: 100%;
+        /*height:27px;*/
+        padding: 5px 10px 0 10px;
+        list-style-type:none!important;
+        /*background-color:#0C5C8B;*/
+        margin-bottom: 5px;
+        min-height: 40px;
+        line-height: 15px;
+
+        background: #222 url(/media/images/theme/alert-overlay.png) repeat-x;
+        background-color:#0C5C8B;
+        display: inline-block;
+        /*padding: 3px 10px 3px;*/
+        color: white;
+        text-decoration: none;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        border-radius: 5px;
+        text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        position: relative;
+        cursor: pointer;
+    }
+
+
+    ul#main_menu>li:hover
+    {
+        background-position: left -36px;
+
+    }
+
+    ul#main_menu ul
+    {
+        display:block;
+        position:absolute;
+        left: 160px;
+        background-color:#0C5C8B;
+        width:170px;
+        top:0px;
+        /*display:none;*/
+        z-index:100;
+        padding: 5px;
+
+
+        background: #222 url(/media/images/theme/alert-overlay.png) repeat-x;
+        background-color:#0C5C8B;
+        /*display: inline-block;*/
+        /*padding: 3px 10px 3px;*/
+        color: white;
+        text-decoration: none;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        border-radius: 5px;
+        text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        /*position: relative;*/
+        cursor: pointer;
+    }
+
+
+    ul#main_menu ul a
+    {
+        font-size: 13px!important;
+        color:#ffffff;
+        display:block;
+    }
+
+    ul#main_menu ul a:hover
+    {
+        text-decoration: underline;
+    }
+
+</style>
+<div class="left_column column span-5">
+{#    <div class="block white">#}
+{#        <div class="headbg"></div>#}
+{#        <div class="content">#}
+{#            <div align="center" class="treeheader">Ресурсы библиотек#}
+{#                <hr/>#}
+{#            </div>#}
+
+{#            {% cache 30 main_menu %}#}
+                <div id="ksob_control" style="padding: 0 8px 0 8px;">
+{#                    {% show_menu "main_menu" "unordered-list" %}#}
+                    <ul id="main_menu">
+                        <li class="lmenu_parent">
+                            <span style="cursor:pointer">Каталоги</span>
+                            <ul class="submenu1" style="display: none; ">
+                                <li><a href="/zgate/s/f2009/">Каталог изданий с 2009 года</a></li>
+                                <li><a href="/zgate/s/b2009/">Каталог изданий до 2009 года</a></li>
+                                <li><a href="/zgate/s/journals/">Каталог журналов с 2009 года</a></li>
+                            </ul>
+                        </li>
+                        <li class="lmenu_parent">
+                            <span style="cursor:pointer">Базы данных</span>
+                            <ul class="submenu1" style="display: none; ">
+                                <li><a href="/zgate/s/didgest/">Дайджест петербургской прессы</a></li>
+                                <li><a href="/zgate/s/serial/">Статьи из журналов и сборников</a></li>
+                                <li><a href="#">Обязательный экземпляр Санкт-Петербурга</a></li>
+                                <li><a href="#">Базы данных библиотек СПБ</a></li>
+                            </ul>
+                        </li>
+                        <li class="lmenu_parent">
+                           <span style="cursor:pointer">Социально-правовая информация</span>
+                            <ul class="submenu1" style="display: none; ">
+                                <li><a href="/pages/s/socialnoznachimaya/">Дайджест  "Социально значимая информация"</a></li>
+                                <li><a href="/pages/s/zahitapravcheloveka/">Справочник "Защита прав человека"</a></li>
+                                <li><a href="/pages/s/centri/">Центры социально-правовой информации участников КСОБ СПб</a></li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
-            {% endcache %}
-        </div>
-        <div class="footerbg"></div>
-    </div>
+{#            {% endcache %}#}
+{#        </div>#}
+{#        <div class="footerbg"></div>#}
+{#    </div>#}
     <div class="block white">
         <div class="headbg"></div>
         <div class="content">
@@ -179,6 +350,11 @@
     <div class="block">
         <div class="headbg"></div>
         <div class="content" style="padding: 5px 10px 5px 7px">
+            <a href="http://public.ru/" target="_blank">
+                <div align="center" style="width:100%; background: #fff" class="awesome">
+                    <img width="165"  src="http://pl.spb.ru/images/logo_pavlik.png" alt="">
+                </div>
+            </a>
             <a href="http://cdl.bpressa.ru/" target="_blank">
                 <div align="center" style="width:100%; background: #fff" class="awesome">
                     <img src="/media/images/partners/bp.png" alt="">
@@ -186,6 +362,9 @@
             </a>
         </div>
         <div class="footerbg"></div>
+    </div>
+    <div class="block">
+        {% poll_form %}
     </div>
 </div>
 
@@ -294,15 +473,13 @@
 
         {% event_calendar %}
     </div>
-    {% cache 30 news_feed %}
-        <div class="block">
+{#    {% cache 30 news_feed %}#}
+{#        <div class="block">#}
+{##}
+{#            {% news_feed %}#}
+{#        </div>#}
+{#    {% endcache %}#}
 
-            {% news_feed %}
-        </div>
-    {% endcache %}
-    <div class="block">
-        {% poll_form %}
-    </div>
 
 </div>
 <div class="footer column span-24 last" style="height:93px;">

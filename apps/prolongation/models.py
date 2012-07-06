@@ -175,11 +175,12 @@ def change_prolongation_status(sender, instance, **kwargs):
 
 def send_email_to_user(prolongation):
     message = u"""\
-Состояние вашей заявки на продление  %s в библиотеке %s изменилось.\
-Состояние заявки Вы можете посмотреть пройдя по адресу %s.\
+Состояние вашей заявки на продление  %s в библиотеке %s изменилось (статус: %s).\
+Более подробную информацию о заявке Вы можете посмотреть пройдя по адресу %s.\
             """ % (
             prolongation.doc_title,
             prolongation.manage_library.name,
+            prolongation.get_status_display(),
             settings.SITE_URL + urlresolvers.reverse('prolongation_prolongation_user_detail', args=[prolongation.id])
         )
     send_mail(u'Изменение статуса заявки на электронное продление издания', message, 'robot@system',
