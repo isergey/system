@@ -9,7 +9,9 @@
     </h3>
     <hr/>
     <div class="text">
+        {% cache 30 news_feed %}
         {% news_feed %}
+        {% endcache %}
         <div align="right">
             <a href="{% url news_index %}">Остальные новости >></a>
         </div>
