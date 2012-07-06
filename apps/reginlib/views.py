@@ -164,7 +164,7 @@ def checkout(request):
     for manager in managers:
         libraries_ids.append(manager.library_id)
     # извлекаем регистрации, которые были направлены в библиотеки
-    registrations = UserLibRegistation.objects.select_related().filter(recive_library__in=libraries_ids).order_by('-create_date')
+    registrations = UserLibRegistation.objects.select_related().filter(recive_library__in=libraries_ids).order_by('-id')
 
     libraries =  Library.objects.filter(pk__in=libraries_ids)
     # получаем список библиотек и количество новых заявок
@@ -186,7 +186,7 @@ def checkout_by_library(request, id):
     except RegistrationManager.DoesNotExist:
         return HttpResponseForbidden(u'У вас нет доступа. Обратитесь к администратору.')
 
-    registrations = UserLibRegistation.objects.select_related().filter(recive_library=library).order_by('-create_date')
+    registrations = UserLibRegistation.objects.select_related().filter(recive_library=library).order_by('-id')
 
 
     return render(request, 'reginlib/administration/checkout_by_library.html', {
