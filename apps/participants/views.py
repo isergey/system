@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 
 def make_library_dict(library):
     return {
+        'id': library.id,
         'code': library.code,
         'title': library.name,
         'address': getattr(library, 'postal_address', u"не указан"),

@@ -67,6 +67,7 @@ def prolongation(request):
     if request.method == 'POST':
         form = UserProlongationForm(request.POST)
         manage_library = request.POST.get('manage_library', None)
+        print manage_library
         if not request.POST.get('manage_library', None) or manage_library == '0':
             return render(request, 'prolongation/form.html', {
                 'form': form,
