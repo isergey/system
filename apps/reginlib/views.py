@@ -6,7 +6,7 @@ from models import UserLibRegistation, RegistrationManager, StatusChange
 from participants.models import Library
 from forms import UserLibRegistationForm, ChangeStatusForm
 from django.db import transaction
-
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 
 def send_email_to_managers(registration):
@@ -165,14 +165,25 @@ def checkout(request):
         libraries_ids.append(manager.library_id)
     # извлекаем регистрации, которые были направлены в библиотеки
     registrations = UserLibRegistation.objects.select_related().filter(recive_library__in=libraries_ids).order_by('-id')
+    paginator = Paginator(registrations, 20)
+    try:
 
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+
+    # If page request (9999) is out of range, deliver last page of results.
+    try:
+        registrations_list = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        registrations_list = paginator.page(paginator.num_pages)
     libraries =  Library.objects.filter(pk__in=libraries_ids)
     # получаем список библиотек и количество новых заявок
     #libraries =  Library.objects.filter(userlibregistation__status=0, pk__in=libraries_ids).annotate(num_new_userlibregistations=Count('userlibregistation'))
 
 
     return render(request, 'reginlib/administration/checkout.html', {
-        'registrations': registrations,
+        'registrations': registrations_list,
         'libraries': libraries,
 
     })
@@ -188,9 +199,22 @@ def checkout_by_library(request, id):
 
     registrations = UserLibRegistation.objects.select_related().filter(recive_library=library).order_by('-id')
 
+    paginator = Paginator(registrations, 20)
+    try:
+
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+
+    # If page request (9999) is out of range, deliver last page of results.
+    try:
+        registrations_list = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        registrations_list = paginator.page(paginator.num_pages)
+
 
     return render(request, 'reginlib/administration/checkout_by_library.html', {
-        'registrations': registrations,
+        'registrations': registrations_list,
         'library': library
     })
 

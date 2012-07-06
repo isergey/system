@@ -9,7 +9,7 @@ from models import UserProlongation, ProlongationManager, StatusChange
 from participants.models import Library
 from forms import UserProlongationForm, ChangeStatusForm
 from django.db import transaction
-
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 
 def send_email_to_managers(prolongation):
@@ -162,13 +162,26 @@ def checkout(request):
     # извлекаем регистрации, которые были направлены в библиотеки
     prolongations = UserProlongation.objects.select_related().filter(recive_library__in=libraries_ids).order_by('-id')
 
+    paginator = Paginator(prolongations, 20)
+    try:
+
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+
+    # If page request (9999) is out of range, deliver last page of results.
+    try:
+        prolongations_list = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        prolongations_list = paginator.page(paginator.num_pages)
+
     libraries =  Library.objects.filter(pk__in=libraries_ids)
     # получаем список библиотек и количество новых заявок
     #libraries =  Library.objects.filter(userlibregistation__status=0, pk__in=libraries_ids).annotate(num_new_userlibregistations=Count('UserProlongation'))
 
 
     return render(request, 'prolongation/administration/checkout.html', {
-        'prolongations': prolongations,
+        'prolongations': prolongations_list,
         'libraries': libraries,
 
     })
@@ -183,10 +196,21 @@ def checkout_by_library(request, id):
         return HttpResponseForbidden(u'У вас нет доступа. Обратитесь к администратору.')
 
     prolongations = UserProlongation.objects.select_related().filter(recive_library=library).order_by('-id')
+    paginator = Paginator(prolongations, 20)
+    try:
 
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+
+    # If page request (9999) is out of range, deliver last page of results.
+    try:
+        prolongations_list = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        prolongations_list = paginator.page(paginator.num_pages)
 
     return render(request, 'prolongation/administration/checkout_by_library.html', {
-        'prolongations': prolongations,
+        'prolongations': prolongations_list,
         'library': library
     })
 

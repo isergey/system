@@ -33,7 +33,7 @@
         }
     </style>
     <ul style="list-style: none;  font-size: 16px">
-    {% for registration in registrations %}
+    {% for registration in registrations.object_list %}
         <li style="padding-bottom: 10px;">
             {% include 'reginlib/administration/registration_rows_in_list.html' %}
             <a href="{% url reginlib_registration_detail registration.id %}" class="btn">подробнее</a>
@@ -41,5 +41,33 @@
         <hr/>
     {% endfor %}
     </ul>
-
+    <div>
+        {% if registrations.paginator.num_pages > 1 %}
+            <div class="span-19 prepend-1 last">
+                <div class="block">
+                    <div class="pagination">
+                    <span class="step-links">
+                        {% if registrations.has_previous %}
+                            <a class="page" href="?page={{ registrations.previous_page_number }}">сюда</a>
+                        {% endif %}
+                        {% for page in registrations.paginator.page_range %}
+                            {% if page %}
+                                {% ifequal page registrations.number %}
+                                    <span class="current page">{{ page }}</span>
+                                {% else %}
+                                    <a href="?page={{ page }}" class="page">{{ page }}</a>
+                                {% endifequal %}
+                            {% else %}
+                                ...
+                            {% endif %}
+                        {% endfor %}
+                        {% if registrations.has_next %}
+                            <a class="page" href="?page={{ registrations.next_page_number }}">туда</a>
+                        {% endif %}
+                    </span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}

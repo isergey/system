@@ -33,7 +33,7 @@
         }
     </style>
     <ul style="list-style: none;  font-size: 16px">
-    {% for prolongation in prolongations %}
+    {% for prolongation in prolongations.object_list %}
         <li style="padding-bottom: 10px;">
             {% include 'prolongation/administration/prolongation_rows_in_list.html' %}
             <a href="{% url prolongation_prolongation_detail prolongation.id %}" class="btn">подробнее</a>
@@ -41,5 +41,33 @@
         <hr/>
     {% endfor %}
     </ul>
-
+    <div>
+        {% if prolongations.paginator.num_pages > 1 %}
+            <div class="span-19 prepend-1 last">
+                <div class="block">
+                    <div class="pagination">
+                    <span class="step-links">
+                        {% if prolongations.has_previous %}
+                            <a class="page" href="?page={{ prolongations.previous_page_number }}">сюда</a>
+                        {% endif %}
+                        {% for page in prolongations.paginator.page_range %}
+                            {% if page %}
+                                {% ifequal page prolongations.number %}
+                                    <span class="current page">{{ page }}</span>
+                                {% else %}
+                                    <a href="?page={{ page }}" class="page">{{ page }}</a>
+                                {% endifequal %}
+                            {% else %}
+                                ...
+                            {% endif %}
+                        {% endfor %}
+                        {% if prolongations.has_next %}
+                            <a class="page" href="?page={{ prolongations.next_page_number }}">туда</a>
+                        {% endif %}
+                    </span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}
