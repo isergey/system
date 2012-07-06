@@ -20,7 +20,7 @@ def send_email_to_managers(prolongation):
         )
     managers = ProlongationManager.objects.filter(library=prolongation.recive_library_id)
     for manager in managers:
-        send_mail(u'Поступила новая заявка на продление', message, 'robot@system',
+        send_mail(u'Поступила новая заявка на продление', message, 'robot@ksob.spb.ru',
             [manager.notify_email],fail_silently=True)
 
 
@@ -90,7 +90,7 @@ def prolongation(request):
 Вы подали заявку на продление в библиотеку "%s".\
 Состояние заявки Вы можете посмотреть пройдя по адресу %s.\
             """ % (manage_library.name, settings.SITE_URL + reverse('prolongation_prolongation_user_detail', args=[user_prolongation.id]))
-            send_mail(u'Заявка на электронное продление издания', message, 'robot@system',
+            send_mail(u'Заявка на электронное продление издания', message, 'robot@ksob.spb.ru',
                 [user_prolongation.email], fail_silently=True)
 
             send_email_to_managers(user_prolongation)

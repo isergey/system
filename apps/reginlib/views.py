@@ -17,7 +17,7 @@ def send_email_to_managers(registration):
         )
     managers = RegistrationManager.objects.filter(library=registration.recive_library_id)
     for manager in managers:
-        send_mail(u'Поступила новая заявка на запись в библиотеку', message, 'robot@system',
+        send_mail(u'Поступила новая заявка на запись в библиотеку', message, 'robot@ksob.spb.ru',
             [manager.notify_email],fail_silently=True)
 
 
@@ -92,7 +92,7 @@ def registration(request):
                 )
             send_mail(
                 u'Регистрация в библиотеке',
-                message, 'robot@system',
+                message, 'robot@ksob.spb.ru',
                 [user_lib_registration.email],
                 fail_silently=True
             )

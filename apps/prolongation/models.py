@@ -183,7 +183,7 @@ def send_email_to_user(prolongation):
             prolongation.get_status_display(),
             settings.SITE_URL + urlresolvers.reverse('prolongation_prolongation_user_detail', args=[prolongation.id])
         )
-    send_mail(u'Изменение статуса заявки на электронное продление издания', message, 'robot@system',
+    send_mail(u'Изменение статуса заявки на электронное продление издания', message, 'robot@ksob.spb.ru',
         [prolongation.email])
     pass
 

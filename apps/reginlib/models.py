@@ -158,7 +158,7 @@ def send_email_to_user(registration):
         registration.get_status_display(),
         settings.SITE_URL + urlresolvers.reverse('reginlib_registration_user_detail', args=[registration.id])
         )
-    send_mail(u'Изменение статуса заявки на регистрацию в библиотеке', message, 'robot@system',
+    send_mail(u'Изменение статуса заявки на регистрацию в библиотеке', message, 'robot@ksob.spb.ru',
         [registration.email])
     pass
 
