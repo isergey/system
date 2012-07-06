@@ -10,53 +10,11 @@
     <hr/>
     <div class="text">
         {% news_feed %}
-        <div class="content news news2">
-{#            <div class="rnews" style="cursor: pointer; ">#}
-{#                <div class="news_head"><span class="newsdate">12 Май 2012</span> </div>#}
-{#                <div class="news_center"><span class="newstext1">  Ночь музеев 2012</span><span class="link"><a href="/news/137/">подробнее</a></span></div>#}
-{#                <div class="news_foot">  &nbsp;   </div>#}
-{#            </div>#}
-{##}
-{#            <hr>#}
-{#            <div class="rnews" style="cursor: pointer; ">#}
-{#                <div class="news_head"><span class="newsdate">11 Май 2012</span> </div>#}
-{#                <div class="news_center"><span class="newstext1"> «Поклонимся великим тем годам…»</span><span class="link"><a href="/news/137/">подробнее</a></span></div>#}
-{#                <div class="news_foot">  &nbsp;   </div>#}
-{#            </div>#}
-{#            <hr>#}
-{##}
-{#            <div class="rnews" style="cursor: pointer; ">#}
-{#                <div class="news_head"><span class="newsdate">10 Май 2012</span> </div>#}
-{#                <div class="news_center"><span class="newstext1"> Встреча с кинорежиссером Александром Сокуровым</span><span class="link"><a href="/news/137/">подробнее</a></span></div>#}
-{#                <div class="news_foot">  &nbsp;   </div>#}
-{#            </div>#}
-{##}
-{#            <hr>#}
-{#            <div class="rnews" style="cursor: pointer; ">#}
-{#                <div class="news_head"><span class="newsdate">10 Май 2012</span> </div>#}
-{#                <div class="news_center"><span class="newstext1">  «Читай всегда, читай везде!»</span><span class="link"><a href="/news/137/">подробнее</a></span></div>#}
-{#                <div class="news_foot">  &nbsp;   </div>#}
-{#            </div>#}
-
-
-            <!--
-              <div class="rnews">
-            <div class="news_head">10 Май 2012 </div>
-            <div class="news_center"><span class="newstext1">   «Миражи Дома Голландской церкви»</span> <br /><span class="link"><a href="/news/137/">подробнее</a></span></div>
-            <div class="news_foot">  &nbsp;   </div>
-            </div>
-
-
-
-              <div class="rnews">
-            <div class="news_head">9 Май 2012 </div>
-            <div class="news_center"><span class="newstext1">    «Миражи Дома Голландской церкви»</span> <br /><span class="link"><a href="/news/137/">подробнее</a></span></div>
-            <div class="news_foot">  &nbsp;   </div>
-            </div>
-            -->
-
+        <div align="right">
+            <a href="{% url news_index %}">Остальные новости >></a>
         </div>
     </div>
+    <hr/>
     <div class="column span-14 last">
         {% load gallery_tags %}
         {% index_gallery %}
