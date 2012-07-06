@@ -42,7 +42,12 @@
     form #id_visit_date {
         width: auto;
     }
-
+    #id_library{
+        position: absolute;
+    }
+    #submit_request{
+        margin-top: 15px;
+    }
     </style>
 
     <h2>Регистрация в библиотеку: {% if library.parent %}{{ library.parent.name }} → {% endif %} {{ library.name }}</h2>
@@ -56,7 +61,7 @@
                     <option value="0">----------</option>
                 </select>
             </div>
-            <input type="submit" value="Отправить заявку на регистрацию" class="btn">
+            <input type="submit" value="Отправить заявку на регистрацию" class="btn" id="submit_request">
         </fieldset>
     </form>
 
