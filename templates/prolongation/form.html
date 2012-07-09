@@ -12,6 +12,7 @@
     <script type="text/javascript">
         window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";
     </script>
+    <script type="text/javascript" src="/media/js/date.js"></script>
 {% endblock %}
 {% block title %}
     Электронное продление
@@ -81,7 +82,7 @@
     <h2>Заявление на продление: {% if library.parent %}{{ library.parent.name }} → {% endif %} {{ library.name }}</h2>
     {% if alert %}<div class="alert alert-error"><b>{{ alert }}</b></div>{% endif %}
     <div class="alert alert-success"><b>Внимание! Продление возможно только на срок до 30 дней.</b></div>
-    <form action="" method="POST" class="libreg form-stacked">
+    <form action="" method="POST" class="libreg form-stacked" id="prolong_form">
         <fieldset>
             {{ form.as_div }}
             <div class="required">
@@ -94,7 +95,51 @@
         </fieldset>
     </form>
 
+<script type="text/javascript">
+$('#id_date_of_return').change(function(){
+    var date = Date.parseExact($(this).val(), "dd.MM.yyyy");
+    if (date == null){
+        alert('Введите дату срока возврата в правильном формате: дд.мм.гггг');
+    }
+    else{
+        $('#id_new_date_of_return').attr('value',date.addDays(30).toString("dd.MM.yyyy"));
+    }
+});
+$('#id_new_date_of_return').change(function(){
+    var date = Date.parseExact($(this).val(), "dd.MM.yyyy");
+    if (date == null){
+        alert('Введите дату нового срока возврата в правильном формате: дд.мм.гггг');
+    }
+    else{
 
+        if (!$('#id_date_of_return').val()){
+            alert('Укажите срок возврата');
+            return;
+        }
+
+    }
+});
+$('#prolong_form').submit(function(){
+    var dateOfReturn = Date.parseExact($('#id_date_of_return').val(), "dd.MM.yyyy");
+    var newDateOfReturn = Date.parseExact($('#id_new_date_of_return').val(), "dd.MM.yyyy");
+
+    if (!dateOfReturn){
+        alert('Введите дату срока возврата в правильном формате: дд.мм.гггг');
+    }
+    if (!newDateOfReturn){
+        alert('Введите дату нового срока возврата в правильном формате: дд.мм.гггг');
+    }
+    var dateOfReturnAdd30Days = dateOfReturn.clone().addDays(30);
+    if (dateOfReturnAdd30Days.compareTo(newDateOfReturn)<0){
+        alert('Новый срок возврата не может превышать 30-ти дней.');
+        return false;
+    }
+    if(dateOfReturn.compareTo(newDateOfReturn) == 1){
+        alert('Дата нового срока возврата должна быть больше даты старого срока возврата.');
+        return false;
+    }
+});
+</script>
 <script type="text/javascript">
     var manage_library = 0;
     {% if request.POST.manage_library and request.POST.manage_library > 0 %}

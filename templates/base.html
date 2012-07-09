@@ -333,6 +333,8 @@
             <div class="footerbg"></div>
         </div>
     {% endif %}
+
+
     {% if not user.is_authenticated %}
         <div class="block">
             <div class="headbg"></div>
@@ -346,7 +348,19 @@
             <div class="footerbg"></div>
         </div>
     {% endif %}
-
+    <div class="block">
+        <div class="headbg"></div>
+        <div class="content" style="padding: 5px 10px 5px 7px">
+            <a href="http://vhd.ruslan.ru/">
+                <div align="center" class="awesome blue">Виртуальная справка</div>
+            </a>
+        </div>
+        <div class="footerbg"></div>
+    </div>
+    <div class="block">
+        {% poll_form %}
+        <div style="clear: both;"></div>
+    </div>
     <div class="block">
         <div class="headbg"></div>
         <div class="content" style="padding: 5px 10px 5px 7px">
@@ -363,9 +377,7 @@
         </div>
         <div class="footerbg"></div>
     </div>
-    <div class="block">
-        {% poll_form %}
-    </div>
+
 </div>
 
 <div class="center column span-14">
@@ -374,6 +386,18 @@
 
 <div class="right_column column span-5 last">
         {% special_news %}
+    {% if request.META.HTTP_HOST == 'libportal.megazi.ru' %}
+        <div class="block" style="padding: 0 10px 0 7px">
+            <div class="headbg"></div>
+            <div class="content">
+                <a href="{% url reginlib_registation %}">
+                    <div align="center" class="awesome blue">Электронная запись в библиотеку</div>
+                </a>
+
+            </div>
+            <div class="footerbg"></div>
+        </div>
+    {% endif %}
     <div class="block">
         {% if not user.is_authenticated %}
             <div id="auth">
@@ -418,13 +442,22 @@
 
         {% endif %}
     </div>
+    {% if request.META.HTTP_HOST == 'libportal.megazi.ru' %}
+        <div class="block" style="padding: 0 10px 0 7px">
+            <div class="headbg"></div>
+            <div class="content">
+                <a href="{% url prolongation_prolongation %}">
+                    <div align="center" class="awesome blue">Электронное продление</div>
+                </a>
 
+            </div>
+            <div class="footerbg"></div>
+        </div>
+    {% endif %}
     <div class="block" style="padding: 0 10px 0 7px">
         <div class="headbg"></div>
         <div class="content">
-            <a href="http://vhd.ruslan.ru/">
-                <div align="center" class="awesome blue">Виртуальная справка</div>
-            </a>
+
             {% if user|in_groups:'admin, professional' %}
                 <a href="/professional/">
                     <div align="center" class="awesome blue"><b>Профессиональная</b><br/><b>страница</b>
@@ -448,27 +481,27 @@
         <div class="footerbg"></div>
     </div>
 
-    {% if request.META.HTTP_HOST == 'libportal.megazi.ru' %}
-    <div class="block" style="padding: 0 10px 0 7px">
-        <div class="headbg"></div>
-        <div class="content">
-            <a href="{% url reginlib_registation %}">
-                <div align="center" class="awesome orange"><b>Запись в библиотеку</b></div>
-            </a>
-        </div>
-        <div class="footerbg"></div>
-    </div>
-
-    <div class="block" style="padding: 0 10px 0 7px">
-        <div class="headbg"></div>
-        <div class="content">
-            <a href="{% url prolongation_prolongation %}">
-                <div align="center" class="awesome orange"><b>Электронное продление</b></div>
-            </a>
-        </div>
-        <div class="footerbg"></div>
-    </div>
-    {% endif %}
+{#    {% if request.META.HTTP_HOST == 'libportal.megazi.ru' %}#}
+{#    <div class="block" style="padding: 0 10px 0 7px">#}
+{#        <div class="headbg"></div>#}
+{#        <div class="content">#}
+{#            <a href="{% url reginlib_registation %}">#}
+{#                <div align="center" class="awesome orange"><b>Запись в библиотеку</b></div>#}
+{#            </a>#}
+{#        </div>#}
+{#        <div class="footerbg"></div>#}
+{#    </div>#}
+{##}
+{#    <div class="block" style="padding: 0 10px 0 7px">#}
+{#        <div class="headbg"></div>#}
+{#        <div class="content">#}
+{#            <a href="{% url prolongation_prolongation %}">#}
+{#                <div align="center" class="awesome orange"><b>Электронное продление</b></div>#}
+{#            </a>#}
+{#        </div>#}
+{#        <div class="footerbg"></div>#}
+{#    </div>#}
+{#    {% endif %}#}
     <div class="block">
 
         {% event_calendar %}

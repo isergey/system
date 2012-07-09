@@ -32,8 +32,8 @@
         <div class="content news">
             {% for news in news_list %}
                 <div class="item">
-                    <div><b>{{ news.title }}</b></div>
-                    <div>{{ news.teaser }}</div>
+                    <div>{{ news.title }}</div>
+{#                    <div>{{ news.teaser }}</div>#}
                     <div class="detail"><span class="date">{{ news.pub_date|date:"d E Y" }}</span><a href="{% url news_show news.id %}">
                         подробнее</a></div>
                 </div>
