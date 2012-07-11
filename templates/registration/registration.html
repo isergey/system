@@ -23,7 +23,14 @@
     </style>
     <div class="text">
         <h3 align="center">Регистрация на портале</h3>
+
         <form action="" method="POST" class="registration form-stacked">
+
+            {% if form.errors %}
+                <div style="background-color: #ffc3bc">В процессе регистрации возникли ошибки. <b>Пожалуйсте, не забудьте ввести пароль повторно</b>. Поля помеченные звездочкой (*) обязательны для заполнения.</div>
+            {% else %}
+                <div style="color: green">Поля помеченные звездочкой обязательны для заполнения.</div>
+            {% endif %}
             <fieldset>
                 {{ form.as_div }}
                 <input type="submit" value="Регистрация" class="btn">

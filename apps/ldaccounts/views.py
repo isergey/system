@@ -150,7 +150,7 @@ def login(request, template_name='registration/login.html',
     }, context_instance=RequestContext(request))
 
 
-
+from django.utils.hashcompat import md5_constructor
 def registration(request):
     if request.method == 'POST':
         form = RegistrationForm(data=request.POST)
@@ -159,19 +159,19 @@ def registration(request):
                 username=form.cleaned_data['username'],
                 email=form.cleaned_data['email'],
                 first_name=form.cleaned_data['first_name'],
+                last_name=form.cleaned_data['last_name'],
                 is_active=False,
             )
             user.set_password(form.cleaned_data['password'])
-            from django.utils.hashcompat import md5_constructor
             user.save()
             hash = md5_constructor(str(user.id) + form.cleaned_data['username']).hexdigest()
             confirm = RegConfirm(hash=hash, user_id=user.id)
             confirm.save()
             message = u'Поздравляем! Вы зарегистрировались на ' + 'ksob.spb.ru'\
                 + u". Пожалуйста, пройдите по адресу " + "http://" + 'ksob.spb.ru' + "/accounts/confirm/" + hash\
-                + u" для активации учетной записи"
+                + u" для активации учетной записи."
 
-            send_mail(u'Активация аккаунта ' + 'ksob.spb.ru', message, 'ksob@ksob.spb.ru',
+            send_mail(u'Активация учетной записи ' + 'ksob.spb.ru', message, 'ksob@ksob.spb.ru',
                     [form.cleaned_data['email']])
 
             return direct_to_template(request, 'registration/registration_done.html', {'form': form })

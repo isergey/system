@@ -17,20 +17,21 @@ class LoginForm(auth_forms.AuthenticationForm):
         self.fields['password'].widget.attrs["size"] = 65
 
 class RegistrationForm(CoolForm):
-    username = forms.CharField(max_length=50, label="Логин", help_text=u"Разрешены буквы латинского алфавита и цифры")
+    username = forms.CharField(max_length=50, label=u"Логин*", help_text=u"Разрешены буквы латинского алфавита и цифры")
     password = forms.CharField( min_length=6, max_length=50,
-                                label="Пароль", widget=forms.PasswordInput)
+                                label=u"Пароль*", widget=forms.PasswordInput, help_text=u"Пароль должен состоять не менее чем из 6 символов. Внимаение, пароль чувствителен к регистру и набору символов.")
     password2 = forms.CharField(min_length=6, max_length=50,
-                                label="Повторите пароль", widget=forms.PasswordInput)
-    email = forms.EmailField(label="Электронная почта")
-    first_name = forms.CharField(max_length=50, label="Имя")
-    tel_number = forms.CharField(max_length=50, label="Контактный телефон", required=False)
+                                label=u"Повторите пароль*", widget=forms.PasswordInput)
+    email = forms.EmailField(label=u"Электронная почта*", help_text=u'На электронную почту будет выслана информация об активации учетной записи.')
+    first_name = forms.CharField(max_length=50, label=u"Имя Очество*", help_text=u'Эта информация будет использоваться для обращения к Вам.')
+    last_name = forms.CharField(max_length=50, label=u"Фамилия*")
+    tel_number = forms.CharField(max_length=50, label=u"Контактный телефон", required=False, help_text=u'Номер телефона может состоять из цифр и знака "+". Символы скобок и тире не допускаются.')
 
     def clean_username(self):
         import re
         format = re.compile(r"^[a-zA-z0-9]+$")
         if re.match(format,self.cleaned_data["username"]) == None:
-            raise forms.ValidationError(u"Имя пользователя может содержать только латинские символы")
+            raise forms.ValidationError(u"Логин может содержать только латинские символы")
 
         username = self.cleaned_data["username"]
         ldap_users = []
@@ -56,6 +57,12 @@ class RegistrationForm(CoolForm):
         if password != password2:
             raise forms.ValidationError(u'пароли не совпадают')
         return password2
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        if User.objects.filter(email=email).count():
+            raise forms.ValidationError(u'Адрес электронный почты уже используется в другой учетной записи. Возможно, Вы уже регистрировались ранее, в этом случае можно воспользоваться сервисом восстановления пароля на портале.')
+        return email
 
     def clean_tel_number(self):
         import re
