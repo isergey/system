@@ -51,6 +51,9 @@
     </style>
 
     <h2>Регистрация в библиотеку: {% if library.parent %}{{ library.parent.name }} → {% endif %} {{ library.name }}</h2>
+    <div class="text" style="color: green; font-weight: bold">
+        Для экономии Вашего времени заполните <a class="" href="/media/uploads/docs/contract_form.pdf">форму договора.</a>
+    </div>
     {% if alert %}<div style="background: #ff9490; padding: 5px;"><h3>{{ alert }}</h3></div>{% endif %}
     <form action="" method="POST" class="libreg form-stacked">
         <fieldset>

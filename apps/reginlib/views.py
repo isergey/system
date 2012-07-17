@@ -97,7 +97,7 @@ def registration(request):
                 fail_silently=True
             )
 
-            send_email_to_managers(user_lib_registration)
+#            send_email_to_managers(user_lib_registration)
 
             return render(request, 'reginlib/send_ok.html', {
                 'registration': user_lib_registration,
@@ -293,7 +293,7 @@ def take_to_process(request, id):
 @transaction.commit_on_success
 def complete(request, id):
     return _status_change(request, id, 2,
-        comments=u'Заявка на регистрацию одобрена. Просим Вас явиться в {% место/ время %}.'
+        comments=u'Заявка на регистрацию одобрена. Ждем Вас в {% библиотеке  %} по адресу {% адрес %}. Часы работы можете уточнить на сайте библиотеки.'
     )
 
 

@@ -115,7 +115,6 @@ def render_detail(request, catalog):
     save_document = False
     try:
         xml_record = ET.XML(xml_record)
-        #print 'ET :', time.time() - s
         owners = get_document_owners(xml_record)
         record_id = get_record_id(xml_record)
         save_document = True
@@ -350,8 +349,6 @@ def index(request, catalog_id='', slug=''):
                 response = render_search_result(request, catalog)
                 return set_cookies_to_response(cookies,response)
             else:
-                print 'ededed'
-                print request
                 response = render_search_result(request, catalog)
                 return set_cookies_to_response(cookies, response)
         else: #значит только инициализация формы
