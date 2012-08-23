@@ -1,7 +1,7 @@
 body {
     font-family: 'PT Sans', arial, serif;
     display: block;
-    background: url("http://images.twitrounds.com/artistic-backgrounds/snow-twitter-background_2.jpg?1279084512") 0% 100% no-repeat;
+    background: url("/media/uploads/backgrounds/background.jpg") 0% 100% no-repeat;
     color: #28607E;
     background-attachment: fixed;
 }
