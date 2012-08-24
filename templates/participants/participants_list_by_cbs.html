@@ -22,7 +22,7 @@
                     Часы работы: {{ ldap_org.plans }}<br/>
                     Телефон: {{ ldap_org.phone }} <br/>
                     {% if  ldap_org.http_service %}
-                    Сайт: {{ ldap_org.http_service }}</li>
+                    Сайт: <a href="{{ ldap_org.http_service }}">{{ ldap_org.http_service }}</a></li>
                     {% else %}
                     Cайт: не указан</li>
                     {% endif %}
