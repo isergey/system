@@ -2,13 +2,13 @@
 
 {% ifequal menu_type "unordered-list" %}
     {% if menu_item.has_children %}
-        <li>
+        <li class="lmenu_parent">
             {% if not menu_item.url %}
                 <span style="cursor:pointer">{{ menu_item.caption }}</span>
             {% else %}
                 <a href="{{ menu_item.url }}">{{ menu_item.caption }}</a>
             {% endif %}
-            <ul>
+            <ul style="display: none; ">
                 {% for child in menu_item.children %}
                     {% show_menu_item child %}
                 {% endfor %}
