@@ -8,7 +8,7 @@
             {% else %}
                 <a href="{{ menu_item.url }}">{{ menu_item.caption }}</a>
             {% endif %}
-            <ul style="display: none; ">
+            <ul class="submenu1" style="display: none; ">
                 {% for child in menu_item.children %}
                     {% show_menu_item child %}
                 {% endfor %}

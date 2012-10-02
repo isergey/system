@@ -555,12 +555,12 @@
 </div>
 <style>
     #helper{
-        position: fixed; /* Абсолютное позиционирование */
-        bottom: 10px; /* Положение от нижнего края */
-        right: 10px; /* Положение от правого края */
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
         width: 230px;
         /*background: #B2B2B2;*/
-        background-image: '/media/images/helper/helper.png';
+        background-image: '{{ STATIC_URL }}helper/helper.png';
 
     }
 
@@ -625,7 +625,7 @@
 
 <div id="helper">
     <div class="hider"></div>
-{#    <div><img src="/media/images/helper/helper.png" alt="" style="float: right;"></div>#}
+    <div><img src="/media/images/helper/helper.png" alt="" style="float: right;"></div>
     <div class="content">
         <div id="answer">
             Привет! :-)
