@@ -603,13 +603,15 @@
     }
 
     #helper .hider{
-        background: green;
+{#        background: url("/media/images/helper/cloud.png");#}
         float: left;
-        width: 20px;
-        height: 100px;
+{#        width: 200px;#}
+{#        height: 100px;#}
         cursor: pointer;
         color: white;
         font-weight: bold;
+        position: absolute;
+        left: -70px;
     }
 
     .rot-neg-90 {
@@ -624,7 +626,11 @@
 </style>
 
 <div id="helper">
-    <div class="hider"></div>
+    <div class="hider">
+        <div style="color: #0066cc; font-size: 16px;position: absolute; top: 10px; left: 20px;">Ку-ку</div>
+        <img  width="100px" src="/media/images/helper/cloud.png" alt="">
+
+    </div>
     <div><img src="/media/images/helper/helper.png" alt="" style="float: right;"></div>
     <div class="content">
         <div id="answer">
@@ -645,12 +651,12 @@
 <script type="text/javascript">
 
     function show_helper(){
-        $('.hider').html('><br/>><br/>><br/>>');
+{#        $('.hider').html('><br/>><br/>><br/>>');#}
         $('#helper').css('right', 10);
     }
 
     function hide_helper(){
-        $('.hider').html('<<br/><<br/><<br/><');
+{#        $('.hider').html('<<br/><<br/><<br/><');#}
         $('#helper').css('right', -210);
     }
 
