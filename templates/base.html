@@ -699,12 +699,12 @@
         return false;
     });
 
-{#    $('.hider').click(function(){#}
-{#            $.cookie('helper_box', 'show', { expires: 7, path: '/' });#}
-{#            show_helper();#}
-{##}
-{##}
-{#    });#}
+    $('.hider img, .hider .cloud').click(function(){
+            $.cookie('helper_box', 'show', { expires: 7, path: '/' });
+            show_helper();
+
+
+    });
 
     $('.char').click(function(){
             $.cookie('helper_box', 'hide', { expires: 7, path: '/' });
@@ -722,9 +722,9 @@
     if (helper_box == 'show'){
         show_helper();
     }
-    else if(helper_box == 'off'){
-        off_helper();
-    }
+{#    else if(helper_box == 'off'){#}
+{#        off_helper();#}
+{#    }#}
     else{
         hide_helper();
     }
