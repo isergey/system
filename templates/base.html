@@ -649,6 +649,7 @@
     <div class="hider">
         <div  class="cloud">Есть вопросы?</div>
         <img  width="150px" src="/media/images/helper/cloud.png" alt="">
+        <div align=""><a class="off" href="#1">отключить</a></div>
 
     </div>
     <div><img class="char" src="/media/images/helper/helper.png" alt="" style="float: right;"></div>
@@ -679,7 +680,9 @@
         $('.hider').show();
         $('#helper').css('right', -230);
     }
-
+    function off_helper(){
+        $('#helper').hide();
+    }
     $('#ask_form').submit(function(){
         $.ajax({
             url:'{% url helper_index %}',
@@ -708,10 +711,18 @@
             hide_helper();
 
     });
+    $('.off').click(function(){
+        $.cookie('helper_box', 'off', { expires: 7, path: '/' });
+        off_helper();
 
+    });
     var helper_box = $.cookie('helper_box');
+    alert(helper_box);
     if (helper_box == 'show'){
         show_helper();
+    }
+    else if(helper_box == 'off'){
+        off_helper();
     }
     else{
         hide_helper();
