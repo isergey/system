@@ -613,7 +613,24 @@
         position: absolute;
         left: -70px;
     }
-
+    #helper .hider{
+    {#        background: url("/media/images/helper/cloud.png");#}
+        float: left;
+    {#        width: 200px;#}
+    {#        height: 100px;#}
+        cursor: pointer;
+        color: white;
+        font-weight: bold;
+        position: absolute;
+        left: -30px;
+    }
+    #helper .cloud{
+        color: #1794cc;
+        font-size: 16px;
+        position: absolute;
+        top: 10px;
+        left: 20px;
+    }
     .rot-neg-90 {
         /* rotate -90 deg, not sure if a negative number is supported so I used 270 */
         -moz-transform: rotate(270deg);
@@ -627,11 +644,11 @@
 
 <div id="helper">
     <div class="hider">
-        <div style="color: #0066cc; font-size: 16px;position: absolute; top: 10px; left: 20px;">Ку-ку :-)</div>
-        <img  width="100px" src="/media/images/helper/cloud.png" alt="">
+{#        <div  class="cloud">Есть вопросы? :-)</div>#}
+        <img  width="150px" src="/media/images/helper/troll1.png" alt="">
 
     </div>
-    <div><img src="/media/images/helper/helper.png" alt="" style="float: right;"></div>
+    <div><img class="char" src="/media/images/helper/helper.png" alt="" style="float: right;"></div>
     <div class="content">
         <div id="answer">
 {#            Привет! :-)#}
@@ -651,12 +668,12 @@
 <script type="text/javascript">
 
     function show_helper(){
-{#        $('.hider').html('><br/>><br/>><br/>>');#}
+        $('.hider img').hide();
         $('#helper').css('right', 10);
     }
 
     function hide_helper(){
-{#        $('.hider').html('<<br/><<br/><<br/><');#}
+        $('.hider img').show();
         $('#helper').css('right', -210);
     }
 
@@ -677,17 +694,17 @@
     });
 
     $('.hider').click(function(){
-        var helper_box = $.cookie('helper_box');
-        if (helper_box == 'hide'){
             $.cookie('helper_box', 'show', { expires: 7, path: '/' });
             show_helper();
-        }
-        else{
-            $.cookie('helper_box', 'hide', { expires: 7, path: '/' });
-            hide_helper();
-        }
+
+
     });
 
+    $('.char').click(function(){
+            $.cookie('helper_box', 'show', { expires: 7, path: '/' });
+            hide_helper();
+
+    });
 
     var helper_box = $.cookie('helper_box');
     if (helper_box == 'show'){
