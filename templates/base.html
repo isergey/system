@@ -622,14 +622,17 @@
         color: white;
         font-weight: bold;
         position: absolute;
-        left: -30px;
+        left: -120px;
     }
     #helper .cloud{
         color: #1794cc;
         font-size: 16px;
         position: absolute;
-        top: 10px;
-        left: 20px;
+        top: 35px;
+        left: 10px;
+    }
+    #helper .char{
+        cursor: pointer;
     }
     .rot-neg-90 {
         /* rotate -90 deg, not sure if a negative number is supported so I used 270 */
@@ -644,8 +647,8 @@
 
 <div id="helper">
     <div class="hider">
-{#        <div  class="cloud">Есть вопросы? :-)</div>#}
-        <img  width="150px" src="/media/images/helper/troll1.png" alt="">
+        <div  class="cloud">Есть вопросы?</div>
+        <img  width="150px" src="/media/images/helper/cloud.png" alt="">
 
     </div>
     <div><img class="char" src="/media/images/helper/helper.png" alt="" style="float: right;"></div>
@@ -668,13 +671,13 @@
 <script type="text/javascript">
 
     function show_helper(){
-        $('.hider img').hide();
+        $('.hider').hide();
         $('#helper').css('right', 10);
     }
 
     function hide_helper(){
-        $('.hider img').show();
-        $('#helper').css('right', -210);
+        $('.hider').show();
+        $('#helper').css('right', -230);
     }
 
     $('#ask_form').submit(function(){
