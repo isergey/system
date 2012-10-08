@@ -18,11 +18,11 @@ class LoginForm(auth_forms.AuthenticationForm):
 
 class RegistrationForm(CoolForm):
     username = forms.CharField(max_length=50, label=u"Логин*", help_text=u"Разрешены буквы латинского алфавита и цифры")
-    password = forms.CharField( min_length=6, max_length=50,
-                                label=u"Пароль*", widget=forms.PasswordInput, help_text=u"Пароль должен состоять не менее чем из 6 символов. Внимаение, пароль чувствителен к регистру и набору символов.")
-    password2 = forms.CharField(min_length=6, max_length=50,
+    password = forms.CharField( min_length=1, max_length=50,
+                                label=u"Пароль*", widget=forms.PasswordInput, help_text=u"Внимаение, пароль чувствителен к регистру и набору символов.")
+    password2 = forms.CharField(min_length=1, max_length=50,
                                 label=u"Повторите пароль*", widget=forms.PasswordInput)
-    email = forms.EmailField(label=u"Электронная почта*", help_text=u'На электронную почту будет выслана информация об активации учетной записи.')
+    email = forms.EmailField(label=u"Электронная почта*", help_text=u'Электронная почта необходима для восстановления пароля.')
     first_name = forms.CharField(max_length=50, label=u"Имя Очество*", help_text=u'Эта информация будет использоваться для обращения к Вам.')
     last_name = forms.CharField(max_length=50, label=u"Фамилия*")
     tel_number = forms.CharField(max_length=50, label=u"Контактный телефон", required=False, help_text=u'Номер телефона может состоять из цифр и знака "+". Символы скобок и тире не допускаются.')
