@@ -301,9 +301,9 @@ def index(request, catalog_id='', slug=''):
         catalog = get_object_or_404(ZCatalog, latin_title=slug)
 
 
-    checker = ObjectPermissionChecker(request.user)
-    if not checker.has_perm('view_zcatalog', catalog):
-        return HttpResponse(u'Доступ запрещен')
+#    checker = ObjectPermissionChecker(request.user)
+#    if not checker.has_perm('view_zcatalog', catalog):
+#        return HttpResponse(u'Доступ запрещен')
 
     if not catalog.can_search:
         return HttpResponse(u"Каталог не доступен для поиска.")
@@ -311,9 +311,9 @@ def index(request, catalog_id='', slug=''):
     zgate_url = catalog.url
     if request.method == 'POST' and 'SESSION_ID' in request.POST:
         log_search_request(request, catalog)
-        (result, cookies) = zworker.request(zgate_url, data=request.POST, cookies=request.COOKIES)
-        if not cookies:
+        if not request.COOKIES:
             return HttpResponse(u'В вашем браузере отключены Cookies. Необходимо их включить или добавить в исключения.')
+        (result, cookies) = zworker.request(zgate_url, data=request.POST, cookies=request.COOKIES)
         response =  render_search_result(request, catalog, zresult=result, )
         return set_cookies_to_response(cookies,response)
 
