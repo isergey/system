@@ -16,6 +16,16 @@
             </div>
             <hr class="space"/>
             <div class="last">
+                <label for="{{ form.latin_title.auto_id }}">{{ form.latin_title.label }}</label><br>
+                {{ form.latin_title }}
+                {% if form.latin_title.errors %}
+                    <div class="error">
+                        {{ form.latin_title.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <hr class="space"/>
+            <div class="last">
                 <label for="{{ form.description.auto_id }}">{{ form.description.label }}</label><br>
                  {{ form.description }}
                 {% if form.description.errors %}
