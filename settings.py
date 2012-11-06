@@ -124,6 +124,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     #'django.middleware.cache.FetchFromCacheMiddleware',
+    'middleware.content_length.ContentLength'
 )
 
 ROOT_URLCONF = 'urls'

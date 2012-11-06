@@ -75,7 +75,7 @@ def edit(request, id):
         init = model_to_dict(zcatalog)
         init['view_catalog_groups'] = old_catalog_groups_ids
 
-        form = ZCatalogForm(init,instance=zcatalog)
+        form = ZCatalogForm(init, instance=zcatalog)
     return render(request, 'zgate/administration/zcatalog_edit.html', {
         'form': form,
         'zcatalog':zcatalog,

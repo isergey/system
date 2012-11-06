@@ -113,5 +113,3 @@ class ResetPasswordForm(forms.Form):
         if password != password2:
             raise forms.ValidationError(u'пароли не совпадают')
         return password2
-
-
