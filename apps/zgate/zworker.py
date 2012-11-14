@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 import urllib, urllib2
+from urllib2 import URLError
 from lxml import etree
 import lxml.html
 from django.utils.http import urlquote
 import Cookie
 
 entry_point = ''
+
+class ZWorkerError(Exception): pass
+
 
 def request(url, data={}, cookies={}):
     opener = urllib2.build_opener()
@@ -34,9 +38,15 @@ def request(url, data={}, cookies={}):
 
         else:
             mrequest = mrequest.urlencode()
-        result = opener.open(url, data=mrequest)
+        try:
+            result = opener.open(url, data=mrequest, timeout = 30)
+        except URLError as e:
+            raise ZWorkerError(e.reason)
     else:
-        result = opener.open(url)
+        try:
+            result = opener.open(url, timeout = 30)
+        except URLError as e:
+                raise ZWorkerError(e.reason)
 
     cookies1 = Cookie.SimpleCookie(result.headers['Set-Cookie'])
 

@@ -355,14 +355,15 @@ def index(request, catalog_id='', slug=''):
         else: #значит только инициализация формы
         #            if not catalog.can_search:
         #                return Htt
-
-            (zgate_form, cookies) = zworker.get_zgate_form(
-                zgate_url=zgate_url,
-                xml=catalog.xml,
-                xsl=catalog.xsl,
-                cookies=request.COOKIES
-            )
-
+            try:
+                (zgate_form, cookies) = zworker.get_zgate_form(
+                    zgate_url=zgate_url,
+                    xml=catalog.xml,
+                    xsl=catalog.xsl,
+                    cookies=request.COOKIES
+                )
+            except zworker.ZWorkerError as e:
+                return HttpResponse(u'Ошибка подключения к поисковому серверу: ' + str(e))
             response = render_form(request, zgate_form, catalog)
             return set_cookies_to_response(cookies, response)
 
