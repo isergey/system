@@ -53,8 +53,10 @@ def render_search_result(request, catalog, zresult=''):
             url = url + '?' + new_get
         else:
             url = url + '?' + request.GET['zstate'].replace(' ', '+')
-
-        (zresult, cookies) = zworker.request(url, cookies=request.COOKIES)
+        try:
+            (zresult, cookies) = zworker.request(url, cookies=request.COOKIES)
+        except zworker.ZWorkerError as e:
+            return HttpResponse(u'Ошибка подключения к поисковому серверу: ' + str(e))
     try:
         zresults_body_element = zworker.get_body_element(zresult)
 
@@ -105,7 +107,10 @@ def render_detail(request, catalog):
     zresults_body_element = zworker.change_links_href(zresults_body_element)
 
     #забираем xml представление записи
-    (xml_record, cookies) = zworker.request(zgate_url + '?' + zstate.replace('1+F', '1+X'), cookies=request.COOKIES)
+    try:
+        (xml_record, cookies) = zworker.request(zgate_url + '?' + zstate.replace('1+F', '1+X'), cookies=request.COOKIES)
+    except zworker.ZWorkerError as e:
+        return HttpResponse(u'Ошибка подключения к поисковому серверу: ' + str(e))
     s = time.time();
     owners = []
     record_id = '0'
@@ -183,8 +188,10 @@ def save_document(request):
     zstate = 'present+' + request.POST['zsession'] +\
              '+default+' + request.POST['zoffset'] +\
              '+1+X+1.2.840.10003.5.28+'+catalog.default_lang
-
-    (xml_record, cookies) = zworker.request(zgate_url + '?' + zstate)
+    try:
+        (xml_record, cookies) = zworker.request(zgate_url + '?' + zstate)
+    except zworker.ZWorkerError as e:
+        return HttpResponse(u'Ошибка подключения к поисковому серверу: ' + str(e))
 
     try:
         tree = ET.XML(xml_record)
@@ -313,7 +320,11 @@ def index(request, catalog_id='', slug=''):
         log_search_request(request, catalog)
         if not request.COOKIES:
             return HttpResponse(u'В вашем браузере отключены Cookies. Необходимо их включить или добавить в исключения.')
-        (result, cookies) = zworker.request(zgate_url, data=request.POST, cookies=request.COOKIES)
+        try:
+            (result, cookies) = zworker.request(zgate_url, data=request.POST, cookies=request.COOKIES)
+        except zworker.ZWorkerError as e:
+            return HttpResponse(u'Ошибка подключения к поисковому серверу: ' + str(e))
+
         response =  render_search_result(request, catalog, zresult=result, )
         return set_cookies_to_response(cookies,response)
 

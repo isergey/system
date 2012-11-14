@@ -39,12 +39,12 @@ def request(url, data={}, cookies={}):
         else:
             mrequest = mrequest.urlencode()
         try:
-            result = opener.open(url, data=mrequest, timeout = 30)
+            result = opener.open(url, data=mrequest, timeout = 60)
         except URLError as e:
             raise ZWorkerError(e.reason)
     else:
         try:
-            result = opener.open(url, timeout = 30)
+            result = opener.open(url, timeout = 60)
         except URLError as e:
                 raise ZWorkerError(e.reason)
 
