@@ -11,7 +11,7 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 from apps.zgate.models import ZCatalog
 from apps.zgate.models import requests_count, requests_by_attributes, requests_by_term
-from forms import ZCatalogForm, PeriodForm, GroupForm, AttributesForm, ZCatalogForm
+from forms import ZCatalogForm, PeriodForm, GroupForm, AttributesForm, FilterCatalogForm
 from django.forms.models import model_to_dict
 
 from common.access.shortcuts import assign_perm_for_groups_id, get_group_ids_for_object_perm, edit_group_perms_for_object
@@ -121,12 +121,12 @@ def statistics(request):
     period_form = PeriodForm()
     group_form = GroupForm()
     attributes_form = AttributesForm()
-    catalog_form = ZCatalogForm()
+    catalog_form = FilterCatalogForm()
     if request.method == 'POST':
         period_form = PeriodForm(request.POST)
         group_form = GroupForm(request.POST)
         attributes_form = AttributesForm(request.POST)
-        catalog_form = ZCatalogForm(request.POST)
+        catalog_form = FilterCatalogForm(request.POST)
 
         if period_form.is_valid():
             start_date = period_form.cleaned_data['start_date']

@@ -72,3 +72,11 @@ class AttributesForm(CoolForm):
         required=False
     )
 
+
+class FilterCatalogForm(CoolForm):
+    catalogs = forms.ModelMultipleChoiceField(
+        label=u'Каталоги',
+        queryset=ZCatalog.objects.all(),
+        widget=forms.CheckboxSelectMultiple(),
+        required=False
+    )
