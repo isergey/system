@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-xmlns:marc="http://www.loc.gov/MARC21/slim" exclude-result-prefixes="marc"> 
+xmlns:marc="http://www.loc.gov/MARC21/slim" exclude-result-prefixes="marc">
 	<xsl:include href="param.xsl"/>
 	<xsl:include href="marc.xsl"/>
 	<xsl:output
