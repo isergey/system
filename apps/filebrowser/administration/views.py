@@ -68,8 +68,8 @@ def get_file_map(path, show_path_url, show_path):
         }
 
     item_map['create_time'] = datetime.datetime.fromtimestamp(file_stat.st_ctime)
-    item_map['url'] = show_path_url + '/' + file_name
-    item_map['work_url'] = show_path + '/' + file_name
+    item_map['url'] = show_path_url + '/' + file_name.decode('utf-8')
+    item_map['work_url'] = show_path + '/' + file_name.decode('utf-8')
     return item_map
 
 
@@ -100,7 +100,7 @@ def handle_uploaded_file(f, path):
     destination.close()
     return f.name
 
-
+from urllib2 import unquote
 @login_required
 def index(request):
     base_uplod_path = settings.FILEBROWSER['upload_dir']
@@ -108,12 +108,12 @@ def index(request):
     show_path = '' # root of upload path
     show_path_url = settings.FILEBROWSER['upload_dir_url']
 
-    path = request.GET.get('path', u'/').strip('/')
+    if 'path' in request.GET:
+        path = request.GET['path'].strip('/')
+        if '..' in path or '/.' in path:
+            raise Http404(u"Path not founded")
 
-    if '..' in path or '/.' in path:
-        raise Http404(u"Path not founded")
-
-    show_path = '/%s' % path
+        show_path = '/%s' % path
 
     show_path_url += show_path
 
@@ -127,12 +127,19 @@ def index(request):
 
     dir_map = []
     for dir_item in dir_items:
-        path_to_dir_item = base_uplod_path + show_path + '/' + dir_item
+    #        try:
+        dir_item = unquote(dir_item)
+        #        except Exception as e:
+        #            dir_item = dir_item.decode('cp1251')
+        path_to_dir_item = base_uplod_path.decode('utf-8') +\
+                           show_path.decode('utf-8') +\
+                           u'/' +\
+                           dir_item.decode('utf-8')
 
-        if os.path.isfile(path_to_dir_item):
-            dir_map.append(get_file_map(path_to_dir_item, show_path_url, show_path))
+        if os.path.isfile(path_to_dir_item.encode('utf-8')):
+            dir_map.append(get_file_map(path_to_dir_item.encode('utf-8'), show_path_url, show_path))
 
-        elif os.path.isdir(path_to_dir_item):
+        elif os.path.isdir(path_to_dir_item.encode('utf-8')):
             dir_map.append(get_dir_map(path_to_dir_item, show_path))
 
         # не выводим элемент
