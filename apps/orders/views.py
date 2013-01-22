@@ -2,6 +2,7 @@
 import time
 from lxml import etree
 import xml.etree.cElementTree as ET
+
 import datetime
 import re
 
@@ -136,8 +137,12 @@ def index(request):
         try:
             doc = etree.XML(ET.tostring(transaction.illapdus[0].delivery_status.supplemental_item_description,
                 encoding="UTF-8"))
+            if not doc:
+                continue
             result_tree = transform(doc)
             res = str(result_tree)
+        except etree.XSLTApplyError, e:
+            continue
         except Exception, e:
             raise e
         res = res.replace('– –', '—')
