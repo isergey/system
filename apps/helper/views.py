@@ -41,7 +41,7 @@ def index(request):
             answer = {'answer': text}
         else:
             AskLog(normalize=request_terms, not_normalize=request_terms, answered=False).save()
-            answer = {'answer': u'Возможно вы найдете ответ, нажав <a href="http://www.google.ru/search?q='+ request.POST.get('ask', u'ксоб') +u'+site:http%3A%2F%2Fksob.spb.ru" target="_blank">сюда</a>:-) Скоро я сам найду ответ!'}
+            answer = {'answer': u'Я не знаю как ответить на Ваш вопрос. Попробуйте поискать в каталогах, там много чего интересного :)'}
 
     answer = json.dumps(answer, ensure_ascii=False)
     return HttpResponse(answer)
